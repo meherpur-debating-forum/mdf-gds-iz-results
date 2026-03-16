@@ -3,127 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ফলাফল কার্ড | ইনকিলাব জিন্দাবাদ ২০২৬</title>
-    
+    <title>আপনার ফলাফল | ইনকিলাব জিন্দাবাদ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Hind Siliguri', sans-serif; 
-            background: #121212; 
-            color: #e0e0e0; 
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f8fafc; }
+        
+        /* ডার্ক মোড কার্ড স্টাইল */
+        .result-card-main {
+            background: #1e293b;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        /* প্রিন্ট বা ডাউনলোডের জন্য বিশেষ স্টাইল */
-        .download-mode { 
-            background: white !important; 
-            color: black !important; 
-            border: 2px solid #000 !important;
+
+        /* ডাউনলোড মোড (বডি হোয়াইট থাকবে ডাউনলোড এর সময়) */
+        .download-active {
+            background: #ffffff !important;
+            color: #000000 !important;
             padding: 40px !important;
-            width: 800px !important; /* স্ট্যান্ডার্ড উইডথ */
+            width: 800px !important;
+            border: 10px solid #f1f5f9 !important;
+            border-radius: 0px !important;
         }
-        .download-mode .text-gray-400, .download-mode .text-gray-500 { color: #444 !important; }
-        .download-mode h1, .download-mode #pos-badge { color: #004085 !important; }
-        .download-mode .result-divider { border-color: #ccc !important; }
+        
+        .download-active .label-text { color: #475569 !important; }
+        .download-active .val-text { color: #000000 !important; font-weight: 700; }
+        .download-active .header-title { color: #1e3a8a !important; }
+        .download-active .pos-box { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; color: #1e3a8a !important; }
+        .download-active .divider { border-color: #e2e8f0 !important; }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-4 md:p-10">
+<body class="flex flex-col items-center p-4 min-h-screen">
 
-    <div id="result-card" class="bg-[#1e1e1e] border border-gray-800 rounded-3xl p-6 md:p-10 max-w-2xl w-full shadow-2xl">
-        
-        <div class="text-center border-b border-gray-700 pb-6 mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-[#ffd700]">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
-            <div class="mt-3 space-y-1">
-                <p class="text-gray-400 font-semibold">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
-                <p class="text-xs text-gray-500 italic">সহ-আয়োজক: জেন-জি ডিবেটিং সোসাইটি | পার্টনার: কুষ্টিয়া ডিবেটিং সোসাইটি</p>
-            </div>
+    <div id="capture-area" class="result-card-main p-8 md:p-12 rounded-3xl max-w-2xl w-full mt-10">
+        <div class="text-center border-b border-slate-700 pb-8 mb-8 divider">
+            <h1 class="header-title text-2xl md:text-3xl font-bold text-amber-400 mb-3">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
+            <p class="text-slate-400 text-sm font-medium label-text">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
+            <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-widest label-text">মেহেরপুর ডিবেটিং ফোরাম • জেন-জি ডিবেটিং সোসাইটি • কুষ্টিয়া ডিবেটিং সোসাইটি</p>
         </div>
 
-        <div id="user-results-container" class="space-y-10">
-            <p class="text-center animate-pulse text-gray-500">ফলাফল খোঁজা হচ্ছে...</p>
+        <div id="results-list" class="space-y-12">
+            </div>
+
+        <div class="mt-12 pt-6 border-t border-slate-700 text-center divider">
+            <p class="text-[10px] text-slate-500 italic label-text">এটি একটি সিস্টেম জেনারেটেড ডিজিটাল ফলাফল কার্ড।</p>
         </div>
     </div>
 
-    <div class="mt-10 flex flex-wrap justify-center gap-4 w-full max-w-2xl">
-        <button onclick="downloadImage()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg">🖼️ ছবি সেভ করুন</button>
-        <button onclick="downloadPDF()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-lg">📄 PDF ডাউনলোড</button>
-        <a href="index.html" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl text-center transition">🏠 হোম</a>
+    <div class="mt-10 flex flex-wrap justify-center gap-4 w-full max-w-2xl no-print">
+        <button onclick="downloadImage()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1">🖼️ ছবি সেভ করুন</button>
+        <button onclick="downloadPDF()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1">📄 PDF সেভ করুন</button>
+        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center transition">🏠 হোম</a>
     </div>
 
     <script src="data.js"></script>
     <script>
         const phone = localStorage.getItem('userPhone');
         const userResults = allParticipants.filter(p => p.phone === phone);
-        const container = document.getElementById('user-results-container');
+        const list = document.getElementById('results-list');
 
         if (userResults.length > 0) {
-            let htmlContent = '';
-
             userResults.forEach((user, index) => {
-                // পজিশন ক্যালকুলেশন (সেগমেন্ট ওয়াইজ)
-                const segmentCompetitors = allParticipants
-                    .filter(p => p.segment === user.segment)
-                    .sort((a, b) => b.mark - a.mark);
+                const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
+                const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
                 
-                const position = segmentCompetitors.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
-
-                htmlContent += `
-                    <div class="${index > 0 ? 'result-divider pt-10 border-t border-dashed border-gray-700' : ''}">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
-                            <div><span class="text-gray-500 font-semibold">নাম:</span> <span class="text-white ml-2">${user.name}</span></div>
-                            <div><span class="text-gray-500 font-semibold">মোবাইল:</span> <span class="text-white ml-2">${user.phone}</span></div>
-                            <div class="md:col-span-2"><span class="text-gray-500 font-semibold">প্রতিষ্ঠান:</span> <span class="text-white ml-2">${user.institute}</span></div>
-                            <div><span class="text-gray-500 font-semibold">বিভাগ:</span> <span class="text-[#ffd700] font-bold ml-2">${user.segment}</span></div>
-                            <div><span class="text-gray-500 font-semibold">প্রাপ্ত নম্বর:</span> <span class="text-white ml-2">${user.mark}</span></div>
+                list.innerHTML += `
+                    <div class="${index > 0 ? 'border-t border-dashed border-slate-700 pt-10 divider' : ''}">
+                        <div class="grid grid-cols-1 gap-y-4 text-lg">
+                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
+                                <span class="text-slate-400 font-medium label-text">অংশগ্রহণকারীর নাম</span>
+                                <span class="text-white font-bold val-text">${user.name}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
+                                <span class="text-slate-400 font-medium label-text">শিক্ষা প্রতিষ্ঠান</span>
+                                <span class="text-white font-bold val-text">${user.institute}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
+                                <span class="text-slate-400 font-medium label-text">প্রতিযোগিতার বিভাগ</span>
+                                <span class="text-amber-400 font-bold val-text">${user.segment}</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
+                                <span class="text-slate-400 font-medium label-text">প্রাপ্ত স্কোর</span>
+                                <span class="text-white font-bold val-text">${user.mark}</span>
+                            </div>
                         </div>
-                        <div id="pos-badge" class="mt-6 text-3xl font-extrabold text-[#ffd700] bg-[#252525] inline-block px-6 py-2 rounded-lg border border-gray-700">
-                            অবস্থান: ${position} তম
+                        <div class="pos-box mt-8 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 text-center">
+                            <span class="text-slate-400 text-sm block mb-1 label-text">ফলাফল মেধা তালিকা</span>
+                            <span class="text-3xl font-black text-amber-400 uppercase tracking-tighter header-title">অবস্থান: ${pos} তম</span>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
-
-            container.innerHTML = htmlContent;
         } else {
-            container.innerHTML = `<div class="text-center text-red-500 font-bold">কোনো ফলাফল পাওয়া যায়নি। অনুগ্রহ করে সঠিক নম্বর দিয়ে লগইন করুন।</div>`;
+            window.location.href = 'signup.html';
         }
 
-        // ছবি হিসেবে ডাউনলোড
+        // --- প্রফেশনাল ইমেজ ডাউনলোড ফাংশন ---
         function downloadImage() {
-            const element = document.getElementById('result-card');
-            element.classList.add('download-mode');
+            const el = document.getElementById('capture-area');
+            el.classList.add('download-active'); // সাদা থিম অ্যাপ্লাই
 
-            html2canvas(element, { 
-                scale: 3,
+            html2canvas(el, {
+                scale: 3, // হাই কোয়ালিটি
                 backgroundColor: "#ffffff",
+                logging: false,
                 useCORS: true
             }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Inqilab_Result_${phone}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-                element.classList.remove('download-mode');
+                const a = document.createElement('a');
+                a.download = `Result_${phone}.png`;
+                a.href = canvas.toDataURL("image/png");
+                a.click();
+                el.classList.remove('download-active'); // ডার্ক থিমে ফেরত
             });
         }
 
-        // PDF হিসেবে ডাউনলোড
+        // --- প্রফেশনাল PDF ডাউনলোড ফাংশন ---
         function downloadPDF() {
-            const element = document.getElementById('result-card');
-            element.classList.add('download-mode');
+            const el = document.getElementById('capture-area');
+            el.classList.add('download-active');
 
-            const options = {
-                margin: 0.3,
-                filename: `Inqilab_Result_${phone}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
+            const opt = {
+                margin: 0.5,
+                filename: `Result_${phone}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 3, backgroundColor: "#ffffff" },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(options).from(element).save().then(() => {
-                element.classList.remove('download-mode');
+            html2pdf().set(opt).from(el).save().then(() => {
+                el.classList.remove('download-active');
             });
         }
     </script>
