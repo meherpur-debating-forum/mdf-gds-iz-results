@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>ইনকিলাব জিন্দাবাদ ২০২৬ | হোম</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Hind Siliguri', sans-serif; background: #121212; color: #e0e0e0; }</style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-[#1a1a1a] text-center py-10 border-b border-gray-800">
+        <h1 class="text-3xl md:text-5xl font-bold text-[#ffd700]">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
+        <p class="mt-2 text-gray-400">প্রতি সেগমেন্টের সেরা তিনের বিজয়ী তালিকা</p>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 flex-grow" id="leaderboard-grid"></main>
+
+    <div class="text-center my-10">
+        <a href="signup.html" class="bg-[#ffd700] text-black px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition inline-block">ব্যক্তিগত ফলাফল দেখুন</a>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
+        const grid = document.getElementById('leaderboard-grid');
+
+        segments.forEach(seg => {
+            // ফিল্টার করে মার্কস অনুযায়ী বড় থেকে ছোট সাজানো
+            const winners = allParticipants
+                .filter(p => p.segment === seg)
+                .sort((a, b) => b.mark - a.mark)
+                .slice(0, 3); // সেরা ৩ জন
+
+            let listHTML = '';
+            const medals = ["🥇 ১ম:", "🥈 ২য়:", "🥉 ৩য়:"];
+            
+            winners.forEach((w, index) => {
+                listHTML += `<li class="flex justify-between bg-[#252525] p-3 rounded mb-2 border-l-4 border-[#ffd700]">
+                    <span>${medals[index]} ${w.name}</span>
+                    <span class="text-gray-500 text-sm">${w.institute}</span>
+                </li>`;
+            });
+
+            grid.innerHTML += `
+                <div class="bg-[#1e1e1e] p-6 rounded-xl border border-gray-800">
+                    <h2 class="text-xl font-bold mb-4 text-[#ffd700] border-b border-gray-700 pb-2">${seg}</h2>
+                    <ul>${listHTML || '<li class="text-gray-600">কোন ফলাফল নেই</li>'}</ul>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
