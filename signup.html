@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন | ইনকিলাব জিন্দাবাদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #121212; color: #e0e0e0; }
+        .otp-input {
+            width: 8.5%; max-width: 40px; height: 50px; text-align: center; background: #252525;
+            border: 1px solid #444; border-radius: 6px; font-size: 1.2rem; font-weight: bold;
+            color: #ffd700; outline: none; -moz-appearance: textfield;
+        }
+        .otp-input::-webkit-outer-spin-button, .otp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .otp-input:focus { border-color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen items-center justify-center p-4">
+    <div class="bg-[#1e1e1e] p-6 md:p-10 rounded-3xl shadow-2xl w-full max-w-lg border border-gray-800">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#ffd700]">ফলাফল যাচাই</h2>
+            <p class="text-gray-400 mt-2 text-sm md:text-base">আপনার ১১ ডিজিটের মোবাইল নম্বরটি লিখুন</p>
+        </div>
+        
+        <div id="otp-container" class="flex justify-center gap-1 md:gap-2 mb-8">
+            <input class="otp-input" type="number" oninput="moveNext(this, 0)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 1)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 2)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 3)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 4)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 5)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 6)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 7)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 8)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 9)">
+            <input class="otp-input" type="number" oninput="moveNext(this, 10)">
+        </div>
+
+        <div id="loader" class="hidden text-center mb-4">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-[#ffd700]"></div>
+        </div>
+        
+        <p id="error" class="text-red-400 text-sm hidden text-center font-semibold bg-red-900/10 p-3 rounded-lg border border-red-900/50">নম্বরটি তালিকায় পাওয়া যায়নি।</p>
+        
+        <div class="text-center mt-6"><a href="index.html" class="text-gray-500 hover:text-white text-sm transition">← হোম পেজে ফিরে যান</a></div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const inputs = document.querySelectorAll('.otp-input');
+        function moveNext(current, index) {
+            if (current.value.length > 1) current.value = current.value.slice(0, 1);
+            if (current.value !== "" && index < 10) inputs[index + 1].focus();
+            checkFull();
+        }
+        inputs.forEach((input, index) => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === "Backspace" && input.value === "" && index > 0) inputs[index - 1].focus();
+            });
+        });
+        function checkFull() {
+            let phone = "";
+            inputs.forEach(i => phone += i.value);
+            if (phone.length === 11) {
+                document.getElementById('loader').classList.remove('hidden');
+                setTimeout(() => {
+                    const exists = allParticipants.some(p => p.phone === phone);
+                    if (exists) { localStorage.setItem('userPhone', phone); window.location.href = 'result.html'; }
+                    else { 
+                        document.getElementById('loader').classList.add('hidden');
+                        document.getElementById('error').classList.remove('hidden');
+                    }
+                }, 600);
+            }
+        }
+    </script>
+</body>
+</html>
