@@ -1,1 +1,0 @@
-# mdf-gds-iz-results
