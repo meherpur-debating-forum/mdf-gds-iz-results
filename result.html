@@ -3,59 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আপনার ফলাফল | ইনকিলাব জিন্দাবাদ</title>
+    <title>ফলাফল কার্ড | ইনকিলাব জিন্দাবাদ ২০২৬</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f8fafc; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
         
-        /* ডার্ক মোড কার্ড স্টাইল */
-        .result-card-main {
+        /* ওয়েব ভিউ স্টাইল */
+        .result-container {
             background: #1e293b;
             border: 1px solid #334155;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* ডাউনলোড মোড (বডি হোয়াইট থাকবে ডাউনলোড এর সময়) */
+        /* ডাউনলোড মোড (A4 Size & High Contrast) */
         .download-active {
             background: #ffffff !important;
             color: #000000 !important;
-            padding: 40px !important;
-            width: 800px !important;
-            border: 10px solid #f1f5f9 !important;
-            border-radius: 0px !important;
+            width: 794px !important; /* A4 width in pixels at 96 DPI */
+            min-height: 1123px !important; /* A4 height */
+            padding: 60px !important;
+            border: none !important;
+            display: block !important;
         }
         
-        .download-active .label-text { color: #475569 !important; }
-        .download-active .val-text { color: #000000 !important; font-weight: 700; }
-        .download-active .header-title { color: #1e3a8a !important; }
-        .download-active .pos-box { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; color: #1e3a8a !important; }
-        .download-active .divider { border-color: #e2e8f0 !important; }
+        /* ডাউনলোডের সময় টেক্সট কালার ফিক্স */
+        .download-active h1, 
+        .download-active h2, 
+        .download-active p, 
+        .download-active span, 
+        .download-active div {
+            color: #000000 !important;
+        }
+        
+        .download-active .accent-text { color: #1e3a8a !important; } /* Deep Blue for Headers */
+        .download-active .divider { border-color: #000000 !important; border-top-width: 2px !important; }
+        .download-active .pos-badge { 
+            background: #f8fafc !important; 
+            border: 2px solid #000 !important; 
+            color: #000 !important; 
+        }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
-    <div id="capture-area" class="result-card-main p-8 md:p-12 rounded-3xl max-w-2xl w-full mt-10">
+    <div id="capture-area" class="result-container p-8 md:p-12 rounded-3xl max-w-2xl w-full mt-10">
+        
         <div class="text-center border-b border-slate-700 pb-8 mb-8 divider">
-            <h1 class="header-title text-2xl md:text-3xl font-bold text-amber-400 mb-3">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
-            <p class="text-slate-400 text-sm font-medium label-text">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
-            <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-widest label-text">মেহেরপুর ডিবেটিং ফোরাম • জেন-জি ডিবেটিং সোসাইটি • কুষ্টিয়া ডিবেটিং সোসাইটি</p>
+            <h1 class="accent-text text-2xl md:text-3xl font-bold text-amber-400 mb-2">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
+            <p class="text-slate-400 font-medium italic">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
+            <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-[0.2em]">মেহেরপুর ডিবেটিং ফোরাম • জেন-জি ডিবেটিং সোসাইটি • কুষ্টিয়া ডিবেটিং সোসাইটি</p>
         </div>
 
         <div id="results-list" class="space-y-12">
             </div>
 
-        <div class="mt-12 pt-6 border-t border-slate-700 text-center divider">
-            <p class="text-[10px] text-slate-500 italic label-text">এটি একটি সিস্টেম জেনারেটেড ডিজিটাল ফলাফল কার্ড।</p>
+        <div class="mt-16 pt-8 border-t border-slate-700 divider">
+            <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700/50 download-active:border-black">
+                <p class="text-[11px] text-slate-400 leading-relaxed text-center italic">
+                    <span class="font-bold block mb-1">সতর্কবার্তা:</span>
+                    এটি একটি সিস্টেম জেনারেটেড ডিজিটাল অনুলিপি মাত্র। কোনো প্রকার দাপ্তরিক বা অফিশিয়াল প্রয়োজনে এই কপিটি ব্যবহার করা যাবে না। এটিকে শুধুমাত্র প্রতিযোগিতার প্রাথমিক ফলাফল হিসেবে গণ্য করার জন্য অনুরোধ করা হলো।
+                </p>
+            </div>
         </div>
     </div>
 
-    <div class="mt-10 flex flex-wrap justify-center gap-4 w-full max-w-2xl no-print">
-        <button onclick="downloadImage()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1">🖼️ ছবি সেভ করুন</button>
-        <button onclick="downloadPDF()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1">📄 PDF সেভ করুন</button>
-        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center transition">🏠 হোম</a>
+    <div class="mt-10 flex flex-wrap justify-center gap-4 w-full max-w-2xl mb-20">
+        <button onclick="downloadImage()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition">🖼️ ছবি হিসেবে সেভ করুন</button>
+        <button onclick="downloadPDF()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition">📄 PDF ডাউনলোড করুন</button>
+        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center transition">🏠 হোমে ফিরে যান</a>
     </div>
 
     <script src="data.js"></script>
@@ -71,27 +89,26 @@
                 
                 list.innerHTML += `
                     <div class="${index > 0 ? 'border-t border-dashed border-slate-700 pt-10 divider' : ''}">
-                        <div class="grid grid-cols-1 gap-y-4 text-lg">
-                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
-                                <span class="text-slate-400 font-medium label-text">অংশগ্রহণকারীর নাম</span>
-                                <span class="text-white font-bold val-text">${user.name}</span>
+                        <div class="grid grid-cols-1 gap-y-5">
+                            <div class="flex justify-between border-b border-slate-800 pb-1 divider">
+                                <span class="text-slate-400 font-medium">অংশগ্রহণকারীর নাম</span>
+                                <span class="text-white font-bold">${user.name}</span>
                             </div>
-                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
-                                <span class="text-slate-400 font-medium label-text">শিক্ষা প্রতিষ্ঠান</span>
-                                <span class="text-white font-bold val-text">${user.institute}</span>
+                            <div class="flex justify-between border-b border-slate-800 pb-1 divider">
+                                <span class="text-slate-400 font-medium">শিক্ষা প্রতিষ্ঠান</span>
+                                <span class="text-white font-bold">${user.institute}</span>
                             </div>
-                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
-                                <span class="text-slate-400 font-medium label-text">প্রতিযোগিতার বিভাগ</span>
-                                <span class="text-amber-400 font-bold val-text">${user.segment}</span>
+                            <div class="flex justify-between border-b border-slate-800 pb-1 divider">
+                                <span class="text-slate-400 font-medium">প্রতিযোগিতার বিভাগ</span>
+                                <span class="text-amber-400 font-bold accent-text">${user.segment}</span>
                             </div>
-                            <div class="flex justify-between border-b border-slate-800/50 pb-2 divider">
-                                <span class="text-slate-400 font-medium label-text">প্রাপ্ত স্কোর</span>
-                                <span class="text-white font-bold val-text">${user.mark}</span>
+                            <div class="flex justify-between border-b border-slate-800 pb-1 divider">
+                                <span class="text-slate-400 font-medium">প্রাপ্ত নম্বর</span>
+                                <span class="text-white font-bold">${user.mark}</span>
                             </div>
                         </div>
-                        <div class="pos-box mt-8 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 text-center">
-                            <span class="text-slate-400 text-sm block mb-1 label-text">ফলাফল মেধা তালিকা</span>
-                            <span class="text-3xl font-black text-amber-400 uppercase tracking-tighter header-title">অবস্থান: ${pos} তম</span>
+                        <div class="pos-badge mt-8 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 text-center">
+                            <span class="text-3xl font-black text-amber-400 tracking-tighter accent-text">অবস্থান: ${pos} তম</span>
                         </div>
                     </div>`;
             });
@@ -99,36 +116,40 @@
             window.location.href = 'signup.html';
         }
 
-        // --- প্রফেশনাল ইমেজ ডাউনলোড ফাংশন ---
-        function downloadImage() {
+        // ইমেজ ডাউনলোড (A4 optimized)
+        async function downloadImage() {
             const el = document.getElementById('capture-area');
-            el.classList.add('download-active'); // সাদা থিম অ্যাপ্লাই
+            el.classList.add('download-active');
+            
+            await new Promise(r => setTimeout(r, 500)); // ব্রাউজারকে রেন্ডার করার সময় দেওয়া
 
             html2canvas(el, {
-                scale: 3, // হাই কোয়ালিটি
+                scale: 3,
                 backgroundColor: "#ffffff",
-                logging: false,
-                useCORS: true
+                useCORS: true,
+                windowWidth: 794
             }).then(canvas => {
                 const a = document.createElement('a');
-                a.download = `Result_${phone}.png`;
+                a.download = `Result_Card_${phone}.png`;
                 a.href = canvas.toDataURL("image/png");
                 a.click();
-                el.classList.remove('download-active'); // ডার্ক থিমে ফেরত
+                el.classList.remove('download-active');
             });
         }
 
-        // --- প্রফেশনাল PDF ডাউনলোড ফাংশন ---
-        function downloadPDF() {
+        // PDF ডাউনলোড (Strict A4 Format)
+        async function downloadPDF() {
             const el = document.getElementById('capture-area');
             el.classList.add('download-active');
 
+            await new Promise(r => setTimeout(r, 500));
+
             const opt = {
-                margin: 0.5,
-                filename: `Result_${phone}.pdf`,
+                margin: 0,
+                filename: `Official_Result_${phone}.pdf`,
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 3, backgroundColor: "#ffffff" },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                jsPDF: { unit: 'px', format: [794, 1123], hotfixes: ['px_scaling'] }
             };
 
             html2pdf().set(opt).from(el).save().then(() => {
