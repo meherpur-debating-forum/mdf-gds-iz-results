@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE ACCESS | INQILAB 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Hind+Siliguri:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --terminal-green: #00ff41;
+            --dim-green: rgba(0, 255, 65, 0.15);
+        }
+
+        body {
+            background-color: #050505;
+            color: var(--terminal-green);
+            font-family: 'JetBrains Mono', 'Hind Siliguri', monospace;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: screen;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0.15;
+        }
+
+        .main-frame {
+            z-index: 10;
+            background: rgba(0, 5, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 1), inset 0 0 20px rgba(0, 255, 65, 0.05);
+            max-width: 800px;
+            width: 95%;
+            position: relative;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 11;
+            background: linear-gradient(0deg, rgba(0, 255, 65, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 255, 65, 0) 100%);
+            position: absolute;
+            bottom: 100%;
+            animation: scan 6s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+
+        .countdown-item {
+            background: rgba(0, 40, 0, 0.4);
+            border: 1px solid var(--dim-green);
+            padding: 1rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .glitch-text {
+            text-shadow: 2px 0 #ff0000, -2px 0 #0000ff;
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { text-shadow: 1px 0 #0f0; }
+            50% { text-shadow: -1px 0 #f00; }
+            100% { text-shadow: 1px 0 #00f; }
+        }
+
+        .log-container {
+            font-size: 0.7rem;
+            height: 60px;
+            overflow: hidden;
+            color: #008f11;
+            border-top: 1px solid var(--dim-green);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--terminal-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+    <div class="scanline"></div>
+
+    <div class="main-frame p-4 md:p-8 rounded-sm">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <div class="text-[10px] opacity-70 uppercase tracking-[0.3em] mb-1">Central Intelligence Hub</div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tighter">INQILAB ZINDABAD: NATIONAL YOUTH ENGAGEMENT COMPETITION 2026</h1>
+            </div>
+            <div class="text-right flex flex-col items-end">
+                <span class="px-2 py-1 bg-green-950 text-green-400 text-[10px] border border-green-800 rounded">ENCRYPTION: AES-256</span>
+                <span class="text-[10px] mt-1 opacity-50">NODE: DHAKA_PRIMARY_01</span>
+            </div>
+        </div>
+
+        <!-- Status & Title -->
+        <div class="mb-10 text-center md:text-left">
+            <h2 class="text-white text-lg md:text-xl font-light mb-2">
+                রিলিজ কাউন্টডাউন <span class="text-green-500">//</span> OFFICIAL RESULTS
+            </h2>
+            <p class="text-green-800 text-xs md:text-sm">নির্ধারিত সময়ের আগে এই ডাটাবেজ এক্সেস করা সম্ভব নয়।</p>
+        </div>
+
+        <!-- Professional Countdown -->
+        <div class="grid grid-cols-4 gap-2 md:gap-4 mb-10">
+            <div class="countdown-item">
+                <div id="days" class="text-2xl md:text-4xl font-bold">00</div>
+                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div id="hours" class="text-2xl md:text-4xl font-bold">00</div>
+                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div id="minutes" class="text-2xl md:text-4xl font-bold">00</div>
+                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Mins</div>
+            </div>
+            <div class="countdown-item">
+                <div id="seconds" class="text-2xl md:text-4xl font-bold text-white">00</div>
+                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Secs</div>
+            </div>
+        </div>
+
+        <!-- Bottom UI -->
+        <div class="space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="flex-1 h-[1px] bg-green-900"></div>
+                <div class="text-[10px] uppercase opacity-40">System Release: April 01, 2026 00:01 AM</div>
+                <div class="flex-1 h-[1px] bg-green-900"></div>
+            </div>
+
+            <div class="log-container" id="log">
+                <!-- Log entries will be injected here -->
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-green-900/50">
+                <div class="text-[10px] text-green-700">
+                    STATUS: <span class="animate-pulse">AWAITING SYSTEM TRIGGER...</span>
+                </div>
+                <div class="text-[10px] text-green-700">
+                    USER_AUTH: ANONYMOUS
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Background
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        let width, height, columns, drops;
+
+        function initMatrix() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = Math.floor(width / 20);
+            drops = Array(columns).fill(1);
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(5, 5, 5, 0.1)";
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = "#0f3";
+            ctx.font = "15px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(Math.random() * 128);
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+
+        // Countdown Logic
+        const targetDate = new Date("April 1, 2026 00:01:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+
+            const second = 1000;
+            const minute = second * 60;
+            const hour = minute * 60;
+            const day = hour * 24;
+
+            const d = Math.floor(gap / day);
+            const h = Math.floor((gap % day) / hour);
+            const m = Math.floor((gap % hour) / minute);
+            const s = Math.floor((gap % minute) / second);
+
+            document.getElementById("days").innerText = d.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = h.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = m.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = s.toString().padStart(2, '0');
+        }
+
+        // Simulated Terminal Logs
+        const logEntries = [
+            "> Initializing secure handshake...",
+            "> Connection established via MDF-01",
+            "> Fetching encryption keys...",
+            "> ERROR: Access Denied. Result date not reached.",
+            "> Standing by for automated trigger...",
+            "> Requesting peripheral sync...",
+            "> Firewall active. Intrusion detection: ON",
+            "> System clock validated with GMT+6"
+        ];
+        
+        let logIndex = 0;
+        const logEl = document.getElementById('log');
+
+        function addLog() {
+            const p = document.createElement('div');
+            p.innerText = logEntries[logIndex % logEntries.length];
+            logEl.appendChild(p);
+            if (logEl.children.length > 3) logEl.removeChild(logEl.firstChild);
+            logIndex++;
+        }
+
+        // Initialize Everything
+        window.onload = () => {
+            initMatrix();
+            setInterval(drawMatrix, 50);
+            setInterval(updateCountdown, 1000);
+            setInterval(addLog, 2500);
+            updateCountdown();
+            addLog();
+        };
+
+        window.onresize = initMatrix;
+    </script>
+</body>
+</html>
