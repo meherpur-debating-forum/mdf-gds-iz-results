@@ -21,7 +21,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: screen;
+            min-height: 100vh;
         }
 
         canvas {
@@ -42,6 +42,7 @@
             max-width: 800px;
             width: 95%;
             position: relative;
+            transition: all 0.5s ease;
         }
 
         .scanline {
@@ -68,17 +69,6 @@
             text-align: center;
         }
 
-        .glitch-text {
-            text-shadow: 2px 0 #ff0000, -2px 0 #0000ff;
-            animation: glitch-anim 3s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { text-shadow: 1px 0 #0f0; }
-            50% { text-shadow: -1px 0 #f00; }
-            100% { text-shadow: 1px 0 #00f; }
-        }
-
         .log-container {
             font-size: 0.7rem;
             height: 60px;
@@ -87,16 +77,30 @@
             border-top: 1px solid var(--dim-green);
         }
 
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background: var(--terminal-green);
-            animation: blink 1s infinite;
+        .hidden-element {
+            display: none !important;
         }
 
-        @keyframes blink {
-            50% { opacity: 0; }
+        .processing-glitch {
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 255, 65, 0.3); }
+            50% { border-color: rgba(0, 255, 65, 1); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
+            100% { border-color: rgba(0, 255, 65, 0.3); }
+        }
+
+        .dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            33% { content: '.'; }
+            66% { content: '..'; }
+            100% { content: '...'; }
         }
     </style>
 </head>
@@ -105,44 +109,61 @@
     <canvas id="matrix"></canvas>
     <div class="scanline"></div>
 
-    <div class="main-frame p-4 md:p-8 rounded-sm">
+    <div id="app-container" class="main-frame p-4 md:p-8 rounded-sm">
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <div class="text-[10px] opacity-70 uppercase tracking-[0.3em] mb-1">Central Intelligence Hub</div>
-                <h1 class="text-xl md:text-2xl font-bold tracking-tighter">INQILAB ZINDABAD: NATIONAL YOUTH ENGAGEMENT COMPETITION 2026</h1>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tighter">INQILAB // 2026</h1>
             </div>
             <div class="text-right flex flex-col items-end">
-                <span class="px-2 py-1 bg-green-950 text-green-400 text-[10px] border border-green-800 rounded">ENCRYPTION: AES-256</span>
+                <span id="sys-status" class="px-2 py-1 bg-green-950 text-green-400 text-[10px] border border-green-800 rounded uppercase">Encryption: AES-256</span>
                 <span class="text-[10px] mt-1 opacity-50">NODE: DHAKA_PRIMARY_01</span>
             </div>
         </div>
 
-        <!-- Status & Title -->
-        <div class="mb-10 text-center md:text-left">
-            <h2 class="text-white text-lg md:text-xl font-light mb-2">
-                রিলিজ কাউন্টডাউন <span class="text-green-500">//</span> OFFICIAL RESULTS
-            </h2>
-            <p class="text-green-800 text-xs md:text-sm">নির্ধারিত সময়ের আগে এই ডাটাবেজ এক্সেস করা সম্ভব নয়।</p>
+        <!-- Pre-Release View -->
+        <div id="countdown-view">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-white text-lg md:text-xl font-light mb-2">
+                    রিলিজ কাউন্টডাউন <span class="text-green-500">//</span> OFFICIAL RESULTS
+                </h2>
+                <p class="text-green-800 text-xs md:text-sm">নির্ধারিত সময়ের আগে এই ডাটাবেজ এক্সেস করা সম্ভব নয়।</p>
+            </div>
+
+            <!-- Professional Countdown -->
+            <div class="grid grid-cols-4 gap-2 md:gap-4 mb-10">
+                <div class="countdown-item">
+                    <div id="days" class="text-2xl md:text-4xl font-bold">00</div>
+                    <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="hours" class="text-2xl md:text-4xl font-bold">00</div>
+                    <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="minutes" class="text-2xl md:text-4xl font-bold">00</div>
+                    <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Mins</div>
+                </div>
+                <div class="countdown-item">
+                    <div id="seconds" class="text-2xl md:text-4xl font-bold text-white">00</div>
+                    <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Secs</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Professional Countdown -->
-        <div class="grid grid-cols-4 gap-2 md:gap-4 mb-10">
-            <div class="countdown-item">
-                <div id="days" class="text-2xl md:text-4xl font-bold">00</div>
-                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Days</div>
+        <!-- Post-Release View (Hidden Initially) -->
+        <div id="release-view" class="hidden-element py-12 text-center">
+            <div class="inline-block mb-6">
+                <svg class="w-16 h-16 animate-spin text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
             </div>
-            <div class="countdown-item">
-                <div id="hours" class="text-2xl md:text-4xl font-bold">00</div>
-                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Hours</div>
-            </div>
-            <div class="countdown-item">
-                <div id="minutes" class="text-2xl md:text-4xl font-bold">00</div>
-                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Mins</div>
-            </div>
-            <div class="countdown-item">
-                <div id="seconds" class="text-2xl md:text-4xl font-bold text-white">00</div>
-                <div class="text-[9px] uppercase tracking-widest opacity-60 mt-1">Secs</div>
+            <h2 class="text-2xl md:text-3xl text-white font-bold mb-4">অনুগ্রহ করে অপেক্ষা করুন<span class="dots"></span></h2>
+            <p class="text-green-400 text-lg">কিছুক্ষণের মধ্যেই ফলাফল প্রকাশিত হতে যাচ্ছে।</p>
+            <div class="mt-8 text-[10px] text-green-700 font-mono">
+                DECRYPTING DATABASE BUCKET: RE_2026_FINAL... 88%
             </div>
         </div>
 
@@ -154,13 +175,11 @@
                 <div class="flex-1 h-[1px] bg-green-900"></div>
             </div>
 
-            <div class="log-container" id="log">
-                <!-- Log entries will be injected here -->
-            </div>
+            <div class="log-container" id="log"></div>
 
             <div class="flex justify-between items-center pt-4 border-t border-green-900/50">
                 <div class="text-[10px] text-green-700">
-                    STATUS: <span class="animate-pulse">AWAITING SYSTEM TRIGGER...</span>
+                    STATUS: <span id="footer-status" class="animate-pulse">AWAITING SYSTEM TRIGGER...</span>
                 </div>
                 <div class="text-[10px] text-green-700">
                     USER_AUTH: ANONYMOUS
@@ -197,10 +216,16 @@
 
         // Countdown Logic
         const targetDate = new Date("April 1, 2026 00:01:00").getTime();
+        let isReleased = false;
 
         function updateCountdown() {
             const now = new Date().getTime();
             const gap = targetDate - now;
+
+            if (gap <= 0) {
+                if (!isReleased) triggerRelease();
+                return;
+            }
 
             const second = 1000;
             const minute = second * 60;
@@ -218,25 +243,49 @@
             document.getElementById("seconds").innerText = s.toString().padStart(2, '0');
         }
 
+        function triggerRelease() {
+            isReleased = true;
+            document.getElementById("countdown-view").classList.add("hidden-element");
+            document.getElementById("release-view").classList.remove("hidden-element");
+            document.getElementById("app-container").classList.add("processing-glitch");
+            document.getElementById("sys-status").innerText = "DECRYPTING...";
+            document.getElementById("sys-status").classList.add("bg-red-950", "text-red-500", "border-red-800");
+            document.getElementById("footer-status").innerText = "SYSTEM BYPASS INITIATED";
+            
+            // Add a specific log entry for the release
+            const p = document.createElement('div');
+            p.innerText = "> CRITICAL: RELEASE TRIGGER DETECTED. STARTING DECRYPTION...";
+            p.style.color = "#fff";
+            const logEl = document.getElementById('log');
+            logEl.appendChild(p);
+        }
+
         // Simulated Terminal Logs
         const logEntries = [
             "> Initializing secure handshake...",
             "> Connection established via MDF-01",
             "> Fetching encryption keys...",
-            "> ERROR: Access Denied. Result date not reached.",
-            "> Standing by for automated trigger...",
             "> Requesting peripheral sync...",
             "> Firewall active. Intrusion detection: ON",
-            "> System clock validated with GMT+6"
+            "> System clock validated with GMT+6",
+            "> Syncing with global result nodes...",
+            "> Monitoring traffic spikes..."
         ];
         
         let logIndex = 0;
         const logEl = document.getElementById('log');
 
         function addLog() {
-            const p = document.createElement('div');
-            p.innerText = logEntries[logIndex % logEntries.length];
-            logEl.appendChild(p);
+            if (isReleased && Math.random() > 0.5) {
+                const p = document.createElement('div');
+                p.innerText = `> DECRYPTING DATA BLOCK 0x${Math.floor(Math.random()*16777215).toString(16).toUpperCase()}...`;
+                logEl.appendChild(p);
+            } else {
+                const p = document.createElement('div');
+                p.innerText = logEntries[logIndex % logEntries.length];
+                logEl.appendChild(p);
+            }
+            
             if (logEl.children.length > 3) logEl.removeChild(logEl.firstChild);
             logIndex++;
         }
