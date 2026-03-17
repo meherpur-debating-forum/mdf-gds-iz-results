@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইনকিলাব জিন্দাবাদ ২০২৬ | লিডারবোর্ড</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: #fbbf24;
+            transform: translateY(-5px);
+        }
+        .medal-1 { color: #fbbf24; } /* Gold */
+        .medal-2 { color: #94a3b8; } /* Silver */
+        .medal-3 { color: #b45309; } /* Bronze */
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="bg-[#1e293b] text-center py-12 border-b border-slate-800 shadow-2xl">
+        <h1 class="text-3xl md:text-5xl font-black text-amber-400 mb-4 tracking-tight px-4">
+            ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬
+        </h1>
+        <div class="flex flex-col items-center gap-2">
+            <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                ফলাফল বোর্ড
+            </span>
+            <p class="text-slate-400 text-sm md:text-base">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 flex-grow" id="leaderboard-grid">
+        </main>
+
+    <div class="text-center my-12">
+        <a href="signup.html" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-12 py-4 rounded-2xl font-black text-lg transition-all shadow-[0_0_20px_rgba(251,191,36,0.3)] inline-block">
+            ব্যক্তিগত ফলাফল ও ডাউনলোড
+        </a>
+    </div>
+
+    <footer class="bg-[#1e293b] text-slate-500 text-center py-8 border-t border-slate-800 mt-auto">
+        <p class="text-xs uppercase tracking-widest font-bold mb-2">সহ-আয়োজক ও পার্টনারস</p>
+        <p class="text-xs">জেন-জি ডিবেটিং সোসাইটি • কুষ্টিয়া ডিবেটিং সোসাইটি</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script>
+        const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
+        const grid = document.getElementById('leaderboard-grid');
+
+        segments.forEach(seg => {
+            const winners = allParticipants
+                .filter(p => p.segment === seg)
+                .sort((a, b) => b.mark - a.mark)
+                .slice(0, 3);
+
+            let listHTML = '';
+            const medals = ["medal-1", "medal-2", "medal-3"];
+            const labels = ["🥇 ১ম স্থান", "🥈 ২য় স্থান", "🥉 ৩য় স্থান"];
+            
+            winners.forEach((w, index) => {
+                listHTML += `
+                <div class="flex items-center justify-between bg-slate-800/40 p-4 rounded-xl mb-3 border border-slate-700/50">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-bold uppercase tracking-tighter ${medals[index]}">${labels[index]}</span>
+                        <span class="text-lg font-bold text-slate-100">${w.name}</span>
+                        <span class="text-[11px] text-slate-400">${w.institute}</span>
+                    </div>
+                    <div class="bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700 text-amber-400 font-bold">
+                        ${w.mark}
+                    </div>
+                </div>`;
+            });
+
+            grid.innerHTML += `
+                <div class="glass-card p-6 rounded-3xl shadow-xl flex flex-col">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
+                        <h2 class="text-xl font-black text-amber-400 uppercase tracking-wide">${seg}</h2>
+                    </div>
+                    <div class="flex-grow">
+                        ${listHTML || '<p class="text-slate-600 italic text-center py-10">ফলাফল শীঘ্রই আসছে...</p>'}
+                    </div>
+                </div>`;
+        });
+    </script>
+</body>
+</html>
