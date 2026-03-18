@@ -10,9 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
-        .result-card { background: #1e293b; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Hidden Rendering Container */
+        /* সার্টিফিকেট ডিজাইন সেটিংস (২৯ ইঞ্চি x ২১ ইঞ্চি) */
         #cert-hidden-container {
             position: absolute;
             left: -9999px;
@@ -20,81 +19,78 @@
         }
 
         #certificate-canvas {
-            width: 1414px; /* A4 Ratio High Res */
-            height: 1000px;
+            width: 2784px; /* 29 inches */
+            height: 2016px; /* 21 inches */
             background: white;
             position: relative;
             overflow: hidden;
         }
 
-        /* অ্যালাইনমেন্ট সেটিংস */
-        #content-wrapper {
+        #writing-zone {
             position: absolute;
-            inset: 0;
+            top: 595.2px;    /* ৬.২ ইঞ্চি টপ */
+            bottom: 595.2px; /* ৬.২ ইঞ্চি বটম */
+            left: 172.8px;   /* ১.৮ ইঞ্চি বাম */
+            right: 700.8px;  /* ৭.৩ ইঞ্চি ডান */
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-start;
-            padding-top: 420px; /* নাম ও বয়ানকে ইমেজের ফাঁকা জায়গায় বসানোর জন্য */
         }
 
-        .cert-name {
-            font-size: 62px;
+        .cert-name-final {
+            font-size: 110px;
             font-weight: 800;
             color: #000000;
-            margin-bottom: 25px;
-            font-family: 'Hind Siliguri', sans-serif;
+            margin-bottom: 50px;
             text-align: center;
         }
 
-        .cert-body {
-            font-size: 22px;
-            line-height: 1.6;
+        .cert-body-final {
+            font-size: 42px;
+            line-height: 1.7;
             color: #000000;
-            font-family: 'Hind Siliguri', sans-serif;
             text-align: center;
-            max-width: 900px; /* যাতে সাইডের কিউআর কোড বা ডিজাইনকে টাচ না করে */
-            margin: 0 auto;
             font-weight: 500;
         }
+
+        .ui-card { background: #1e293b; border: 1px solid #334155; }
+        .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; }
+        .data-label { color: #94a3b8; font-size: 0.9rem; }
+        .data-value { color: #f8fafc; font-weight: 600; }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
-    <!-- পেজ ভিউ -->
-    <div id="capture-area" class="result-card p-8 md:p-12 rounded-3xl max-w-2xl w-full mt-10">
-        <div class="text-center border-b border-slate-700 pb-6 mb-8">
-            <h1 class="text-2xl font-bold text-amber-400">ইনকিলাব জিন্দাবাদ ২০২৬</h1>
-            <p class="text-slate-400 italic">ফলাফল ও ডিজিটাল সনদপত্র</p>
+    <div class="ui-card p-6 md:p-10 rounded-3xl max-w-2xl w-full mt-6 shadow-2xl">
+        <div class="text-center border-b border-slate-700 pb-6 mb-6">
+            <h1 class="text-2xl font-bold text-amber-400 mb-1">ইনকিলাব জিন্দাবাদ ২০২৬</h1>
+            <p class="text-slate-400 text-sm">অংশগ্রহণকারী প্রোফাইল ও ফলাফল</p>
         </div>
 
-        <div id="results-display" class="space-y-8">
-            <!-- Data from data.js -->
+        <!-- ফলাফল ও তথ্যের তালিকা এখানে লোড হবে -->
+        <div id="status-box" class="space-y-8">
+            <div class="animate-pulse text-center text-slate-500">তথ্য খোঁজা হচ্ছে...</div>
         </div>
 
-        <div class="mt-12 pt-6 border-t border-slate-700 text-center">
-            <p class="text-xs text-slate-500 italic font-medium">নিচের বাটন চেপে আপনার সনদপত্র সংগ্রহ করুন</p>
+        <div class="mt-8 flex flex-col gap-3">
+            <button onclick="generateFile('png')" id="png-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50">🖼️ সনদপত্র ডাউনলোড (PNG)</button>
+            <button onclick="generateFile('pdf')" id="pdf-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50">📄 সনদপত্র ডাউনলোড (PDF)</button>
+            <a href="index.html" class="text-center text-slate-400 hover:text-white text-sm mt-2 transition underline">অন্য নম্বর দিয়ে খুঁজুন</a>
         </div>
     </div>
 
-    <!-- কন্ট্রোল বাটন -->
-    <div class="mt-8 flex flex-wrap justify-center gap-4 w-full max-w-2xl mb-20">
-        <button id="btn-png" onclick="processCertificate('png')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition active:scale-95 disabled:opacity-50">🖼️ সেভ পিএনজি (PNG)</button>
-        <button id="btn-pdf" onclick="processCertificate('pdf')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition active:scale-95 disabled:opacity-50">📄 সেভ পিডিএফ (PDF)</button>
-        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center flex items-center justify-center">🏠 হোম</a>
-    </div>
-
-    <!-- প্রোডাকশন রেন্ডার ইঞ্জিন -->
+    <!-- সুনির্দিষ্ট মেজারমেন্ট ইঞ্জিন (প্রিন্ট ফরম্যাট) -->
     <div id="cert-hidden-container">
         <div id="certificate-canvas">
-            <img id="cert-bg" src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/Black%20and%20White%20Simple%20Page%20Border%20A4_20260318_224236_0000.png" 
+            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/Black%20and%20White%20Simple%20Page%20Border%20A4_20260318_224236_0000.png" 
                  class="absolute inset-0 w-full h-full object-fill" 
                  crossOrigin="anonymous">
             
-            <div id="content-wrapper">
-                <h1 id="out-name" class="cert-name">নাম</h1>
-                <p id="out-body" class="cert-body">
-                    সনদপত্রের বয়ান লোড হচ্ছে...
+            <div id="writing-zone">
+                <h1 id="out-name" class="cert-name-final">নাম</h1>
+                <p id="out-body" class="cert-body-final">
+                    বর্ণনাংশ প্রসেস করা হচ্ছে...
                 </p>
             </div>
         </div>
@@ -102,63 +98,82 @@
 
     <script src="data.js"></script>
     <script>
+        // লোকাল স্টোরেজ থেকে নম্বর সংগ্রহ
         const phone = localStorage.getItem('userPhone');
         const userResults = allParticipants.filter(p => p.phone === phone);
-        const display = document.getElementById('results-display');
+        const statusBox = document.getElementById('status-box');
 
         if (userResults.length > 0) {
-            userResults.forEach((user, index) => {
-                const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
+            statusBox.innerHTML = ''; // ক্লিয়ার লোডিং
+            
+            userResults.forEach((user) => {
+                // অবস্থান গণনা (একই সেগমেন্টের প্রতিযোগীদের মধ্যে)
+                const segmentComps = allParticipants
+                    .filter(p => p.segment === user.segment)
+                    .sort((a,b) => b.mark - a.mark);
+                
                 const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
                 
-                display.innerHTML += `
-                    <div class="${index > 0 ? 'border-t border-slate-700 pt-6' : ''}">
-                        <div class="space-y-3">
-                            <div class="flex justify-between border-b border-slate-800 pb-1">
-                                <span class="text-slate-400">অংশগ্রহণকারী:</span>
-                                <span class="text-white font-bold">${user.name}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-800 pb-1">
-                                <span class="text-slate-400">বিভাগ:</span>
-                                <span class="text-amber-400 font-bold">${user.segment}</span>
-                            </div>
+                statusBox.innerHTML += `
+                    <div class="bg-slate-800/40 p-6 rounded-2xl border border-slate-700/50 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-lg">
+                            ${pos} তম স্থান
                         </div>
-                        <div class="mt-6 bg-slate-800/40 py-5 rounded-2xl border border-slate-700 text-center">
-                            <span class="text-2xl font-black text-amber-500">${pos} তম স্থান</span>
+                        
+                        <div class="space-y-3 mt-2">
+                            <div class="data-row">
+                                <span class="data-label">নাম:</span>
+                                <span class="data-value">${user.name}</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">প্রতিষ্ঠান:</span>
+                                <span class="data-value">${user.institute || 'উল্লেখ নেই'}</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">সেগমেন্ট:</span>
+                                <span class="data-value text-amber-400">${user.segment}</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">প্রাপ্ত নম্বর:</span>
+                                <span class="data-value text-green-400">${user.mark}</span>
+                            </div>
                         </div>
                     </div>`;
             });
         } else {
-            window.location.href = 'signup.html';
+            statusBox.innerHTML = `
+                <div class="text-center py-10">
+                    <p class="text-red-400 mb-4">দুঃখিত! এই নম্বরে কোনো তথ্য পাওয়া যায়নি।</p>
+                    <a href="signup.html" class="bg-slate-700 px-4 py-2 rounded-lg">আবার চেষ্টা করুন</a>
+                </div>`;
         }
 
-        async function processCertificate(type) {
+        async function generateFile(type) {
             if (userResults.length === 0) return;
             
-            const btnPng = document.getElementById('btn-png');
-            const btnPdf = document.getElementById('btn-pdf');
-            btnPng.disabled = true;
-            btnPdf.disabled = true;
-            btnPng.innerText = "তৈরি হচ্ছে...";
-
             const user = userResults[0]; 
             const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
             const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
 
+            const btn = document.getElementById(type + '-btn');
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "ফাইল তৈরি হচ্ছে...";
+
             document.getElementById('out-name').innerText = user.name;
             const body = document.getElementById('out-body');
             
-            if (user.segment.includes("গ্রাফিতি")) {
-                body.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেসে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থী গণ (${user.name}) অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেসে যে তাহারা ${user.mark} মার্ক অর্জনের সহিত ${pos} তম স্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
-            } else {
-                body.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ "${user.segment} সেগমেন্টে" "${user.institute} হইতে" উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${user.mark} মার্ক অর্জনের সহিত ${pos} তম অবস্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
-            }
+            const certText = user.segment.includes("গ্রাফিতি") 
+                ? `এত দ্বারা প্রত্যয়ন করা হইতেসে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থী গণ (${user.name}) অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেসে যে তাহারা ${user.mark} মার্ক অর্জনের সহিত ${pos} তম স্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`
+                : `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ "${user.segment} সেগমেন্টে" "${user.institute} হইতে" উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${user.mark} মার্ক অর্জনের সহিত ${pos} তম অবস্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
 
-            await new Promise(r => setTimeout(r, 600));
+            body.innerText = certText;
+
+            await new Promise(r => setTimeout(r, 800));
 
             try {
                 const canvas = await html2canvas(document.getElementById('certificate-canvas'), { 
-                    scale: 4, 
+                    scale: 2, 
                     useCORS: true,
                     backgroundColor: "#ffffff",
                     logging: false
@@ -171,18 +186,19 @@
                     link.click();
                 } else {
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    const pdf = new jspdf.jsPDF('l', 'mm', 'a4');
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'l',
+                        unit: 'in',
+                        format: [29, 21] 
+                    });
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 29, 21);
                     pdf.save(`Cert_${user.name}.pdf`);
                 }
-            } catch (err) {
-                console.error("Download Error:", err);
+            } catch (e) {
+                console.error(e);
             } finally {
-                btnPng.disabled = false;
-                btnPdf.disabled = false;
-                btnPng.innerText = "🖼️ সেভ পিএনজি (PNG)";
+                btn.disabled = false;
+                btn.innerText = originalText;
             }
         }
     </script>
