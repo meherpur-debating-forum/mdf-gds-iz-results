@@ -11,7 +11,6 @@
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
         
-        /* সার্টিফিকেট ডিজাইন সেটিংস (২৯ ইঞ্চি x ২১ ইঞ্চি) */
         #cert-hidden-container {
             position: absolute;
             left: -9999px;
@@ -19,8 +18,8 @@
         }
 
         #certificate-canvas {
-            width: 2784px; /* 29 inches */
-            height: 2016px; /* 21 inches */
+            width: 2784px; 
+            height: 2016px; 
             background: white;
             position: relative;
             overflow: hidden;
@@ -28,36 +27,38 @@
 
         #writing-zone {
             position: absolute;
-            top: 595.2px;    /* ৬.২ ইঞ্চি টপ */
-            bottom: 595.2px; /* ৬.২ ইঞ্চি বটম */
-            left: 172.8px;   /* ১.৮ ইঞ্চি বাম */
-            right: 700.8px;  /* ৭.৩ ইঞ্চি ডান */
+            top: 510px;    /* নাম আরও উপরে তোলা হয়েছে আপনার ইনস্ট্রাকশন অনুযায়ী */
+            bottom: 595.2px; 
+            left: 172.8px;   
+            right: 700.8px;  
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
         }
 
         .cert-name-final {
-            font-size: 110px;
+            font-size: 135px; /* নাম আরও প্রমিনেন্ট করা হয়েছে */
             font-weight: 800;
             color: #000000;
-            margin-bottom: 50px;
+            margin-bottom: 65px;
             text-align: center;
+            line-height: 1.1;
         }
 
         .cert-body-final {
-            font-size: 42px;
-            line-height: 1.7;
+            font-size: 48px; /* ফন্ট সাইজ আরও ১ ধাপ বাড়ানো হয়েছে */
+            line-height: 1.9;
             color: #000000;
             text-align: center;
             font-weight: 500;
+            max-width: 1950px;
         }
 
+        .b { font-weight: 800; } /* বোল্ড করার জন্য কাস্টম স্প্যান */
+
         .ui-card { background: #1e293b; border: 1px solid #334155; }
-        .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; }
-        .data-label { color: #94a3b8; font-size: 0.9rem; }
-        .data-value { color: #f8fafc; font-weight: 600; }
+        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #334155; }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
@@ -65,22 +66,20 @@
     <div class="ui-card p-6 md:p-10 rounded-3xl max-w-2xl w-full mt-6 shadow-2xl">
         <div class="text-center border-b border-slate-700 pb-6 mb-6">
             <h1 class="text-2xl font-bold text-amber-400 mb-1">ইনকিলাব জিন্দাবাদ ২০২৬</h1>
-            <p class="text-slate-400 text-sm">অংশগ্রহণকারী প্রোফাইল ও ফলাফল</p>
+            <p class="text-slate-400 text-sm">ফলাফল ও সনদপত্র ডাউনলোড</p>
         </div>
 
-        <!-- ফলাফল ও তথ্যের তালিকা এখানে লোড হবে -->
+        <!-- রেজাল্ট কার্ড এরিয়া -->
         <div id="status-box" class="space-y-8">
-            <div class="animate-pulse text-center text-slate-500">তথ্য খোঁজা হচ্ছে...</div>
+            <div class="text-center text-slate-500">তথ্য লোড হচ্ছে...</div>
         </div>
 
-        <div class="mt-8 flex flex-col gap-3">
-            <button onclick="generateFile('png')" id="png-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50">🖼️ সনদপত্র ডাউনলোড (PNG)</button>
-            <button onclick="generateFile('pdf')" id="pdf-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition disabled:opacity-50">📄 সনদপত্র ডাউনলোড (PDF)</button>
-            <a href="index.html" class="text-center text-slate-400 hover:text-white text-sm mt-2 transition underline">অন্য নম্বর দিয়ে খুঁজুন</a>
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-slate-400 hover:text-white text-sm transition underline">অন্য নম্বর দিয়ে খুঁজুন</a>
         </div>
     </div>
 
-    <!-- সুনির্দিষ্ট মেজারমেন্ট ইঞ্জিন (প্রিন্ট ফরম্যাট) -->
+    <!-- সুনির্দিষ্ট মেজারমেন্ট ইঞ্জিন (২৯x২১ ইঞ্চি) -->
     <div id="cert-hidden-container">
         <div id="certificate-canvas">
             <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/Black%20and%20White%20Simple%20Page%20Border%20A4_20260318_224236_0000.png" 
@@ -89,25 +88,25 @@
             
             <div id="writing-zone">
                 <h1 id="out-name" class="cert-name-final">নাম</h1>
-                <p id="out-body" class="cert-body-final">
+                <div id="out-body" class="cert-body-final">
                     বর্ণনাংশ প্রসেস করা হচ্ছে...
-                </p>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="data.js"></script>
     <script>
-        // লোকাল স্টোরেজ থেকে নম্বর সংগ্রহ
         const phone = localStorage.getItem('userPhone');
+        // ইউজারের সব সেগমেন্টের রেজাল্ট নিয়ে আসা
         const userResults = allParticipants.filter(p => p.phone === phone);
         const statusBox = document.getElementById('status-box');
 
         if (userResults.length > 0) {
-            statusBox.innerHTML = ''; // ক্লিয়ার লোডিং
+            statusBox.innerHTML = '';
             
-            userResults.forEach((user) => {
-                // অবস্থান গণনা (একই সেগমেন্টের প্রতিযোগীদের মধ্যে)
+            userResults.forEach((user, index) => {
+                // পজিশন ক্যালকুলেশন
                 const segmentComps = allParticipants
                     .filter(p => p.segment === user.segment)
                     .sort((a,b) => b.mark - a.mark);
@@ -115,59 +114,55 @@
                 const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
                 
                 statusBox.innerHTML += `
-                    <div class="bg-slate-800/40 p-6 rounded-2xl border border-slate-700/50 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    <div class="bg-slate-800/40 p-6 rounded-2xl border border-slate-700/50 relative">
+                        <div class="absolute top-4 right-4 bg-amber-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-full">
                             ${pos} তম স্থান
                         </div>
                         
-                        <div class="space-y-3 mt-2">
-                            <div class="data-row">
-                                <span class="data-label">নাম:</span>
-                                <span class="data-value">${user.name}</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="data-label">প্রতিষ্ঠান:</span>
-                                <span class="data-value">${user.institute || 'উল্লেখ নেই'}</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="data-label">সেগমেন্ট:</span>
-                                <span class="data-value text-amber-400">${user.segment}</span>
-                            </div>
-                            <div class="data-row">
-                                <span class="data-label">প্রাপ্ত নম্বর:</span>
-                                <span class="data-value text-green-400">${user.mark}</span>
-                            </div>
+                        <div class="space-y-2 mb-6">
+                            <div class="data-row"><span class="text-slate-400 text-sm">অংশগ্রহণকারী:</span><span class="text-white font-bold">${user.name}</span></div>
+                            <div class="data-row"><span class="text-slate-400 text-sm">বিভাগ/সেগমেন্ট:</span><span class="text-amber-400 font-bold">${user.segment}</span></div>
+                            <div class="data-row"><span class="text-slate-400 text-sm">প্রতিষ্ঠান:</span><span class="text-white font-semibold">${user.institute || 'উল্লেখ নেই'}</span></div>
+                            <div class="data-row"><span class="text-slate-400 text-sm">প্রাপ্ত নম্বর:</span><span class="text-green-400 font-bold">${user.mark}</span></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="downloadCert(${index}, 'png')" id="png-${index}" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl text-xs transition">🖼️ সেভ PNG</button>
+                            <button onclick="downloadCert(${index}, 'pdf')" id="pdf-${index}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs transition">📄 সেভ PDF</button>
                         </div>
                     </div>`;
             });
         } else {
-            statusBox.innerHTML = `
-                <div class="text-center py-10">
-                    <p class="text-red-400 mb-4">দুঃখিত! এই নম্বরে কোনো তথ্য পাওয়া যায়নি।</p>
-                    <a href="signup.html" class="bg-slate-700 px-4 py-2 rounded-lg">আবার চেষ্টা করুন</a>
-                </div>`;
+            statusBox.innerHTML = `<p class="text-center text-red-400">এই নম্বরে কোনো তথ্য পাওয়া যায়নি।</p>`;
         }
 
-        async function generateFile(type) {
-            if (userResults.length === 0) return;
-            
-            const user = userResults[0]; 
+        async function downloadCert(idx, type) {
+            const user = userResults[idx];
             const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
             const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
 
-            const btn = document.getElementById(type + '-btn');
-            const originalText = btn.innerText;
+            const btn = document.getElementById(`${type}-${idx}`);
+            const oldTxt = btn.innerText;
+            btn.innerText = "অপেক্ষা করুন...";
             btn.disabled = true;
-            btn.innerText = "ফাইল তৈরি হচ্ছে...";
 
             document.getElementById('out-name').innerText = user.name;
-            const body = document.getElementById('out-body');
+            const bodyDiv = document.getElementById('out-body');
             
-            const certText = user.segment.includes("গ্রাফিতি") 
-                ? `এত দ্বারা প্রত্যয়ন করা হইতেসে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থী গণ (${user.name}) অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেসে যে তাহারা ${user.mark} মার্ক অর্জনের সহিত ${pos} তম স্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`
-                : `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ "${user.segment} সেগমেন্টে" "${user.institute} হইতে" উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${user.mark} মার্ক অর্জনের সহিত ${pos} তম অবস্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
+            // বোল্ড ফরম্যাটিং এবং কোটেশন মার্ক সরানো
+            const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`;
+            const gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
+            const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
+            const inst = `<span class="b">${user.institute || 'উক্ত প্রতিষ্ঠান'}</span>`;
+            const marks = `<span class="b">${user.mark} মার্ক</span>`;
+            const position = `<span class="b">${pos} তম অবস্থান</span>`;
+            const segment = `<span class="b">${user.segment} সেগমেন্টে</span>`;
 
-            body.innerText = certText;
+            if (user.segment.includes("গ্রাফিতি")) {
+                bodyDiv.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেসে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থী গণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেসে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
+            } else {
+                bodyDiv.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ ${segment} ${inst} হইতে উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
+            }
 
             await new Promise(r => setTimeout(r, 800));
 
@@ -175,30 +170,25 @@
                 const canvas = await html2canvas(document.getElementById('certificate-canvas'), { 
                     scale: 2, 
                     useCORS: true,
-                    backgroundColor: "#ffffff",
-                    logging: false
+                    backgroundColor: "#ffffff"
                 });
 
                 if (type === 'png') {
                     const link = document.createElement('a');
-                    link.download = `Cert_${user.name}.png`;
+                    link.download = `Cert_2026_${user.name}.png`;
                     link.href = canvas.toDataURL("image/png", 1.0);
                     link.click();
                 } else {
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                    const pdf = new jspdf.jsPDF({
-                        orientation: 'l',
-                        unit: 'in',
-                        format: [29, 21] 
-                    });
+                    const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
                     pdf.addImage(imgData, 'JPEG', 0, 0, 29, 21);
-                    pdf.save(`Cert_${user.name}.pdf`);
+                    pdf.save(`Cert_2026_${user.name}.pdf`);
                 }
             } catch (e) {
-                console.error(e);
+                console.error("Download Error:", e);
             } finally {
+                btn.innerText = oldTxt;
                 btn.disabled = false;
-                btn.innerText = originalText;
             }
         }
     </script>
