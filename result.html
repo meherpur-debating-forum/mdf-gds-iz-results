@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ফলাফল কার্ড | ইনকিলাব জিন্দাবাদ ২০২৬</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,83 +17,84 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* সার্টিফিকেট তৈরির জন্য লুকানো লেআউট */
+        /* সার্টিফিকেট তৈরির জন্য লুকানো লেআউট (হাই রেজোলিউশন নিশ্চিত করতে) */
         #cert-hidden-container {
             position: absolute;
             left: -9999px;
             top: -9999px;
-            overflow: hidden;
         }
 
         #certificate-canvas {
-            width: 1123px; /* A4 Landscape at 96 DPI */
-            height: 794px;
+            width: 1123px; /* A4 Landscape width */
+            height: 794px; /* A4 Landscape height */
             background: white;
             position: relative;
             color: #000000;
         }
 
-        .cert-name-style {
-            font-size: 45px;
-            font-weight: 700;
+        /* ফন্ট এবং অ্যালাইনমেন্ট সেটিংস */
+        .cert-name-text {
+            font-size: 52px;
+            font-weight: 800;
             color: #000000;
+            margin-bottom: 25px;
             font-family: 'Hind Siliguri', sans-serif;
         }
 
-        .cert-body-style {
-            font-size: 21px;
-            line-height: 1.8;
+        .cert-body-text {
+            font-size: 22px;
+            line-height: 1.7;
             color: #000000;
             font-family: 'Hind Siliguri', sans-serif;
             text-align: center;
-            padding-left: 220px;
-            padding-right: 220px;
+            padding-left: 180px;
+            padding-right: 180px;
+            font-weight: 500;
         }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen">
 
-    <!-- আপনার অরিজিনাল রেজাল্ট ভিউ -->
+    <!-- ফলাফল কার্ড ভিউ -->
     <div id="capture-area" class="result-container p-8 md:p-12 rounded-3xl max-w-2xl w-full mt-10">
         <div class="text-center border-b border-slate-700 pb-8 mb-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-amber-400 mb-2">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
-            <p class="text-slate-400 font-medium italic">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
-            <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-[0.2em]">মেহেরপুর ডিবেটিং ফোরাম • জেন-জি ডিবেটিং সোসাইটি • কুষ্টিয়া ডিবেটিং সোসাইটি</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-amber-400 mb-2">ইনকিলাব জিন্দাবাদ ২০২৬</h1>
+            <p class="text-slate-400 font-medium italic">জাতীয় জাগরণ প্রতিযোগিতা - ফলাফল</p>
         </div>
 
         <div id="results-list" class="space-y-12">
-            <!-- এখানে ডাটা লোড হবে -->
+            <!-- Data will load here -->
         </div>
 
         <div class="mt-16 pt-8 border-t border-slate-700">
-            <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                <p class="text-[11px] text-slate-400 leading-relaxed text-center italic">
-                    <span class="font-bold block mb-1">সতর্কবার্তা:</span>
-                    এটি একটি ডিজিটাল অনুলিপি। সার্টিফিকেট ডাউনলোডের জন্য নিচের বাটন ব্যবহার করুন।
-                </p>
-            </div>
+            <p class="text-[12px] text-slate-500 text-center italic font-medium">
+                অফিসিয়াল সার্টিফিকেট ডাউনলোডের জন্য নিচের বাটনটি ব্যবহার করুন।
+            </p>
         </div>
     </div>
 
-    <!-- বাটনসমূহ -->
+    <!-- কন্ট্রোল বাটনসমূহ -->
     <div class="mt-10 flex flex-wrap justify-center gap-4 w-full max-w-2xl mb-20">
-        <button onclick="downloadAsCertificate('png')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition">🖼️ সার্টিফিকেট (PNG) সেভ করুন</button>
-        <button onclick="downloadAsCertificate('pdf')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition">📄 সার্টিফিকেট (PDF) ডাউনলোড</button>
-        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center flex items-center justify-center transition">🏠 হোমে ফিরে যান</a>
+        <button onclick="downloadAsCertificate('png')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition">🖼️ সেভ এস ইমেজ (PNG)</button>
+        <button onclick="downloadAsCertificate('pdf')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition">📄 সেভ এস পিডিএফ (PDF)</button>
+        <a href="index.html" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-2xl text-center flex items-center justify-center transition">🏠 হোম</a>
     </div>
 
-    <!-- সার্টিফিকেট টেমপ্লেট (পেজের বাইরে থাকে) -->
+    <!-- লুকানো সার্টিফিকেট ইঞ্জিন -->
     <div id="cert-hidden-container">
         <div id="certificate-canvas">
-            <!-- আপনার দেওয়া লিংকের ডিরেক্ট ইমেজ ইউআরএল -->
-            <img src="https://i.postimg.cc/Q9JhYDYD/1000065970.png" 
+            <!-- আপনার দেওয়া অরিজিনাল ব্যাকগ্রাউন্ড লিঙ্ক -->
+            <img id="bg-img-cert" src="https://i.postimg.cc/Q9JhYDYD/1000065970.png" 
                  class="absolute inset-0 w-full h-full object-cover" 
                  crossOrigin="anonymous">
             
-            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[75px]">
-                <h1 id="out-name" class="cert-name-style mb-6">নাম লোড হচ্ছে...</h1>
-                <p id="out-body" class="cert-body-style">
-                    বয়ানাংশ লোড হচ্ছে...
+            <div class="absolute inset-0 flex flex-col items-center justify-center pt-[100px]">
+                <!-- নাম এলাকা -->
+                <h1 id="out-name" class="cert-name-text">নাম লোড হচ্ছে...</h1>
+                
+                <!-- বয়ান এলাকা -->
+                <p id="out-body" class="cert-body-text">
+                    সার্টিফিকেট বয়ান প্রসেস হচ্ছে...
                 </p>
             </div>
         </div>
@@ -113,22 +113,18 @@
                 
                 list.innerHTML += `
                     <div class="${index > 0 ? 'border-t border-dashed border-slate-700 pt-10' : ''}">
-                        <div class="grid grid-cols-1 gap-y-5">
+                        <div class="grid grid-cols-1 gap-y-4">
                             <div class="flex justify-between border-b border-slate-800 pb-1">
-                                <span class="text-slate-400 font-medium text-sm">অংশগ্রহণকারীর নাম</span>
+                                <span class="text-slate-400">অংশগ্রহণকারী:</span>
                                 <span class="text-white font-bold">${user.name}</span>
                             </div>
                             <div class="flex justify-between border-b border-slate-800 pb-1">
-                                <span class="text-slate-400 font-medium text-sm">শিক্ষা প্রতিষ্ঠান</span>
-                                <span class="text-white font-bold">${user.institute}</span>
-                            </div>
-                            <div class="flex justify-between border-b border-slate-800 pb-1">
-                                <span class="text-slate-400 font-medium text-sm">প্রতিযোগিতার বিভাগ</span>
+                                <span class="text-slate-400">সেগমেন্ট:</span>
                                 <span class="text-amber-400 font-bold">${user.segment}</span>
                             </div>
                         </div>
-                        <div class="mt-8 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 text-center">
-                            <span class="text-3xl font-black text-amber-400 tracking-tighter">অবস্থান: ${pos} তম</span>
+                        <div class="mt-6 bg-slate-800/50 p-4 rounded-xl text-center">
+                            <span class="text-2xl font-bold text-amber-500">অবস্থান: ${pos} তম</span>
                         </div>
                     </div>`;
             });
@@ -136,7 +132,6 @@
             window.location.href = 'signup.html';
         }
 
-        // সার্টিফিকেট ডাউনলোড ফাংশন
         async function downloadAsCertificate(type) {
             if (userResults.length === 0) return;
             
@@ -144,37 +139,39 @@
             const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
             const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
 
-            // তথ্য ইনজেকশন
+            // টেক্সট বসানো
             document.getElementById('out-name').innerText = user.name;
             const body = document.getElementById('out-body');
             
             if (user.segment.includes("গ্রাফিতি")) {
                 body.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেসে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থী গণ (${user.name}) অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেসে যে তাহারা ${user.mark} মার্ক অর্জনের সহিত ${pos} তম স্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
             } else {
-                body.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ "${user.segment} সেগমেন্টে" "${user.institute} হইতে" উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${user.mark} মার্ক অর্জনের সহিত ${pos} তম অবস্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
+                body.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এ "${user.segment} সেগমেন্টে" "${user.institute} হইতে" উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদান এর জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো হইতেছে যে তিনি উক্ত সেগমেন্টে ${user.mark} মার্ক অর্জনের সহিত ${pos} তম অবস্থান অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য জেন-জি ডিবেটিং সোসাইটি ও মেহেরপুর ডিবেটিং ফোরাম গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
             }
 
-            // রেন্ডারিং
+            // ইমেজের কোয়ালিটি নিশ্চিত করতে হাই স্কেল ব্যবহার
             const canvas = await html2canvas(document.getElementById('certificate-canvas'), { 
-                scale: 3, 
+                scale: 4, 
                 useCORS: true,
-                backgroundColor: null
+                allowTaint: false,
+                backgroundColor: "#ffffff"
             });
 
             if (type === 'png') {
                 const link = document.createElement('a');
-                link.download = `Certificate_${user.name}.png`;
-                link.href = canvas.toDataURL("image/png");
+                link.download = `Inqilab26_Certificate_${user.name}.png`;
+                link.href = canvas.toDataURL("image/png", 1.0);
                 link.click();
             } else {
-                const imgData = canvas.toDataURL('image/png');
+                const imgData = canvas.toDataURL('image/png', 1.0);
                 const pdf = new jspdf.jsPDF('l', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`Certificate_${user.name}.pdf`);
+                pdf.save(`Inqilab26_Certificate_${user.name}.pdf`);
             }
         }
     </script>
 </body>
 </html>
+
