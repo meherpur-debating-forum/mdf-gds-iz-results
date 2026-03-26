@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Redirecting...</title>
+  <title>Result</title>
   <script>
     // Publish time: March 31, 11:59:59 PM
     const publishTime = new Date("2026-03-31T23:59:59");
@@ -19,4 +19,24 @@
 </head>
 <body>
 </body>
+<div class="site-thumbnail">
+    <img src="20260326_124926.jpg" alt="Site Thumbnail">
+</div>
+
+<style>
+    .site-thumbnail {
+        position: fixed; /* Keeps it in view while scrolling */
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .site-thumbnail img {
+        width: 100px; /* Adjust size as needed */
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border: 2px solid #fff;
+    }
+</style>
 </html>
