@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #fbbf24; --bg-dark: #020617; }
+        :root { --accent: #fbbf24; --bg-dark: #020617; --gold: #d4af37; }
         body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow: hidden; margin: 0; }
 
         .stage { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: all 1s ease; background: var(--bg-dark); }
@@ -28,10 +28,27 @@
         #winnerInfo { transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1); }
         #winnerInfo.floated { transform: translateY(-20px); }
 
-        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-
-        .media-frame { width: 90vw; max-width: 900px; aspect-ratio: 16/9; border-radius: 1.5rem; overflow: hidden; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.9); background: #000; }
-        .media-content { width: 100%; height: 100%; object-fit: contain; }
+        /* Media Frame with Golden Border */
+        .media-frame { 
+            width: 85vw; 
+            max-width: 500px; 
+            aspect-ratio: 1/1; 
+            border-radius: 1.5rem; 
+            overflow: hidden; 
+            position: relative; 
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.15); 
+            background: #000;
+            border: 4px solid var(--gold);
+            padding: 10px; /* Space inside border */
+        }
+        
+        /* Object fit contain for showing full content */
+        .media-content { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            border-radius: 0.8rem;
+        }
 
         .story-progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); z-index: 100; transition: width 0.3s linear; }
 
@@ -52,7 +69,7 @@
     <div id="startStage" class="stage">
         <div class="text-center">
             <div class="w-20 h-20 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-8" id="initialLoader"></div>
-            <button id="startBtn" onclick="startExperience()" class="hidden bg-amber-500 text-slate-900 px-12 py-4 rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(251,191,36,0.4)] hover:scale-105 transition active:scale-95">
+            <button id="startBtn" onclick="startExperience()" class="bg-amber-500 text-slate-900 px-12 py-4 rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(251,191,36,0.4)] hover:scale-105 transition active:scale-95 hidden">
                 শুরু করুন 📸
             </button>
             <p class="text-slate-500 mt-8 text-sm tracking-[0.2em] uppercase px-4">ইনকিলাব জিন্দাবাদ ২০২৬ এর ফলাফল</p>
@@ -71,19 +88,19 @@
     <div id="showcaseStage" class="stage hidden-stage">
         <div id="winnerInfo" class="text-center mb-6 px-4">
             <span id="winRank" class="text-amber-500 font-bold uppercase tracking-widest text-[10px] md:text-xs bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">১ম স্থান</span>
-            <h2 id="winName" class="text-4xl md:text-7xl font-black text-white mt-4 tracking-tight leading-none">বিজয়ীর নাম</h2>
+            <h2 id="winName" class="text-4xl md:text-6xl font-black text-white mt-4 tracking-tight leading-none">বিজয়ীর নাম</h2>
             <p id="winSeg" class="text-slate-400 mt-2 font-medium text-sm md:text-lg">সেগমেন্টের নাম</p>
         </div>
 
         <div id="mediaWrapper" class="flex flex-col items-center">
-            <div class="media-frame glass-card">
+            <div class="media-frame">
                 <img id="showcaseImg" class="media-content hidden" src="" alt="Work">
                 <video id="showcaseVid" class="media-content hidden" playsinline autoplay muted></video>
-                
-                <button id="nextBtn" onclick="nextSlide()" class="skip-btn absolute bottom-6 right-6 bg-amber-500 text-slate-900 px-8 py-3 rounded-xl font-bold shadow-xl flex items-center gap-2 group transform hover:scale-105 transition">
-                    পরবর্তী <svg class="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                </button>
             </div>
+            
+            <button id="nextBtn" onclick="nextSlide()" class="skip-btn mt-12 bg-amber-500 text-slate-900 px-10 py-4 rounded-2xl font-black shadow-2xl flex items-center gap-3 group transform hover:scale-105 transition">
+                পরবর্তী <svg class="w-6 h-6 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+            </button>
         </div>
     </div>
 
@@ -92,12 +109,10 @@
             <h1 class="text-5xl md:text-7xl font-black text-white mb-6">সেরা <span class="text-amber-500">বিজয়ীরা</span></h1>
             <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
                  <a href="r.pdf" target="_blank" class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-8 py-3 rounded-full font-bold hover:bg-amber-500 hover:text-slate-900 transition flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     সম্মিলিত রেজাল্ট (PDF)
                  </a>
                  <a href="signup.html" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-indigo-500 transition-all flex items-center justify-center gap-2">
                     ব্যক্তিগত রেজাল্ট ও সার্টিফিকেট
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                  </a>
             </div>
         </header>
@@ -174,7 +189,7 @@
             imgEl.classList.add('hidden');
             vidEl.classList.add('hidden');
             vidEl.pause();
-            vidEl.muted = false; // বারোয়ারী বিতর্কের জন্য আনমিউট
+            vidEl.currentTime = 0;
 
             document.getElementById('winRank').innerText = `${item.rank}${item.rank==1?'ম':item.rank==2?'য়':'য়'} স্থান`;
 
@@ -200,17 +215,25 @@
                     if (item.code === 'b') {
                         bgMusic.pause();
                         vidEl.classList.remove('hidden');
+                        vidEl.muted = false;
+                        
                         const vFormats = ['mp4', 'mov', 'webm', 'mkv'];
-                        let vLoaded = false;
+                        let vFound = false;
+                        
                         for (let f of vFormats) {
-                            if (vLoaded) break;
-                            const url = `media/${fileName}.${f}`;
-                            const exists = await fetch(url, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+                            const url = `${fileName}.${f}`;
+                            const exists = await new Promise(res => {
+                                const v = document.createElement('video');
+                                v.src = url;
+                                v.onloadedmetadata = () => res(true);
+                                v.onerror = () => res(false);
+                            });
+                            
                             if (exists) {
                                 vidEl.src = url;
-                                vidEl.load();
                                 vidEl.play().catch(e => console.log("Auto-play blocked"));
-                                vLoaded = true;
+                                vFound = true;
+                                break;
                             }
                         }
                         vidEl.onended = () => nextSlide();
@@ -219,7 +242,7 @@
                         imgEl.classList.remove('hidden');
                         const iFormats = ['jpg', 'png', 'jpeg'];
                         for (let f of iFormats) {
-                            const url = `media/${fileName}.${f}`;
+                            const url = `${fileName}.${f}`;
                             const exists = await new Promise(res => {
                                 const t = new Image();
                                 t.src = url;
