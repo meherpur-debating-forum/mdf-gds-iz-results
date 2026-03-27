@@ -3,94 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEADERBOARD</title>
+    <title>ইনকিলাব ২০২৬ | লিডারবোর্ড</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
+        :root {
+            --accent: #fbbf24;
+            --bg-dark: #020617;
+            --card-bg: #1e293b;
+        }
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            background: var(--bg-dark); 
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background Gradient */
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #451a03 0%, transparent 50%);
+            opacity: 0.5;
+        }
+
         .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .glass-card:hover {
-            border-color: #fbbf24;
-            transform: translateY(-5px);
+            border-color: var(--accent);
+            transform: translateY(-8px) scale(1.01);
+            background: rgba(30, 41, 59, 0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .medal-1 { color: #fbbf24; } /* Gold */
-        .medal-2 { color: #94a3b8; } /* Silver */
-        .medal-3 { color: #b45309; } /* Bronze */
+
+        .winner-row {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .winner-row:hover {
+            background: rgba(251, 191, 36, 0.1);
+            padding-left: 1rem;
+        }
+
+        /* Rank Colors */
+        .medal-0 { color: #fbbf24; text-shadow: 0 0 15px rgba(251,191,36,0.4); } /* Gold */
+        .medal-1 { color: #cbd5e1; text-shadow: 0 0 15px rgba(203,213,225,0.4); } /* Silver */
+        .medal-2 { color: #d97706; text-shadow: 0 0 15px rgba(217,119,6,0.4); } /* Bronze */
+
+        /* Modal Animation */
+        #mediaModal { transition: opacity 0.3s ease; }
+        .modal-content { 
+            transform: scale(0.9); transition: transform 0.3s ease; 
+            max-height: 90vh;
+        }
+        #mediaModal.active .modal-content { transform: scale(1); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-up { animation: fadeInUp 0.8s ease forwards; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+    <div class="bg-mesh"></div>
 
-    <header class="bg-[#1e293b] text-center py-12 border-b border-slate-800 shadow-2xl">
-        <h1 class="text-3xl md:text-5xl font-black text-amber-400 mb-4 tracking-tight px-4">
-            ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬
-        </h1>
-        <div class="flex flex-col items-center gap-2">
-            <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
-                ফলাফল বোর্ড
-            </span>
-            <p class="text-slate-400 text-sm md:text-base">আয়োজক: মেহেরপুর ডিবেটিং ফোরাম</p>
+    <!-- Hero Header -->
+    <header class="relative pt-20 pb-16 px-4 text-center overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-20">
+            <div class="w-[800px] h-[400px] bg-amber-500 blur-[120px] rounded-full mx-auto"></div>
+        </div>
+
+        <div class="animate-up">
+            <h1 class="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
+                ইনকিলাব <span class="text-amber-500">জিন্দাবাদ</span>
+            </h1>
+            <p class="text-amber-500/80 font-bold uppercase tracking-[0.3em] text-xs md:text-sm mb-8">
+                জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ • ফলাফল বোর্ড
+            </p>
+            <div class="flex justify-center gap-4 flex-wrap">
+                <div class="bg-slate-800/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700 text-sm font-medium">
+                    🏆 ৪টি সেগমেন্ট
+                </div>
+                <div class="bg-slate-800/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700 text-sm font-medium">
+                    🔥 ১২ জন সেরা বিজয়ী
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 flex-grow" id="leaderboard-grid">
-        </main>
+    <!-- Main Grid -->
+    <main class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow" id="leaderboard-grid">
+        <!-- JS will populate this -->
+    </main>
 
-    <div class="text-center my-12">
-        <a href="signup.html" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-12 py-4 rounded-2xl font-black text-lg transition-all shadow-[0_0_20px_rgba(251,191,36,0.3)] inline-block">
-            ব্যক্তিগত ফলাফল ও ডাউনলোড
+    <!-- Global Result Button -->
+    <div class="text-center py-16 animate-up">
+        <a href="signup.html" class="group relative inline-flex items-center justify-center px-12 py-5 font-black text-slate-900 transition-all duration-200 bg-amber-500 font-pj rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 shadow-xl hover:shadow-amber-500/20 active:scale-95">
+            <span class="text-lg">ব্যক্তিগত ফলাফল ও সার্টিফিকেট ডাউনলোড</span>
+            <svg class="w-6 h-6 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
         </a>
     </div>
 
-    <footer class="bg-[#1e293b] text-slate-500 text-center py-8 border-t border-slate-800 mt-auto">
-        <p class="text-xs uppercase tracking-widest font-bold mb-2">সহ-আয়োজক ও পার্টনারস</p>
-        <p class="text-xs">সহ-আয়োজক: জেন-জি ডিবেটিং সোসাইটি</p>
+    <!-- Footer -->
+    <footer class="bg-slate-900/80 backdrop-blur border-t border-slate-800 py-12 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-center md:text-left">
+                <h3 class="text-xl font-bold text-white">মেহেরপুর ডিবেটিং ফোরাম</h3>
+                <p class="text-slate-500 text-sm mt-1">যৌথ আয়োজনে: জেন-জি ডিবেটিং সোসাইটি</p>
+            </div>
+            <div class="flex gap-6 grayscale opacity-50">
+                <!-- Add logos here if needed -->
+                <span class="text-xs uppercase tracking-widest font-bold">Inquilab 2026 Archive</span>
+            </div>
+        </div>
     </footer>
+
+    <!-- Image/Work View Modal -->
+    <div id="mediaModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-sm opacity-0 pointer-events-none">
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-white/50 hover:text-white text-4xl p-2 transition">&times;</button>
+        
+        <div class="modal-content relative w-full max-w-5xl rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 shadow-2xl flex flex-col">
+            <div id="modal-image-container" class="relative w-full aspect-video bg-black flex items-center justify-center">
+                <div id="modal-loading" class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>
+                </div>
+                <img id="modal-img" class="max-w-full max-h-full object-contain hidden" src="" alt="Work Preview">
+            </div>
+            
+            <div class="p-6 md:p-10 bg-gradient-to-t from-slate-950 to-slate-900 border-t border-slate-800">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span id="modal-tag" class="text-amber-500 text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">Segment</span>
+                        <h2 id="modal-name" class="text-3xl font-black text-white mt-3">Winner Name</h2>
+                        <p id="modal-inst" class="text-slate-400">Institute Name</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <p class="text-slate-500 text-[10px] uppercase">Score</p>
+                            <p id="modal-mark" class="text-2xl font-black text-amber-500">98</p>
+                        </div>
+                        <a id="modal-download" href="#" download class="bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="data.js"></script>
     <script>
+        // Segment Mapping for Files
+        const segmentCodes = {
+            "কবিতা লিখন": "p",
+            "গ্রাফিতি": "g",
+            "চিত্রাঙ্কন": "a",
+            "বারোয়ারী বিতর্ক": "b"
+        };
+
         const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
         const grid = document.getElementById('leaderboard-grid');
 
-        segments.forEach(seg => {
+        // Main Rendering Logic
+        segments.forEach((seg, sIdx) => {
             const winners = allParticipants
                 .filter(p => p.segment === seg)
                 .sort((a, b) => b.mark - a.mark)
                 .slice(0, 3);
 
             let listHTML = '';
-            const medals = ["medal-1", "medal-2", "medal-3"];
             const labels = ["🥇 ১ম স্থান", "🥈 ২য় স্থান", "🥉 ৩য় স্থান"];
-            
+
             winners.forEach((w, index) => {
+                const code = segmentCodes[seg] || 'x';
+                const fileBase = `${code}${index + 1}`;
+                
                 listHTML += `
-                <div class="flex items-center justify-between bg-slate-800/40 p-4 rounded-xl mb-3 border border-slate-700/50">
+                <div class="winner-row flex items-center justify-between bg-slate-800/30 p-5 rounded-2xl mb-4 border border-slate-700/30 hover:shadow-lg" 
+                     onclick="openWork('${w.name}', '${w.institute}', '${w.mark}', '${seg}', '${fileBase}')">
                     <div class="flex flex-col">
-                        <span class="text-[10px] font-bold uppercase tracking-tighter ${medals[index]}">${labels[index]}</span>
-                        <span class="text-lg font-bold text-slate-100">${w.name}</span>
-                        <span class="text-[11px] text-slate-400">${w.institute}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest medal-${index}">${labels[index]}</span>
+                        <span class="text-xl font-bold text-slate-100">${w.name}</span>
+                        <span class="text-xs text-slate-500 mt-1 font-medium">${w.institute}</span>
                     </div>
-                    <div class="bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700 text-amber-400 font-bold">
-                        ${w.mark}
+                    <div class="flex items-center gap-4">
+                        <div class="hidden md:flex flex-col items-end">
+                            <span class="text-[10px] text-slate-600 uppercase">স্কোর</span>
+                            <span class="text-lg font-black text-amber-400/80">${w.mark}</span>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-slate-900 transition">
+                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </div>
                     </div>
                 </div>`;
             });
 
             grid.innerHTML += `
-                <div class="glass-card p-6 rounded-3xl shadow-xl flex flex-col">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-2 h-8 bg-amber-500 rounded-full"></div>
-                        <h2 class="text-xl font-black text-amber-400 uppercase tracking-wide">${seg}</h2>
+                <div class="glass-card p-8 rounded-[2.5rem] flex flex-col animate-up" style="animation-delay: ${sIdx * 0.1}s">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-3 h-10 bg-amber-500 rounded-full shadow-[0_0_15px_rgba(251,191,36,0.3)]"></div>
+                            <h2 class="text-2xl font-black text-white tracking-tight">${seg}</h2>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-lg">Top 3</span>
                     </div>
                     <div class="flex-grow">
                         ${listHTML || '<p class="text-slate-600 italic text-center py-10">ফলাফল শীঘ্রই আসছে...</p>'}
                     </div>
                 </div>`;
         });
+
+        // Modal Logic
+        const modal = document.getElementById('mediaModal');
+        const modalImg = document.getElementById('modal-img');
+        const modalLoading = document.getElementById('modal-loading');
+
+        function openWork(name, inst, mark, seg, fileBase) {
+            document.getElementById('modal-name').innerText = name;
+            document.getElementById('modal-inst').innerText = inst || 'শিক্ষা প্রতিষ্ঠান তথ্য নেই';
+            document.getElementById('modal-mark').innerText = mark;
+            document.getElementById('modal-tag').innerText = seg;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+                modal.style.opacity = '1';
+                modal.style.pointerEvents = 'auto';
+            }, 10);
+
+            // Attempt to load images (Try jpg, then jpeg, then png)
+            const formats = ['jpg', 'jpeg', 'png'];
+            let currentFormatIndex = 0;
+
+            modalLoading.classList.remove('hidden');
+            modalImg.classList.add('hidden');
+
+            function tryLoad() {
+                if (currentFormatIndex >= formats.length) {
+                    // All formats failed
+                    modalLoading.innerHTML = `<div class="text-slate-600 text-sm">Media not found yet</div>`;
+                    return;
+                }
+                
+                const url = `media/${fileBase}.${formats[currentFormatIndex]}`;
+                const tempImg = new Image();
+                tempImg.src = url;
+                
+                tempImg.onload = () => {
+                    modalImg.src = url;
+                    modalImg.classList.remove('hidden');
+                    modalLoading.classList.add('hidden');
+                    document.getElementById('modal-download').href = url;
+                };
+                
+                tempImg.onerror = () => {
+                    currentFormatIndex++;
+                    tryLoad();
+                };
+            }
+
+            tryLoad();
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+                modalImg.src = '';
+                modalLoading.innerHTML = `<div class="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin"></div>`;
+            }, 300);
+        }
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>
+
