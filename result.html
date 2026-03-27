@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ফলাফল ও সার্টিফিকেট | ইনকিলাব ২০২৬</title>
+    <title>ফলাফল ও সার্টিফিকেট</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
-        .ui-card { background: #1e293b; border: 1px solid #334155; }
+        :root { --accent: #fbbf24; --bg-dark: #020617; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow-x: hidden; }
+        
+        /* এন্ট্রি স্টেজ ডিজাইন */
+        .entry-stage { position: fixed; inset: 0; z-index: 100; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
+        .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
+
+        .ui-card { background: #1e293b; border: 1px solid #334155; transform: translateY(20px); opacity: 0; transition: all 0.8s ease 0.5s; }
+        .ui-card.show { transform: translateY(0); opacity: 1; }
+        
         .stat-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.4); }
 
         /* অফলাইন সার্টিফিকেট ক্যানভাস */
@@ -22,7 +30,6 @@
         .b { font-weight: 800; }
         .highlight { font-weight: 900; text-decoration: underline; text-underline-offset: 10px; }
 
-        /* Loading Animations */
         @keyframes pulse-gold { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .generating-text { animation: pulse-gold 2s infinite; }
         .progress-bar-fill { transition: width 1s linear; }
@@ -30,7 +37,23 @@
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen pb-20">
 
-    <div class="ui-card p-6 md:p-10 rounded-[2.5rem] max-w-2xl w-full mt-6 shadow-2xl">
+    <audio id="bgMusic" loop>
+        <source src="bg.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="entryStage" class="entry-stage">
+        <div class="text-center">
+            <div class="mb-8 p-6">
+                <img src="iz-logo.jpg" class="w-24 h-24 rounded-2xl mx-auto shadow-2xl border border-amber-500/30 mb-4">
+                <h3 class="text-amber-500 font-bold tracking-widest text-xs uppercase">Security Verified</h3>
+            </div>
+            <button onclick="accessPortal()" class="bg-amber-500 text-slate-900 px-12 py-4 rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(251,191,36,0.3)] hover:scale-105 transition active:scale-95">
+                ফলাফল দেখুন 📄
+            </button>
+        </div>
+    </div>
+
+    <div id="mainUI" class="ui-card p-6 md:p-10 rounded-[2.5rem] max-w-2xl w-full mt-6 shadow-2xl">
         <div class="text-center border-b border-slate-700 pb-6 mb-6">
             <h1 class="text-2xl font-bold text-amber-400 mb-1 leading-tight">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
             <p class="text-slate-400 text-[12px] uppercase tracking-widest">ফলাফল ও সার্টিফিকেট পোর্টাল</p>
@@ -42,16 +65,15 @@
                 <h2 class="text-lg font-bold text-white mb-1">আপনার সার্টিফিকেট তৈরি হচ্ছে...</h2>
                 <p class="text-slate-400 text-sm">অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন</p>
             </div>
-            
+
             <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
                 <div id="progress-fill" class="progress-bar-fill bg-amber-500 h-full" style="width: 0%"></div>
             </div>
-            
+
             <div class="text-2xl font-mono font-bold text-amber-500" id="timer">02:00</div>
         </div>
 
-        <div id="status-box" class="space-y-10">
-            </div>
+        <div id="status-box" class="space-y-10"></div>
 
         <div class="mt-12 pt-6 border-t border-slate-800 text-center">
              <p class="text-[10px] text-slate-500 italic mb-6">সতর্কবার্তা: এটি একটি অটো-জেনারেটেড কপি। দাপ্তরিক কাজে মূল সার্টিফিকেট প্রযোজ্য।</p>
@@ -72,26 +94,45 @@
 
     <script src="data.js"></script>
     <script>
+        const bgMusic = document.getElementById('bgMusic');
         const phone = localStorage.getItem('userPhone');
+        
         if (!phone) { window.location.href = 'signup.html'; }
+
+        // ১. মিউজিক সিঙ্ক লজিক
+        window.addEventListener('load', () => {
+            const savedTime = localStorage.getItem('musicCurrentTime');
+            if (savedTime) {
+                bgMusic.currentTime = parseFloat(savedTime);
+            }
+        });
+
+        bgMusic.ontimeupdate = () => {
+            localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
+        };
+
+        // ২. পোর্টাল এক্সেস ফাংশন
+        function accessPortal() {
+            bgMusic.play().catch(() => {});
+            document.getElementById('entryStage').classList.add('hidden-stage');
+            document.getElementById('mainUI').classList.add('show');
+            startTimer();
+        }
 
         const userResults = allParticipants.filter(p => p.phone === phone);
         const statusBox = document.getElementById('status-box');
 
-        // লোড হওয়ার সময় রেজাল্ট রেন্ডার করা
         function renderResults(isLocked) {
             if (userResults.length > 0) {
                 statusBox.innerHTML = '';
                 userResults.forEach((user, index) => {
                     const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
                     const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
-                    
                     const isGraffiti = user.segment.includes("গ্রাফিতি");
                     const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
 
                     let btnHTML = '';
                     if (isLocked) {
-                        // বাটনগুলো ডিজেবল মোডে থাকবে
                         btnHTML = `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>`;
                     } else {
                         if(isGraffiti) {
@@ -122,41 +163,31 @@
             }
         }
 
-        // শুরুতে লক অবস্থায় রেন্ডার
         renderResults(true);
 
-        // ২ মিনিটের টাইমার লজিক
-        let timeLeft = 120; // ১২০ সেকেন্ড
-        const timerEl = document.getElementById('timer');
-        const progressEl = document.getElementById('progress-fill');
-        const waitContainer = document.getElementById('wait-container');
+        function startTimer() {
+            let timeLeft = 120;
+            const timerEl = document.getElementById('timer');
+            const progressEl = document.getElementById('progress-fill');
+            const waitContainer = document.getElementById('wait-container');
 
-        const countdown = setInterval(() => {
-            timeLeft--;
-            
-            // সময় ফরম্যাট (MM:SS)
-            let mins = Math.floor(timeLeft / 60);
-            let secs = timeLeft % 60;
-            timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            
-            // প্রগ্রেস বার আপডেট
-            let progress = ((120 - timeLeft) / 120) * 100;
-            progressEl.style.width = progress + '%';
+            const countdown = setInterval(() => {
+                timeLeft--;
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                let progress = ((120 - timeLeft) / 120) * 100;
+                progressEl.style.width = progress + '%';
 
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                waitContainer.innerHTML = `
-                    <div class="text-green-400 font-bold flex items-center justify-center gap-2 py-2">
-                        <span>✅</span> সার্টিফিকেট জেনারেট সম্পন্ন হয়েছে!
-                    </div>
-                `;
-                // বাটনগুলো আনলক করে পুনরায় রেন্ডার
-                renderResults(false);
-            }
-        }, 1000);
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    waitContainer.innerHTML = `<div class="text-green-400 font-bold flex items-center justify-center gap-2 py-2"><span>✅</span> সার্টিফিকেট জেনারেট সম্পন্ন হয়েছে!</div>`;
+                    renderResults(false);
+                }
+            }, 1000);
+        }
 
         async function generate(idx, targetName, isInst) {
-            // পূর্বের জেনারেট ফাংশন অপরিবর্তিত...
             const user = userResults[idx];
             const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
             const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
@@ -164,7 +195,7 @@
             const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`, gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
             const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
             const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${pos} তম অবস্থান</span>`;
-            
+
             if(isInst) {
                 document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
             } else {
@@ -178,12 +209,11 @@
                 const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
                 pdf.addImage(imgData, 'JPEG', 0, 0, 29, 21);
                 pdf.save(`Certificate_${targetName}.pdf`);
-            } catch (e) { alert("ডাউনলোডে সমস্যা হচ্ছে। ব্রাউজার চেক করুন।"); }
+            } catch (e) { alert("ডাউনলোডে সমস্যা হচ্ছে।"); }
         }
 
-        function logout() { localStorage.clear(); window.location.href = 'signup.html'; }
+        function logout() { localStorage.removeItem('userPhone'); window.location.href = 'signup.html'; }
     </script>
 </body>
 </html>
-
 
