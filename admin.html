@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDF Data Generator (Secure & Sync)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: white; }
+        code { font-family: 'Fira Code', monospace; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); }
+        .input-field { background: #1e293b; border: 1px solid #334155; color: white; transition: all 0.3s; }
+        .input-field:focus { border-color: #fbbf24; outline: none; box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+        .blur-content { filter: blur(12px); pointer-events: none; user-select: none; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <!-- Password Overlay -->
+    <div id="authOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md px-4">
+        <div class="glass-card p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl border-amber-500/20">
+            <div class="text-4xl mb-4">🔐</div>
+            <h2 class="text-xl font-bold text-amber-400 mb-2">সিকিউরিটি চেক</h2>
+            <p class="text-slate-400 text-sm mb-6">ডাটা এন্ট্রি করতে পাসওয়ার্ড দিন</p>
+            <input type="password" id="passInput" class="input-field w-full p-4 rounded-xl text-center tracking-widest mb-4" placeholder="••••••••">
+            <button onclick="checkAuth()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl transition active:scale-95">আনলক করুন</button>
+            <p id="authError" class="text-red-400 text-xs mt-3 hidden">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
+        </div>
+    </div>
+
+    <div id="mainContent" class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 blur-content">
+        
+        <!-- Input Section -->
+        <div class="glass-card p-8 rounded-[2rem] shadow-2xl">
+            <h1 class="text-2xl font-bold text-amber-400 mb-2 flex items-center gap-2">
+                <span>📝</span> ডাটা এন্ট্রি প্যানেল
+            </h1>
+            <p class="text-slate-500 text-xs mb-6 uppercase tracking-widest" id="syncStatus">Syncing with data.js...</p>
+            
+            <form id="dataForm" class="space-y-4">
+                <div>
+                    <label class="text-xs text-slate-400 uppercase tracking-widest ml-1 font-semibold">অংশগ্রহণকারীর নাম (কমা সেপারেটেড)</label>
+                    <input type="text" id="name" required class="input-field w-full p-4 rounded-xl mt-1" placeholder="উদা: আবির রহমান">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs text-slate-400 uppercase tracking-widest ml-1 font-semibold">মোবাইল নম্বর</label>
+                        <input type="tel" id="phone" maxlength="11" required class="input-field w-full p-4 rounded-xl mt-1" placeholder="017XXXXXXXX">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 uppercase tracking-widest ml-1 font-semibold">প্রাপ্ত নম্বর (Mark)</label>
+                        <input type="number" id="mark" required class="input-field w-full p-4 rounded-xl mt-1" placeholder="95">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-400 uppercase tracking-widest ml-1 font-semibold">শিক্ষা প্রতিষ্ঠান</label>
+                    <input type="text" id="institute" required class="input-field w-full p-4 rounded-xl mt-1" placeholder="উদা: মেহেরপুর সরকারি কলেজ">
+                </div>
+
+                <div>
+                    <label class="text-xs text-slate-400 uppercase tracking-widest ml-1 font-semibold">সেগমেন্ট বা বিভাগ</label>
+                    <select id="segment" class="input-field w-full p-4 rounded-xl mt-1 cursor-pointer">
+                        <option value="কবিতা লিখন">কবিতা লিখন</option>
+                        <option value="চিত্রাঙ্কন">চিত্রাঙ্কন</option>
+                        <option value="বারোয়ারী বিতর্ক">বারোয়ারী বিতর্ক</option>
+                        <option value="গ্রাফিতি">গ্রাফিতি</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 mt-4 text-lg">
+                    <span>➕</span> ডাটাবেজে যোগ করুন
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-700 flex justify-between items-center">
+                <button onclick="resetData()" class="text-red-400 hover:text-red-300 text-sm transition underline">সব মুছুন</button>
+                <div class="flex gap-4">
+                    <button onclick="location.reload()" class="text-slate-500 hover:text-white text-xs uppercase tracking-widest">রিফ্রেশ/লক</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="flex flex-col h-full">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-slate-300">Generated data.js</h2>
+                <div class="flex gap-2">
+                    <button onclick="copyCode()" id="copyBtn" class="bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500 hover:text-slate-900 px-4 py-2 rounded-lg text-xs font-bold transition">Copy Code</button>
+                </div>
+            </div>
+            
+            <div class="flex-grow bg-[#011627] rounded-3xl p-6 shadow-inner border border-slate-800 overflow-hidden flex flex-col">
+                <pre class="text-blue-300 text-sm overflow-auto custom-scroll flex-grow" id="outputCode">
+// Loading existing data...</pre>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-2xl mt-4 border border-slate-700">
+                <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <span class="text-amber-500 font-bold">নির্দেশনা:</span> উপরের কোডটি কপি করে আপনার <code class="bg-slate-900 px-1">data.js</code> ফাইলে পেস্ট করুন। পেজটি ওপেন করার সময় এটি স্বয়ংক্রিয়ভাবে আপনার বর্তমান ডাটা লোড করে নেবে।
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- This script will load the actual data.js from the local directory -->
+    <script id="dataSource" src="data.js"></script>
+
+    <script>
+        const AUTH_PASS = "mdfgdf0101";
+        let participants = [];
+
+        // ১. লোড হওয়ার সময় বিদ্যমান ডাটা চেক করা
+        window.onload = function() {
+            const status = document.getElementById('syncStatus');
+            if (typeof allParticipants !== 'undefined') {
+                participants = [...allParticipants];
+                status.innerText = `✅ Synced: ${participants.length} entries loaded from data.js`;
+                status.classList.replace('text-slate-500', 'text-green-400');
+            } else {
+                status.innerText = "⚠️ No existing data.js found. Starting fresh.";
+                status.classList.replace('text-slate-500', 'text-amber-400');
+            }
+            updateOutput();
+        };
+
+        // পাসওয়ার্ড চেক
+        function checkAuth() {
+            const input = document.getElementById('passInput').value;
+            const error = document.getElementById('authError');
+            const overlay = document.getElementById('authOverlay');
+            const main = document.getElementById('mainContent');
+
+            if (input === AUTH_PASS) {
+                overlay.style.display = 'none';
+                main.classList.remove('blur-content');
+            } else {
+                error.classList.remove('hidden');
+                document.getElementById('passInput').value = '';
+            }
+        }
+
+        document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAuth(); });
+
+        // নতুন ডাটা যোগ করা
+        document.getElementById('dataForm').onsubmit = (e) => {
+            e.preventDefault();
+
+            const entry = {
+                name: document.getElementById('name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                institute: document.getElementById('institute').value.trim(),
+                segment: document.getElementById('segment').value,
+                mark: parseInt(document.getElementById('mark').value)
+            };
+
+            participants.push(entry);
+            updateOutput();
+            
+            // UI Feedback
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "<span>✅</span> যোগ করা হয়েছে!";
+            btn.classList.replace('bg-amber-500', 'bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.replace('bg-green-600', 'bg-amber-500');
+                document.getElementById('dataForm').reset();
+                document.getElementById('name').focus();
+            }, 1000);
+        };
+
+        function updateOutput() {
+            const output = document.getElementById('outputCode');
+            let jsString = "const allParticipants = [\n";
+            participants.forEach(p => {
+                jsString += `    { name: "${p.name}", phone: "${p.phone}", institute: "${p.institute}", segment: "${p.segment}", mark: ${p.mark} },\n`;
+            });
+            jsString += "];";
+            output.textContent = jsString;
+        }
+
+        function resetData() {
+            if(confirm("সাবধান! এটি আপনার বর্তমান লিস্টের সব ডাটা মুছে ফেলবে। আপনি কি নিশ্চিত?")) {
+                participants = [];
+                updateOutput();
+            }
+        }
+
+        function copyCode() {
+            const codeText = document.getElementById('outputCode').textContent;
+            const btn = document.getElementById('copyBtn');
+            const el = document.createElement('textarea');
+            el.value = codeText;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const oldTxt = btn.innerText;
+            btn.innerText = "Copied! ✅";
+            btn.classList.replace('bg-amber-500/10', 'bg-green-600');
+            btn.classList.replace('text-amber-500', 'text-white');
+            
+            setTimeout(() => {
+                btn.innerText = oldTxt;
+                btn.classList.replace('bg-green-600', 'bg-amber-500/10');
+                btn.classList.replace('text-white', 'text-amber-500');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
