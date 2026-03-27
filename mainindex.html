@@ -200,10 +200,18 @@
             vidEl.classList.add('hidden');
             vidEl.pause();
 
-            // 2. Data Update
+            // 2. Data Update & Logic for Graffiti
             document.getElementById('winRank').innerText = `${item.rank}${item.rank==1?'ম':item.rank==2?'য়':'য়'} স্থান`;
-            document.getElementById('winName').innerText = item.name;
-            document.getElementById('winSeg').innerText = item.segment;
+            
+            // গ্রাফিতি সেগমেন্টের জন্য প্রতিষ্ঠানের নাম বড় করে দেখাবে
+            if (item.segment === "গ্রাফিতি") {
+                document.getElementById('winName').innerText = item.institute || "প্রতিষ্ঠান";
+                document.getElementById('winSeg').innerText = `${item.segment} - ${item.name}`; // ছোট করে নাম রাখা হলো
+            } else {
+                document.getElementById('winName').innerText = item.name;
+                document.getElementById('winSeg').innerText = item.segment;
+            }
+            
             prog.style.width = `${((currentIndex) / showcaseList.length) * 100}%`;
 
             const fileName = `${item.code}${item.rank}`;
