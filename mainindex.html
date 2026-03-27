@@ -10,61 +10,45 @@
         :root { --accent: #fbbf24; --bg-dark: #020617; }
         body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow: hidden; margin: 0; }
 
-        /* Cinematic Layers */
         .stage { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: all 1s ease; background: var(--bg-dark); }
         .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.05); }
 
-        /* Logo Stage Specific */
         #logoStage { background: black; display: flex; align-items: center; justify-content: center; }
 
-        /* Animations */
         @keyframes revealUp {
             0% { transform: translateY(50px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
-        
-        @keyframes floatUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-20px); }
-        }
 
         .animate-reveal { animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-        
-        /* Media Frame Transition */
+
         #mediaWrapper { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
         #mediaWrapper.show { opacity: 1; transform: translateY(0); }
 
-        /* Winner Info Transition */
         #winnerInfo { transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1); }
         #winnerInfo.floated { transform: translateY(-20px); }
 
-        /* Glass Cards */
         .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
 
-        /* Media Frame */
         .media-frame { width: 90vw; max-width: 900px; aspect-ratio: 16/9; border-radius: 1.5rem; overflow: hidden; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.9); background: #000; }
         .media-content { width: 100%; height: 100%; object-fit: contain; }
 
-        /* Progress Bar */
         .story-progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); z-index: 100; transition: width 0.3s linear; }
 
-        /* Leaderboard Style */
         .main-content { overflow-y: auto; height: 100vh; padding-bottom: 5rem; display: none; position: relative; z-index: 10; }
-        
+
         .skip-btn { opacity: 0; transition: opacity 0.5s ease 0.5s; }
         .skip-btn.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <!-- Background Music -->
     <audio id="bgMusic" loop>
         <source src="bg.mp3" type="audio/mpeg">
     </audio>
 
     <div id="progressBar" class="story-progress" style="width: 0%"></div>
 
-    <!-- Stage 1: Entry -->
     <div id="startStage" class="stage">
         <div class="text-center">
             <div class="w-20 h-20 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-8" id="initialLoader"></div>
@@ -75,7 +59,6 @@
         </div>
     </div>
 
-    <!-- Stage 2: Logo Fade (Centered) -->
     <div id="logoStage" class="stage hidden-stage">
         <div class="flex flex-col items-center justify-center text-center p-6">
             <img src="iz-logo.jpg" alt="Logo" class="w-40 md:w-56 rounded-2xl shadow-2xl animate-reveal mb-8">
@@ -85,22 +68,18 @@
         </div>
     </div>
 
-    <!-- Stage 3: Showcase -->
     <div id="showcaseStage" class="stage hidden-stage">
-        <!-- Winner Info (Animated) -->
         <div id="winnerInfo" class="text-center mb-6 px-4">
             <span id="winRank" class="text-amber-500 font-bold uppercase tracking-widest text-[10px] md:text-xs bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">১ম স্থান</span>
             <h2 id="winName" class="text-4xl md:text-7xl font-black text-white mt-4 tracking-tight leading-none">বিজয়ীর নাম</h2>
             <p id="winSeg" class="text-slate-400 mt-2 font-medium text-sm md:text-lg">সেগমেন্টের নাম</p>
         </div>
 
-        <!-- Media Wrapper -->
         <div id="mediaWrapper" class="flex flex-col items-center">
             <div class="media-frame glass-card">
                 <img id="showcaseImg" class="media-content hidden" src="" alt="Work">
-                <video id="showcaseVid" class="media-content hidden" playsinline></video>
+                <video id="showcaseVid" class="media-content hidden" playsinline autoplay muted></video>
                 
-                <!-- Overlay Skip -->
                 <button id="nextBtn" onclick="nextSlide()" class="skip-btn absolute bottom-6 right-6 bg-amber-500 text-slate-900 px-8 py-3 rounded-xl font-bold shadow-xl flex items-center gap-2 group transform hover:scale-105 transition">
                     পরবর্তী <svg class="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
                 </button>
@@ -108,13 +87,11 @@
         </div>
     </div>
 
-    <!-- Stage 4: Result Table -->
     <div id="mainContent" class="main-content scroll-smooth">
-        <div class="bg-mesh absolute inset-0 -z-10 opacity-20"></div>
         <header class="pt-24 pb-12 text-center px-4">
             <h1 class="text-5xl md:text-7xl font-black text-white mb-6">সেরা <span class="text-amber-500">বিজয়ীরা</span></h1>
             <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
-                 <a href="results.pdf" target="_blank" class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-8 py-3 rounded-full font-bold hover:bg-amber-500 hover:text-slate-900 transition flex items-center justify-center gap-2">
+                 <a href="r.pdf" target="_blank" class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-8 py-3 rounded-full font-bold hover:bg-amber-500 hover:text-slate-900 transition flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     সম্মিলিত রেজাল্ট (PDF)
                  </a>
@@ -126,7 +103,6 @@
         </header>
 
         <div class="max-w-6xl mx-auto p-4 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8" id="leaderboard-grid">
-            <!-- Populated via JS -->
         </div>
     </div>
 
@@ -191,7 +167,6 @@
             const vidEl = document.getElementById('showcaseVid');
             const prog = document.getElementById('progressBar');
 
-            // 1. Reset Phase
             winnerInfo.classList.remove('floated');
             winnerInfo.style.opacity = "0";
             mediaWrapper.classList.remove('show');
@@ -199,28 +174,24 @@
             imgEl.classList.add('hidden');
             vidEl.classList.add('hidden');
             vidEl.pause();
+            vidEl.muted = false; // বারোয়ারী বিতর্কের জন্য আনমিউট
 
-            // 2. Data Update & Logic for Graffiti
             document.getElementById('winRank').innerText = `${item.rank}${item.rank==1?'ম':item.rank==2?'য়':'য়'} স্থান`;
-            
-            // গ্রাফিতি সেগমেন্টের জন্য প্রতিষ্ঠানের নাম বড় করে দেখাবে
+
             if (item.segment === "গ্রাফিতি") {
                 document.getElementById('winName').innerText = item.institute || "প্রতিষ্ঠান";
-                document.getElementById('winSeg').innerText = `${item.segment} - ${item.name}`; // ছোট করে নাম রাখা হলো
+                document.getElementById('winSeg').innerText = `${item.segment} - ${item.name}`;
             } else {
                 document.getElementById('winName').innerText = item.name;
                 document.getElementById('winSeg').innerText = item.segment;
             }
-            
-            prog.style.width = `${((currentIndex) / showcaseList.length) * 100}%`;
 
+            prog.style.width = `${((currentIndex) / showcaseList.length) * 100}%`;
             const fileName = `${item.code}${item.rank}`;
 
-            // 3. Reveal Phase
             setTimeout(() => {
                 winnerInfo.style.opacity = "1";
                 
-                // After 1.2s - float name up and reveal media
                 setTimeout(async () => {
                     winnerInfo.classList.add('floated');
                     mediaWrapper.classList.add('show');
@@ -229,15 +200,25 @@
                     if (item.code === 'b') {
                         bgMusic.pause();
                         vidEl.classList.remove('hidden');
-                        vidEl.src = `media/${fileName}.mp4`;
-                        vidEl.load();
-                        vidEl.play();
+                        const vFormats = ['mp4', 'mov', 'webm', 'mkv'];
+                        let vLoaded = false;
+                        for (let f of vFormats) {
+                            if (vLoaded) break;
+                            const url = `media/${fileName}.${f}`;
+                            const exists = await fetch(url, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+                            if (exists) {
+                                vidEl.src = url;
+                                vidEl.load();
+                                vidEl.play().catch(e => console.log("Auto-play blocked"));
+                                vLoaded = true;
+                            }
+                        }
                         vidEl.onended = () => nextSlide();
                     } else {
                         if (bgMusic.paused) bgMusic.play();
                         imgEl.classList.remove('hidden');
-                        const formats = ['jpg', 'png', 'jpeg'];
-                        for (let f of formats) {
+                        const iFormats = ['jpg', 'png', 'jpeg'];
+                        for (let f of iFormats) {
                             const url = `media/${fileName}.${f}`;
                             const exists = await new Promise(res => {
                                 const t = new Image();
@@ -248,7 +229,7 @@
                             if (exists) { imgEl.src = url; break; }
                         }
                     }
-                }, 1200); // Wait 1.2s before lifting name
+                }, 1200);
             }, 100);
         }
 
@@ -261,7 +242,6 @@
             document.getElementById('progressBar').style.width = '100%';
             stages.showcase.classList.add('hidden-stage');
             if (bgMusic.paused) bgMusic.play();
-
             setTimeout(() => {
                 document.body.style.overflowY = 'auto';
                 stages.main.style.display = 'block';
@@ -274,7 +254,6 @@
             const grid = document.getElementById('leaderboard-grid');
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
             grid.innerHTML = '';
-            
             segments.forEach(seg => {
                 const winners = allParticipants.filter(p => p.segment === seg).sort((a,b)=>b.mark-a.mark).slice(0,3);
                 let rows = winners.map((w, i) => `
@@ -287,7 +266,6 @@
                         <td class="py-4 text-right font-black text-slate-300">${w.mark}</td>
                     </tr>
                 `).join('');
-
                 grid.innerHTML += `
                     <div class="glass-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl transition hover:border-amber-500/30">
                         <h3 class="text-xl md:text-2xl font-black mb-6 flex items-center gap-4 text-white">
