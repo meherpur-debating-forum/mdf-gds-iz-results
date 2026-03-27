@@ -3,101 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESULT & CERTIFICATE</title>
+    <title>ফলাফল ও সার্টিফিকেট | ইনকিলাব ২০২৬</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f1f5f9; }
-
-        /* অফলাইন সার্টিফিকেট ডিজাইন (২৯x২১ ইঞ্চি ক্যানভাস) */
-        #cert-hidden-container {
-            position: absolute;
-            left: -9999px;
-            top: 0;
-        }
-
-        #certificate-canvas {
-            width: 2784px; 
-            height: 2016px; 
-            background: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #writing-zone {
-            position: absolute;
-            top: 490px;    
-            bottom: 595.2px; 
-            left: 172.8px;   
-            right: 700.8px;  
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .cert-name-final {
-            font-size: 110px; 
-            font-weight: 800;
-            color: #000000;
-            margin-bottom: 40px;
-            text-align: center;
-            line-height: 1.2; 
-        }
-
-        .cert-body-final {
-            font-size: 52px; 
-            line-height: 1.5; 
-            color: #000000;
-            text-align: center;
-            font-weight: 500;
-            max-width: 2100px;
-        }
-
-        .b { font-weight: 800; }
-        .highlight { font-weight: 900; text-decoration: underline; text-underline-offset: 10px; }
-
-        /* UI Styles */
         .ui-card { background: #1e293b; border: 1px solid #334155; }
         .stat-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.4); }
-        .member-badge { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+        /* অফলাইন সার্টিফিকেট ক্যানভাস (২৯x২১ ইঞ্চি) */
+        #cert-hidden-container { position: absolute; left: -9999px; top: 0; }
+        #certificate-canvas {
+            width: 2784px; height: 2016px; background: white;
+            position: relative; overflow: hidden;
+        }
+        #writing-zone {
+            position: absolute; top: 490px; bottom: 595.2px; 
+            left: 172.8px; right: 700.8px;  
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .cert-name-final { font-size: 110px; font-weight: 800; color: #000; margin-bottom: 40px; text-align: center; line-height: 1.2; }
+        .cert-body-final { font-size: 52px; line-height: 1.5; color: #000; text-align: center; font-weight: 500; max-width: 2100px; }
+        .b { font-weight: 800; }
+        .highlight { font-weight: 900; text-decoration: underline; text-underline-offset: 10px; }
     </style>
 </head>
 <body class="flex flex-col items-center p-4 min-h-screen pb-20">
 
-    <div class="ui-card p-6 md:p-10 rounded-3xl max-w-2xl w-full mt-6 shadow-2xl">
+    <div class="ui-card p-6 md:p-10 rounded-[2.5rem] max-w-2xl w-full mt-6 shadow-2xl">
         <div class="text-center border-b border-slate-700 pb-6 mb-6">
-            <h1 class="text-2xl font-bold text-amber-400 mb-1">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
-            <p class="text-slate-400 text-sm">অংশগ্রহণকারীর ফলাফল ও সার্টিফিকেট ডাউনলোড</p>
+            <h1 class="text-2xl font-bold text-amber-400 mb-1 leading-tight">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
+            <p class="text-slate-400 text-[12px] uppercase tracking-widest">ফলাফল ও সার্টিফিকেট ডাউনলোড পোর্টাল</p>
         </div>
 
         <div id="status-box" class="space-y-10">
-            <div class="text-center text-slate-500 py-10 italic">তথ্য লোড হচ্ছে...</div>
+            <!-- ইউজারের ডাটা এখানে লোড হবে -->
         </div>
 
-        <!-- Warning Note -->
-        <div class="mt-12 pt-6 border-t border-slate-800">
-             <p class="text-[10px] text-slate-500 text-center italic leading-relaxed">
-                সতর্কবার্তা: এটি একটি সিস্টেম জেনারেটেড ডিজিটাল অনুলিপি। কোনো প্রকার দাপ্তরিক প্রয়োজনে এটি ব্যবহার করা যাবে না। এটিকে শুধুমাত্র প্রতিযোগিতার প্রাথমিক ফলাফল হিসেবে গণ্য করা যেতে পারে।
-            </p>
-        </div>
-
-        <div class="mt-6 text-center">
-            <a href="index.html" class="text-slate-400 hover:text-white text-sm transition underline">← হোমে ফিরে যান</a>
+        <div class="mt-12 pt-6 border-t border-slate-800 text-center">
+             <p class="text-[10px] text-slate-500 italic mb-6">সতর্কবার্তা: এটি একটি অটো-জেনারেটেড কপি। দাপ্তরিক কাজে মূল সার্টিফিকেট প্রযোজ্য।</p>
+             <button onclick="logout()" class="text-amber-500 hover:text-white text-sm transition underline">অন্য নম্বর দিয়ে ফলাফল দেখুন</button>
         </div>
     </div>
 
-    <!-- সার্টিফিকেট জেনারেশন ইঞ্জিন (অদৃশ্য) -->
+    <!-- সার্টিফিকেট ইঞ্জিন -->
     <div id="cert-hidden-container">
         <div id="certificate-canvas">
             <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-certicificate_20260319_010229_0000.png" 
-                 class="absolute inset-0 w-full h-full object-fill" 
-                 crossOrigin="anonymous">
-
+                 class="absolute inset-0 w-full h-full object-fill" crossOrigin="anonymous">
             <div id="writing-zone">
-                <h1 id="out-name" class="cert-name-final">নাম/প্রতিষ্ঠান</h1>
+                <h1 id="out-name" class="cert-name-final">লোডিং...</h1>
                 <div id="out-body" class="cert-body-final"></div>
             </div>
         </div>
@@ -105,127 +62,78 @@
 
     <script src="data.js"></script>
     <script>
+        // সিকিউরিটি চেক: নম্বর না থাকলে ফেরত পাঠাবে
         const phone = localStorage.getItem('userPhone');
+        if (!phone) { window.location.href = 'signup.html'; }
+
         const userResults = allParticipants.filter(p => p.phone === phone);
         const statusBox = document.getElementById('status-box');
 
         if (userResults.length > 0) {
             statusBox.innerHTML = '';
-
             userResults.forEach((user, index) => {
-                const segmentComps = allParticipants
-                    .filter(p => p.segment === user.segment)
-                    .sort((a,b) => b.mark - a.mark);
-
-                const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
+                // সেগমেন্ট ভিত্তিক র‍্যাঙ্কিং
+                const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
+                const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
+                
                 const isGraffiti = user.segment.includes("গ্রাফিতি");
                 const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
 
-                let downloadButtonsHTML = '';
-                
+                let btnHTML = '';
                 if(isGraffiti) {
-                    // গ্রাফিতির জন্য প্রাতিষ্ঠানিক বাটন
-                    downloadButtonsHTML += `
-                        <div class="col-span-2 mb-2">
-                            <p class="text-[10px] text-slate-500 uppercase mb-2 tracking-widest font-bold">প্রাতিষ্ঠানিক সার্টিফিকেট</p>
-                            <button onclick="downloadProcess(${index}, '${user.institute || 'Institution'}', true)" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
-                                🏢 প্রতিষ্ঠানের নামে ডাউনলোড
-                            </button>
-                        </div>
-                        <div class="col-span-2">
-                             <p class="text-[10px] text-slate-500 uppercase mb-2 tracking-widest font-bold">ব্যক্তিগত সার্টিফিকেট (সদস্যবৃন্দ)</p>
-                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                ${members.map(m => `
-                                    <button onclick="downloadProcess(${index}, '${m}', false)" class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-3 rounded-lg text-[11px] transition flex items-center justify-center border border-slate-600">
-                                        👤 ${m}
-                                    </button>
-                                `).join('')}
-                             </div>
-                        </div>
-                    `;
+                    btnHTML = `
+                        <div class="col-span-2 mb-2"><button onclick="generate(${index}, '${user.institute || 'Institution'}', true)" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl text-sm transition active:scale-95">🏢 প্রতিষ্ঠানের সার্টিফিকেট</button></div>
+                        <div class="col-span-2 grid grid-cols-2 gap-2">
+                            ${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600">👤 ${m}</button>`).join('')}
+                        </div>`;
                 } else {
-                    // সাধারণ সেগমেন্টের বাটন
-                    downloadButtonsHTML += `
-                        <button onclick="downloadProcess(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
-                            📄 সার্টিফিকেট ডাউনলোড করুন
-                        </button>
-                    `;
+                    btnHTML = `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95">📥 সার্টিফিকেট ডাউনলোড</button>`;
                 }
 
                 statusBox.innerHTML += `
-                    <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700 relative shadow-inner">
-                        <div class="mb-6 text-center">
-                            <span class="bg-amber-500/10 text-amber-500 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-amber-500/20">
-                                ${user.segment}
-                            </span>
-                            <h3 class="text-white text-xl font-bold mt-3">${user.name}</h3>
-                            <p class="text-slate-400 text-sm italic">${user.institute || 'N/A'}</p>
+                    <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700">
+                        <div class="text-center mb-6">
+                            <span class="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase border border-amber-500/20">${user.segment}</span>
+                            <h3 class="text-white text-xl font-bold mt-2">${user.name}</h3>
+                            <p class="text-slate-400 text-xs">${user.institute || 'N/A'}</p>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-4 mb-8">
-                            <div class="stat-box p-4 rounded-2xl text-center">
-                                <p class="text-slate-400 text-[10px] uppercase mb-1">প্রাপ্ত নম্বর</p>
-                                <p class="text-2xl font-black text-white">${user.mark}</p>
-                            </div>
-                            <div class="stat-box p-4 rounded-2xl text-center">
-                                <p class="text-slate-400 text-[10px] uppercase mb-1">অবস্থান</p>
-                                <p class="text-2xl font-black text-amber-500">${pos} তম</p>
-                            </div>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">মার্ক</p><p class="text-xl font-black">${user.mark}</p></div>
+                            <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">পজিশন</p><p class="text-xl font-black text-amber-500">${pos} তম</p></div>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            ${downloadButtonsHTML}
-                        </div>
+                        <div class="grid grid-cols-2 gap-2">${btnHTML}</div>
                     </div>`;
             });
         }
 
-        async function downloadProcess(idx, targetName, isInstitutional) {
+        async function generate(idx, targetName, isInst) {
             const user = userResults[idx];
-            const segmentComps = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
-            const pos = segmentComps.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
+            const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
+            const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
 
-            const nameEl = document.getElementById('out-name');
-            const bodyDiv = document.getElementById('out-body');
-
-            // সার্টিফিকেট টেক্সট ভেরিয়েবল
-            const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`;
-            const gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
+            document.getElementById('out-name').innerText = targetName;
+            
+            const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`, gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
             const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
-            const marks = `<span class="highlight">${user.mark} মার্ক</span>`;
-            const position = `<span class="highlight">${pos} তম অবস্থান</span>`;
-            const segment = `<span class="b">${user.segment} সেগমেন্টে</span>`;
+            const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${pos} তম অবস্থান</span>`;
 
-            nameEl.innerText = targetName;
-
-            if (isInstitutional) {
-                // প্রাতিষ্ঠানিক ভাষা
-                bodyDiv.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত ও তাহাদিগের আগামী জীবনের সাফল্য কামনা করে।`;
+            if(isInst) {
+                document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
             } else {
-                // ব্যক্তিগত ভাষা
-                const instText = user.institute ? `<span class="b">${user.institute}</span> হইতে` : `উক্ত প্রতিষ্ঠান হইতে`;
-                bodyDiv.innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ ${segment} ${instText} উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তিনি উক্ত সেগমেন্টে ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত ও তাহার আগামী জীবনের সাফল্য কামনা করে।`;
+                const instStr = user.institute ? `<span class="b">${user.institute}</span> হইতে` : `উক্ত প্রতিষ্ঠান হইতে`;
+                document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ <span class="b">${user.segment} সেগমেন্টে</span> ${instStr} উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তিনি ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
             }
 
-            // রেন্ডারিং শুরু
             try {
-                const canvasArea = document.getElementById('certificate-canvas');
-                const canvas = await html2canvas(canvasArea, { 
-                    scale: 1, // ২৯x২১ ইঞ্চির জন্য ১ স্কেলই যথেষ্ট (অনেক বড় ফাইল হবে অন্যথায়)
-                    useCORS: true,
-                    backgroundColor: "#ffffff"
-                });
-
+                const canvas = await html2canvas(document.getElementById('certificate-canvas'), { scale: 1, useCORS: true });
                 const imgData = canvas.toDataURL('image/jpeg', 0.9);
                 const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
                 pdf.addImage(imgData, 'JPEG', 0, 0, 29, 21);
-                pdf.save(`Certificate_${targetName.replace(/\s+/g, '_')}.pdf`);
-                
-            } catch (e) {
-                console.error("Error:", e);
-                alert("সার্টিফিকেট জেনারেট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
-            }
+                pdf.save(`Certificate_${targetName}.pdf`);
+            } catch (e) { alert("ডাউনলোডে সমস্যা হচ্ছে। ব্রাউজার চেক করুন।"); }
         }
+
+        function logout() { localStorage.clear(); window.location.href = 'signup.html'; }
     </script>
 </body>
 </html>
