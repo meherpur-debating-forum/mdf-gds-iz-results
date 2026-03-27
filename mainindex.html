@@ -8,32 +8,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #fbbf24; --bg-dark: #020617; }
-        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow: hidden; }
-        
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow: hidden; margin: 0; }
+
         /* Cinematic Layers */
-        .stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 50; transition: all 1s ease; }
-        .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
-        
+        .stage { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; transition: all 1s ease; background: var(--bg-dark); }
+        .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.05); }
+
+        /* Logo Stage Specific */
+        #logoStage { background: black; display: flex; align-items: center; justify-content: center; }
+
         /* Animations */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes revealUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
         
-        .animate-fade-in { animation: fadeIn 1s forwards; }
-        .animate-zoom { animation: zoomIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes floatUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        .animate-reveal { animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        
+        /* Media Frame Transition */
+        #mediaWrapper { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        #mediaWrapper.show { opacity: 1; transform: translateY(0); }
+
+        /* Winner Info Transition */
+        #winnerInfo { transition: transform 0.8s cubic-bezier(0.45, 0, 0.55, 1); }
+        #winnerInfo.floated { transform: translateY(-20px); }
 
         /* Glass Cards */
         .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        
+
         /* Media Frame */
-        .media-frame { width: 90vw; max-width: 1000px; aspect-ratio: 16/9; border-radius: 2rem; overflow: hidden; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        .media-content { width: 100%; height: 100%; object-fit: contain; background: #000; }
+        .media-frame { width: 90vw; max-width: 900px; aspect-ratio: 16/9; border-radius: 1.5rem; overflow: hidden; position: relative; box-shadow: 0 0 60px rgba(0,0,0,0.9); background: #000; }
+        .media-content { width: 100%; height: 100%; object-fit: contain; }
 
         /* Progress Bar */
         .story-progress { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); z-index: 100; transition: width 0.3s linear; }
 
         /* Leaderboard Style */
-        .main-content { overflow-y: auto; height: 100vh; padding-bottom: 5rem; display: none; }
+        .main-content { overflow-y: auto; height: 100vh; padding-bottom: 5rem; display: none; position: relative; z-index: 10; }
+        
+        .skip-btn { opacity: 0; transition: opacity 0.5s ease 0.5s; }
+        .skip-btn.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -43,64 +62,71 @@
         <source src="bg.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Progress -->
     <div id="progressBar" class="story-progress" style="width: 0%"></div>
 
     <!-- Stage 1: Entry -->
-    <div id="startStage" class="stage bg-slate-950">
+    <div id="startStage" class="stage">
         <div class="text-center">
-            <div class="w-24 h-24 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-8" id="initialLoader"></div>
-            <button id="startBtn" onclick="startExperience()" class="hidden bg-amber-500 text-slate-900 px-10 py-4 rounded-2xl font-black text-xl shadow-[0_0_30px_rgba(251,191,36,0.3)] hover:scale-110 transition active:scale-95">
+            <div class="w-20 h-20 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-8" id="initialLoader"></div>
+            <button id="startBtn" onclick="startExperience()" class="hidden bg-amber-500 text-slate-900 px-12 py-4 rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(251,191,36,0.4)] hover:scale-105 transition active:scale-95">
                 শুরু করুন 📸
             </button>
-            <p class="text-slate-500 mt-6 text-sm tracking-widest uppercase">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬ এর ফলাফল</p>
+            <p class="text-slate-500 mt-8 text-sm tracking-[0.2em] uppercase px-4">ইনকিলাব জিন্দাবাদ ২০২৬ এর ফলাফল</p>
         </div>
     </div>
 
-    <!-- Stage 2: Logo Fade -->
-    <div id="logoStage" class="stage bg-black hidden-stage">
-        <div class="text-center animate-zoom">
-            <!-- Replace with your logo URL -->
-            <img src="iz-logo.jpg" alt="Logo" class="w-48 md:w-64 drop-shadow-[0_0_30px_rgba(251,191,36,0.5)]">
-            <h2 class="text-amber-500 font-bold mt-8 tracking-[0.5em] uppercase text-sm">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h2>
+    <!-- Stage 2: Logo Fade (Centered) -->
+    <div id="logoStage" class="stage hidden-stage">
+        <div class="flex flex-col items-center justify-center text-center p-6">
+            <img src="iz-logo.jpg" alt="Logo" class="w-40 md:w-56 rounded-2xl shadow-2xl animate-reveal mb-8">
+            <h2 class="text-amber-500 font-bold tracking-[0.3em] uppercase text-sm md:text-base animate-reveal" style="animation-delay: 0.3s">
+                ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬
+            </h2>
         </div>
     </div>
 
     <!-- Stage 3: Showcase -->
-    <div id="showcaseStage" class="stage bg-slate-950 hidden-stage">
-        <div class="relative flex flex-col items-center">
-            <!-- Winner Name Overlay -->
-            <div id="winnerInfo" class="text-center mb-8 animate-fade-in">
-                <span id="winRank" class="text-amber-500 font-bold uppercase tracking-widest text-xs bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">১ম স্থান</span>
-                <h2 id="winName" class="text-4xl md:text-6xl font-black text-white mt-4">বিজয়ীর নাম</h2>
-                <p id="winSeg" class="text-slate-400 mt-2 font-medium">সেগমেন্টের নাম</p>
-            </div>
+    <div id="showcaseStage" class="stage hidden-stage">
+        <!-- Winner Info (Animated) -->
+        <div id="winnerInfo" class="text-center mb-6 px-4">
+            <span id="winRank" class="text-amber-500 font-bold uppercase tracking-widest text-[10px] md:text-xs bg-amber-500/10 px-4 py-1 rounded-full border border-amber-500/20">১ম স্থান</span>
+            <h2 id="winName" class="text-4xl md:text-7xl font-black text-white mt-4 tracking-tight leading-none">বিজয়ীর নাম</h2>
+            <p id="winSeg" class="text-slate-400 mt-2 font-medium text-sm md:text-lg">সেগমেন্টের নাম</p>
+        </div>
 
-            <!-- Media Container -->
+        <!-- Media Wrapper -->
+        <div id="mediaWrapper" class="flex flex-col items-center">
             <div class="media-frame glass-card">
                 <img id="showcaseImg" class="media-content hidden" src="" alt="Work">
-                <video id="showcaseVid" class="media-content hidden" controls></video>
+                <video id="showcaseVid" class="media-content hidden" playsinline></video>
                 
                 <!-- Overlay Skip -->
-                <button onclick="nextSlide()" class="absolute bottom-6 right-6 bg-white/10 hover:bg-amber-500 hover:text-slate-900 backdrop-blur-md text-white px-6 py-3 rounded-xl font-bold transition flex items-center gap-2 group">
+                <button id="nextBtn" onclick="nextSlide()" class="skip-btn absolute bottom-6 right-6 bg-amber-500 text-slate-900 px-8 py-3 rounded-xl font-bold shadow-xl flex items-center gap-2 group transform hover:scale-105 transition">
                     পরবর্তী <svg class="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Main Content: Final Leaderboard -->
+    <!-- Stage 4: Result Table -->
     <div id="mainContent" class="main-content scroll-smooth">
-        <header class="pt-20 pb-10 text-center">
-            <h1 class="text-5xl font-black text-white mb-4">সেরা <span class="text-amber-500">বিজয়ীরা</span></h1>
-            <div class="flex flex-wrap justify-center gap-4 mt-6">
-                 <a href="results.pdf" class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-6 py-2 rounded-full font-bold hover:bg-amber-500 hover:text-slate-900 transition">সম্মিলিত রেজাল্ট (PDF)</a>
-                 <a href="signup.html" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-bold shadow-lg hover:bg-indigo-700 transition">ব্যক্তিগত রেজাল্ট দেখুন</a>
+        <div class="bg-mesh absolute inset-0 -z-10 opacity-20"></div>
+        <header class="pt-24 pb-12 text-center px-4">
+            <h1 class="text-5xl md:text-7xl font-black text-white mb-6">সেরা <span class="text-amber-500">বিজয়ীরা</span></h1>
+            <div class="flex flex-col md:flex-row justify-center gap-4 mt-8">
+                 <a href="results.pdf" target="_blank" class="bg-amber-500/10 text-amber-500 border border-amber-500/30 px-8 py-3 rounded-full font-bold hover:bg-amber-500 hover:text-slate-900 transition flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    সম্মিলিত রেজাল্ট (PDF)
+                 </a>
+                 <a href="signup.html" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-indigo-500 transition-all flex items-center justify-center gap-2">
+                    ব্যক্তিগত রেজাল্ট ও সার্টিফিকেট
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                 </a>
             </div>
         </header>
 
-        <div class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8" id="leaderboard-grid">
-            <!-- Table content via JS -->
+        <div class="max-w-6xl mx-auto p-4 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8" id="leaderboard-grid">
+            <!-- Populated via JS -->
         </div>
     </div>
 
@@ -113,24 +139,21 @@
             showcase: document.getElementById('showcaseStage'),
             main: document.getElementById('mainContent')
         };
-        
+
         const segmentCodes = { "কবিতা লিখন": "p", "গ্রাফিতি": "g", "চিত্রাঙ্কন": "a", "বারোয়ারী বিতর্ক": "b" };
         let showcaseList = [];
         let currentIndex = 0;
 
-        // Load data on start
         window.onload = () => {
             document.getElementById('initialLoader').classList.add('hidden');
             document.getElementById('startBtn').classList.remove('hidden');
-            
-            // Prepare showcase sequence (Top 3 of each segment)
+
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
             segments.forEach(seg => {
                 const winners = allParticipants
                     .filter(p => p.segment === seg)
                     .sort((a, b) => b.mark - a.mark)
                     .slice(0, 3);
-                
                 winners.forEach((w, i) => {
                     showcaseList.push({ ...w, rank: i + 1, code: segmentCodes[seg] });
                 });
@@ -138,9 +161,10 @@
         };
 
         function startExperience() {
-            bgMusic.play().catch(() => console.log("Music interaction needed"));
+            bgMusic.volume = 0.5;
+            bgMusic.play().catch(() => {});
             stages.start.classList.add('hidden-stage');
-            
+
             setTimeout(() => {
                 stages.logo.classList.remove('hidden-stage');
                 setTimeout(() => {
@@ -149,8 +173,8 @@
                         stages.showcase.classList.remove('hidden-stage');
                         renderSlide();
                     }, 1000);
-                }, 3000);
-            }, 1000);
+                }, 3500);
+            }, 800);
         }
 
         async function renderSlide() {
@@ -160,60 +184,64 @@
             }
 
             const item = showcaseList[currentIndex];
-            const infoBox = document.getElementById('winnerInfo');
+            const winnerInfo = document.getElementById('winnerInfo');
+            const mediaWrapper = document.getElementById('mediaWrapper');
+            const nextBtn = document.getElementById('nextBtn');
             const imgEl = document.getElementById('showcaseImg');
             const vidEl = document.getElementById('showcaseVid');
             const prog = document.getElementById('progressBar');
 
-            // Reset UI
-            infoBox.style.opacity = 0;
+            // 1. Reset Phase
+            winnerInfo.classList.remove('floated');
+            winnerInfo.style.opacity = "0";
+            mediaWrapper.classList.remove('show');
+            nextBtn.classList.remove('show');
             imgEl.classList.add('hidden');
             vidEl.classList.add('hidden');
             vidEl.pause();
-            
-            // Set Data
+
+            // 2. Data Update
             document.getElementById('winRank').innerText = `${item.rank}${item.rank==1?'ম':item.rank==2?'য়':'য়'} স্থান`;
             document.getElementById('winName').innerText = item.name;
             document.getElementById('winSeg').innerText = item.segment;
             prog.style.width = `${((currentIndex) / showcaseList.length) * 100}%`;
 
             const fileName = `${item.code}${item.rank}`;
-            
-            // Barowari Logic (Video)
-            if (item.code === 'b') {
-                bgMusic.pause(); // Mute background for video
-                vidEl.classList.remove('hidden');
-                vidEl.src = `media/${fileName}.mp4`;
-                vidEl.load();
-                vidEl.play();
-                vidEl.onended = () => nextSlide();
-            } else {
-                // Image Logic
-                if (bgMusic.paused) bgMusic.play();
-                imgEl.classList.remove('hidden');
-                
-                // Try formats
-                const formats = ['jpg', 'png', 'jpeg'];
-                let loaded = false;
-                for (let f of formats) {
-                    if (loaded) break;
-                    const url = `media/${fileName}.${f}`;
-                    try {
-                        const success = await new Promise(res => {
-                            const t = new Image();
-                            t.src = url;
-                            t.onload = () => res(true);
-                            t.onerror = () => res(false);
-                        });
-                        if (success) {
-                            imgEl.src = url;
-                            loaded = true;
-                        }
-                    } catch(e){}
-                }
-            }
 
-            setTimeout(() => { infoBox.style.opacity = 1; }, 500);
+            // 3. Reveal Phase
+            setTimeout(() => {
+                winnerInfo.style.opacity = "1";
+                
+                // After 1.2s - float name up and reveal media
+                setTimeout(async () => {
+                    winnerInfo.classList.add('floated');
+                    mediaWrapper.classList.add('show');
+                    nextBtn.classList.add('show');
+
+                    if (item.code === 'b') {
+                        bgMusic.pause();
+                        vidEl.classList.remove('hidden');
+                        vidEl.src = `media/${fileName}.mp4`;
+                        vidEl.load();
+                        vidEl.play();
+                        vidEl.onended = () => nextSlide();
+                    } else {
+                        if (bgMusic.paused) bgMusic.play();
+                        imgEl.classList.remove('hidden');
+                        const formats = ['jpg', 'png', 'jpeg'];
+                        for (let f of formats) {
+                            const url = `media/${fileName}.${f}`;
+                            const exists = await new Promise(res => {
+                                const t = new Image();
+                                t.src = url;
+                                t.onload = () => res(true);
+                                t.onerror = () => res(false);
+                            });
+                            if (exists) { imgEl.src = url; break; }
+                        }
+                    }
+                }, 1200); // Wait 1.2s before lifting name
+            }, 100);
         }
 
         function nextSlide() {
@@ -224,8 +252,8 @@
         function endShowcase() {
             document.getElementById('progressBar').style.width = '100%';
             stages.showcase.classList.add('hidden-stage');
-            bgMusic.play();
-            
+            if (bgMusic.paused) bgMusic.play();
+
             setTimeout(() => {
                 document.body.style.overflowY = 'auto';
                 stages.main.style.display = 'block';
@@ -237,35 +265,35 @@
         function renderLeaderboard() {
             const grid = document.getElementById('leaderboard-grid');
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
-            
             grid.innerHTML = '';
+            
             segments.forEach(seg => {
                 const winners = allParticipants.filter(p => p.segment === seg).sort((a,b)=>b.mark-a.mark).slice(0,3);
                 let rows = winners.map((w, i) => `
-                    <tr class="border-b border-slate-800/50">
+                    <tr class="border-b border-slate-800/40">
                         <td class="py-4 font-bold text-amber-500">${i+1}</td>
                         <td class="py-4">
-                            <div class="font-bold text-white">${w.name}</div>
-                            <div class="text-[10px] text-slate-500 uppercase">${w.institute || ''}</div>
+                            <div class="font-bold text-white text-base md:text-lg">${w.name}</div>
+                            <div class="text-[10px] text-slate-500 uppercase font-medium">${w.institute || ''}</div>
                         </td>
                         <td class="py-4 text-right font-black text-slate-300">${w.mark}</td>
                     </tr>
                 `).join('');
 
                 grid.innerHTML += `
-                    <div class="glass-card p-8 rounded-[2rem] animate-fade-in">
-                        <h3 class="text-xl font-black mb-6 flex items-center gap-3">
-                            <span class="w-2 h-6 bg-amber-500 rounded-full"></span> ${seg}
+                    <div class="glass-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl transition hover:border-amber-500/30">
+                        <h3 class="text-xl md:text-2xl font-black mb-6 flex items-center gap-4 text-white">
+                            <span class="w-2 h-8 bg-amber-500 rounded-full shadow-lg shadow-amber-500/20"></span> ${seg}
                         </h3>
                         <table class="w-full text-left">
                             <thead>
-                                <tr class="text-[10px] uppercase text-slate-500 tracking-widest border-b border-slate-700">
-                                    <th class="pb-2">Rank</th>
-                                    <th class="pb-2">Name</th>
-                                    <th class="pb-2 text-right">Score</th>
+                                <tr class="text-[10px] md:text-xs uppercase text-slate-500 tracking-[0.2em] border-b border-slate-800">
+                                    <th class="pb-3">Rank</th>
+                                    <th class="pb-3">Participant</th>
+                                    <th class="pb-3 text-right">Score</th>
                                 </tr>
                             </thead>
-                            <tbody>${rows}</tbody>
+                            <tbody class="divide-y divide-slate-800/40">${rows}</tbody>
                         </table>
                     </div>
                 `;
