@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লগইন</title>
+    <title>ফলাফল যাচাই | ইনকিলাব ২০২৬</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
         .entry-stage { position: fixed; inset: 0; z-index: 100; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
         .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
 
-        .login-card { background: #1e1e1e; transform: translateY(30px); opacity: 0; transition: all 0.8s ease 0.4s; }
+        .login-card { background: #1e1e1e; transform: translateY(30px); opacity: 0; transition: all 0.8s ease 0.4s; border: 1px solid #334155; }
         .login-card.show { transform: translateY(0); opacity: 1; }
 
         .otp-input {
@@ -25,6 +25,13 @@
         }
         .otp-input::-webkit-outer-spin-button, .otp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .otp-input:focus { border-color: var(--accent); box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); transform: scale(1.05); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .animate-shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen items-center justify-center p-4">
@@ -48,7 +55,7 @@
     </div>
 
     <!-- মেইন লগইন কার্ড -->
-    <div id="loginCard" class="login-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-lg border border-gray-800">
+    <div id="loginCard" class="login-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-lg">
         <div class="text-center mb-8">
             <h2 class="text-2xl md:text-3xl font-bold text-[#ffd700]">ফলাফল যাচাই</h2>
             <p class="text-gray-400 mt-2 text-sm md:text-base">আপনার ১১ ডিজিটের মোবাইল নম্বরটি লিখুন</p>
@@ -88,22 +95,17 @@
         const bgMusic = document.getElementById('bgMusic');
         const inputs = document.querySelectorAll('.otp-input');
 
-        // ১. মিউজিক সিঙ্ক লজিক
         window.addEventListener('load', () => {
             const savedTime = localStorage.getItem('musicCurrentTime');
-            if (savedTime) {
-                bgMusic.currentTime = parseFloat(savedTime);
-            }
+            if (savedTime) { bgMusic.currentTime = parseFloat(savedTime); }
         });
 
-        // প্রতি সেকেন্ডে সময় সেভ করা
         bgMusic.ontimeupdate = () => {
             localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
         };
 
-        // ২. পোর্টাল ওপেনিং
         function unlockLogin() {
-            bgMusic.play().catch(e => console.log("Playback error"));
+            bgMusic.play().catch(() => {});
             document.getElementById('entryStage').classList.add('hidden-stage');
             document.getElementById('loginCard').classList.add('show');
             document.body.style.overflow = "auto";
@@ -134,15 +136,12 @@
                 setTimeout(() => {
                     const exists = allParticipants.some(p => p.phone === phone);
                     if (exists) { 
-                        // যাওয়ার আগে বর্তমান মিউজিক পজিশন নিশ্চিতভাবে সেভ করা
-                        localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
                         localStorage.setItem('userPhone', phone); 
-                        window.location.href = 'results.html'; 
+                        window.location.href = 'result.html'; 
                     }
                     else { 
                         document.getElementById('loader').classList.add('hidden');
                         document.getElementById('error').classList.remove('hidden');
-                        // ইনপুট ক্লিয়ার করা (অপশনাল)
                         inputs.forEach(i => i.value = "");
                         inputs[0].focus();
                     }
