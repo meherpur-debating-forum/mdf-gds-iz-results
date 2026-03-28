@@ -22,7 +22,7 @@
             overflow-x: hidden;
         }
 
-        /* প্রি-লোডার স্ক্রিন */
+        /* প্রি-লোডার */
         #preloader {
             position: fixed;
             inset: 0;
@@ -180,10 +180,10 @@
 </head>
 <body>
 
-    <!-- ১. গ্লোবাল প্রি-লোডার -->
+    <!-- ১. প্রি-লোডার -->
     <div id="preloader">
         <img src="iz-logo.jpg" class="w-24 rounded-2xl mb-6 animate-pulse" alt="Logo">
-        <div id="loaderStatus" class="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold">সার্টিফিকেট ও মেমোরি লোড হচ্ছে...</div>
+        <div id="loaderStatus" class="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold">সম্পদ লোড হচ্ছে...</div>
         <div class="loader-bar">
             <div id="progressLine"></div>
         </div>
@@ -278,11 +278,9 @@
         let timeline = [];
         let currentIndex = 0;
 
-        // --- প্রি-লোডিং লজিক ---
+        // --- প্রি-লোডিং ---
         const assetsToPreload = [
-            'iz-logo.jpg',
-            'bg.mp3',
-            'certificate-bg.jpg', // সার্টিফিকেট লোড নিশ্চিত করবে
+            'iz-logo.jpg', 'bg.mp3', 'certificate-bg.jpg',
             'p1.jpg', 'p2.jpg', 'p3.jpg',
             'g1.jpg', 'g2.jpg', 'g3.jpg',
             'a1.jpg', 'a2.png', 'a3.jpg'
@@ -291,16 +289,12 @@
         function initPreloader() {
             let loaded = 0;
             const progressLine = document.getElementById('progressLine');
-            const statusText = document.getElementById('loaderStatus');
-
             assetsToPreload.forEach(url => {
                 const img = new Image();
                 img.src = url;
                 img.onload = img.onerror = () => {
                     loaded++;
-                    const progress = (loaded / assetsToPreload.length) * 100;
-                    progressLine.style.width = progress + '%';
-                    
+                    progressLine.style.width = ((loaded / assetsToPreload.length) * 100) + '%';
                     if (loaded === assetsToPreload.length) {
                         setTimeout(() => {
                             stages.preloader.style.opacity = '0';
@@ -314,7 +308,7 @@
             });
         }
 
-        // --- ডাটা সিকুয়েন্সিং ---
+        // --- ডাটা সিকুয়েন্সিং (৩ -> ২ -> ১ সর্টিং) ---
         function prepareTimeline() {
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
             const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
@@ -322,13 +316,17 @@
             
             segments.forEach(seg => {
                 timeline.push({ type: 'segment', name: seg });
-                const winners = allParticipants
-                    .filter(p => p.segment === seg)
-                    .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99))
-                    .slice(0, 3);
                 
-                winners.forEach((w, i) => {
-                    timeline.push({ type: 'winner', data: { ...w, rank: i+1, code: codes[seg] } });
+                // শুধুমাত্র ১, ২, ৩ পজিশন ফিল্টার করা এবং বড় থেকে ছোট (৩, ২, ১) সর্ট করা
+                const winners = allParticipants
+                    .filter(p => p.segment === seg && (p.position == 1 || p.position == 2 || p.position == 3))
+                    .sort((a, b) => parseInt(b.position) - parseInt(a.position)); // Descending: 3, 2, 1
+                
+                winners.forEach(w => {
+                    timeline.push({ 
+                        type: 'winner', 
+                        data: { ...w, code: codes[seg] } 
+                    });
                 });
             });
         }
@@ -355,7 +353,7 @@
                         stages.memory.classList.remove('hidden-stage');
                         renderStep();
                     }, 600);
-                }, 2000);
+                }, 1800);
             }, 400);
         }
 
@@ -365,7 +363,6 @@
                 endMemory();
                 return;
             }
-
             const step = timeline[currentIndex];
             const segAnn = document.getElementById('segAnnounce');
             const winWrap = document.getElementById('winnerWrapper');
@@ -377,7 +374,7 @@
                 setTimeout(() => {
                     segAnn.classList.remove('active');
                     setTimeout(() => { currentIndex++; renderStep(); }, 600);
-                }, 2500);
+                }, 2000);
             } else {
                 segAnn.classList.remove('active');
                 winWrap.classList.remove('hidden');
@@ -394,7 +391,6 @@
             const img = document.getElementById('displayImg');
             const vid = document.getElementById('displayVid');
 
-            // Reset UI
             title.innerText = (item.segment === "গ্রাফিতি") ? item.institute : item.name;
             document.getElementById('detInst').innerText = (item.segment === "গ্রাফিতি") ? `দল: ${item.name}` : item.institute;
             document.getElementById('detRank').innerText = `${item.position} তম স্থান | ${item.segment}`;
@@ -408,15 +404,13 @@
             spinner.classList.remove('hidden');
             bgMusic.volume = 1.0;
 
-            // ২ সেকেন্ড পর নাম মুভ হবে
             setTimeout(() => {
                 title.classList.add('shifted');
                 det.classList.add('active');
-
-                // মিডিয়া লোড
                 setTimeout(async () => {
                     media.classList.add('active');
-                    const fileName = `${item.code}${item.rank}`;
+                    // ফাইল নেম সরাসরি পজিশন থেকে (৩য় স্থানের জন্য g3, ২য় g2, ১ম g1)
+                    const fileName = `${item.code}${item.position}`;
                     
                     if (item.code === 'b') {
                         bgMusic.volume = 0.1;
@@ -428,7 +422,7 @@
                         }
                     } else {
                         img.classList.remove('hidden');
-                        let exts = (item.code === 'a' && item.rank === 2) ? ['png', 'jpg'] : ['jpg', 'png'];
+                        let exts = (item.code === 'a' && item.position == 2) ? ['png', 'jpg'] : ['jpg', 'png', 'jpeg'];
                         for(let ex of exts) {
                             if (await checkFile(`${fileName}.${ex}`, 'image')) { 
                                 img.src = `${fileName}.${ex}`; break; 
@@ -468,31 +462,14 @@
             const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
 
             segments.forEach(seg => {
-                const winners = allParticipants.filter(p => p.segment === seg)
-                    .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99)).slice(0, 3);
+                const winners = allParticipants
+                    .filter(p => p.segment === seg && (p.position == 1 || p.position == 2 || p.position == 3))
+                    .sort((a, b) => parseInt(a.position) - parseInt(b.position)); // টেবিলের জন্য ১, ২, ৩ ক্রম
 
                 if(winners.length > 0) {
-                    let html = `
-                        <div class="segment-card">
-                            <div class="segment-header">${seg}</div>
-                            <table class="w-full text-left">
-                                <tbody class="divide-y divide-white/5">
-                    `;
-                    winners.forEach((w, i) => {
-                        html += `
-                            <tr class="hover:bg-white/5 transition">
-                                <td class="p-4">
-                                    <div class="text-sm font-bold text-slate-200">${w.name}</div>
-                                    <div class="text-[10px] text-slate-500 uppercase">${w.institute}</div>
-                                </td>
-                                <td class="p-4 text-center">
-                                    <span class="text-xs font-black text-amber-500">${w.position}তম</span>
-                                </td>
-                                <td class="p-4 text-right">
-                                    <button onclick="viewWork('${codes[seg]}', ${i+1})" class="bg-amber-500 text-slate-900 text-[10px] font-bold py-2 px-3 rounded-lg uppercase">কাজ</button>
-                                </td>
-                            </tr>
-                        `;
+                    let html = `<div class="segment-card"><div class="segment-header">${seg}</div><table class="w-full text-left"><tbody class="divide-y divide-white/5">`;
+                    winners.forEach(w => {
+                        html += `<tr class="hover:bg-white/5 transition"><td class="p-4"><div class="text-sm font-bold text-slate-200">${w.name}</div><div class="text-[10px] text-slate-500 uppercase">${w.institute}</div></td><td class="p-4 text-center"><span class="text-xs font-black text-amber-500">${w.position}তম</span></td><td class="p-4 text-right"><button onclick="viewWork('${codes[seg]}', ${w.position})" class="bg-amber-500 text-slate-900 text-[10px] font-bold py-2 px-3 rounded-lg uppercase">কাজ</button></td></tr>`;
                     });
                     html += `</tbody></table></div>`;
                     container.innerHTML += html;
@@ -500,15 +477,14 @@
             });
         }
 
-        async function viewWork(code, rank) {
+        async function viewWork(code, pos) {
             const popup = document.getElementById('mediaPopup');
             const container = document.getElementById('popupContent');
             container.innerHTML = '<div class="p-10 text-center text-[10px] uppercase text-slate-500 animate-pulse">লোড হচ্ছে...</div>';
             popup.style.display = 'flex';
-            const fileName = `${code}${rank}`;
+            const fileName = `${code}${pos}`;
             const isVideo = (code === 'b');
-            const exts = isVideo ? ['mp4', 'mov'] : (code==='a'&&rank===2?['png','jpg']:['jpg','png']);
-            
+            const exts = isVideo ? ['mp4', 'mov'] : (code==='a'&&pos==2?['png','jpg']:['jpg','png','jpeg']);
             for(let ex of exts) {
                 const url = `${fileName}.${ex}`;
                 if (await checkFile(url, isVideo ? 'video' : 'image')) {
@@ -519,11 +495,7 @@
             container.innerHTML = '<div class="p-10 text-center text-red-500 text-xs">ফাইল পাওয়া যায়নি</div>';
         }
 
-        function restartExperience() {
-            localStorage.removeItem('inquilab_visited');
-            location.reload();
-        }
-
+        function restartExperience() { localStorage.removeItem('inquilab_visited'); location.reload(); }
         window.addEventListener('load', initPreloader);
     </script>
 </body>
