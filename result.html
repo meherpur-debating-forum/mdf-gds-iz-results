@@ -11,14 +11,13 @@
     <style>
         :root { --accent: #fbbf24; --bg-dark: #020617; }
         body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow-x: hidden; }
-        
-        /* এন্ট্রি স্টেজ ডিজাইন */
+
         .entry-stage { position: fixed; inset: 0; z-index: 100; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
         .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
 
         .ui-card { background: #1e293b; border: 1px solid #334155; transform: translateY(20px); opacity: 0; transition: all 0.8s ease 0.5s; }
         .ui-card.show { transform: translateY(0); opacity: 1; }
-        
+
         .stat-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.4); }
 
         /* অফলাইন সার্টিফিকেট ক্যানভাস */
@@ -27,6 +26,10 @@
         #writing-zone { position: absolute; top: 490px; bottom: 595.2px; left: 172.8px; right: 700.8px; display: flex; flex-direction: column; align-items: center; }
         .cert-name-final { font-size: 110px; font-weight: 800; color: #000; margin-bottom: 40px; text-align: center; line-height: 1.2; }
         .cert-body-final { font-size: 52px; line-height: 1.5; color: #000; text-align: center; font-weight: 500; max-width: 2100px; }
+        
+        /* ফোন নম্বর ওয়াটারমার্ক স্টাইল */
+        #phone-watermark { position: absolute; bottom: 10px; right: 10px; font-size: 20px; color: #000; font-weight: 600; font-family: sans-serif; opacity: 0.7; }
+
         .b { font-weight: 800; }
         .highlight { font-weight: 900; text-decoration: underline; text-underline-offset: 10px; }
 
@@ -65,11 +68,9 @@
                 <h2 class="text-lg font-bold text-white mb-1">আপনার সার্টিফিকেট তৈরি হচ্ছে...</h2>
                 <p class="text-slate-400 text-sm">অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন</p>
             </div>
-
             <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
                 <div id="progress-fill" class="progress-bar-fill bg-amber-500 h-full" style="width: 0%"></div>
             </div>
-
             <div class="text-2xl font-mono font-bold text-amber-500" id="timer">02:00</div>
         </div>
 
@@ -89,6 +90,7 @@
                 <h1 id="out-name" class="cert-name-final">লোডিং...</h1>
                 <div id="out-body" class="cert-body-final"></div>
             </div>
+            <div id="phone-watermark"></div>
         </div>
     </div>
 
@@ -96,22 +98,15 @@
     <script>
         const bgMusic = document.getElementById('bgMusic');
         const phone = localStorage.getItem('userPhone');
-        
         if (!phone) { window.location.href = 'signup.html'; }
 
-        // ১. মিউজিক সিঙ্ক লজিক
         window.addEventListener('load', () => {
             const savedTime = localStorage.getItem('musicCurrentTime');
-            if (savedTime) {
-                bgMusic.currentTime = parseFloat(savedTime);
-            }
+            if (savedTime) { bgMusic.currentTime = parseFloat(savedTime); }
         });
 
-        bgMusic.ontimeupdate = () => {
-            localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
-        };
+        bgMusic.ontimeupdate = () => { localStorage.setItem('musicCurrentTime', bgMusic.currentTime); };
 
-        // ২. পোর্টাল এক্সেস ফাংশন
         function accessPortal() {
             bgMusic.play().catch(() => {});
             document.getElementById('entryStage').classList.add('hidden-stage');
@@ -126,25 +121,27 @@
             if (userResults.length > 0) {
                 statusBox.innerHTML = '';
                 userResults.forEach((user, index) => {
-                    const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
-                    const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
+                    const segData = allParticipants.filter(p => p.segment === user.segment);
+                    
+                    // যৌথ অবস্থান লজিক
+                    let jointText = "";
+                    const isPoetry = user.segment.includes("কবিতা");
+                    if(isPoetry) {
+                        const othersWithSameMark = segData.filter(p => p.mark === user.mark && p.name !== user.name);
+                        if(othersWithSameMark.length > 0) {
+                            const names = othersWithSameMark.map(p => p.name).join(', ');
+                            jointText = `<p class="text-amber-200/60 text-[10px] mt-2 leading-relaxed font-medium">${names}-দের সাথে যৌথভাবে অবস্থান ${user.position}</p>`;
+                        }
+                    }
+
                     const isGraffiti = user.segment.includes("গ্রাফিতি");
                     const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
 
-                    let btnHTML = '';
-                    if (isLocked) {
-                        btnHTML = `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>`;
-                    } else {
-                        if(isGraffiti) {
-                            btnHTML = `
-                                <div class="col-span-2 mb-2"><button onclick="generate(${index}, '${user.institute || 'Institution'}', true)" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl text-sm transition active:scale-95 shadow-lg">🏢 প্রতিষ্ঠানের সার্টিফিকেট</button></div>
-                                <div class="col-span-2 grid grid-cols-2 gap-2">
-                                    ${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600 active:scale-95">👤 ${m}</button>`).join('')}
-                                </div>`;
-                        } else {
-                            btnHTML = `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95 shadow-lg">📥 সার্টিফিকেট ডাউনলোড</button>`;
-                        }
-                    }
+                    let btnHTML = isLocked ? `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>` : 
+                        (isGraffiti ? `
+                        <div class="col-span-2 mb-2"><button onclick="generate(${index}, '${user.institute || 'Institution'}', true)" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl text-sm transition active:scale-95 shadow-lg">🏢 প্রতিষ্ঠানের সার্টিফিকেট</button></div>
+                        <div class="col-span-2 grid grid-cols-2 gap-2">${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600 active:scale-95">👤 ${m}</button>`).join('')}</div>` : 
+                        `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95 shadow-lg">📥 সার্টিফিকেট ডাউনলোড</button>`);
 
                     statusBox.innerHTML += `
                         <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700">
@@ -152,12 +149,13 @@
                                 <span class="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase border border-amber-500/20">${user.segment}</span>
                                 <h3 class="text-white text-xl font-bold mt-2">${user.name}</h3>
                                 <p class="text-slate-400 text-xs">${user.institute || 'N/A'}</p>
+                                ${jointText}
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-6">
                                 <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">মার্ক</p><p class="text-xl font-black">${user.mark}</p></div>
-                                <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">পজিশন</p><p class="text-xl font-black text-amber-500">${pos} তম</p></div>
+                                <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">পজিশন</p><p class="text-xl font-black text-amber-500">${user.position}</p></div>
                             </div>
-                            <div class="grid grid-cols-2 gap-2" id="btn-container-${index}">${btnHTML}</div>
+                            <div class="grid grid-cols-2 gap-2">${btnHTML}</div>
                         </div>`;
                 });
             }
@@ -169,19 +167,13 @@
             let timeLeft = 120;
             const timerEl = document.getElementById('timer');
             const progressEl = document.getElementById('progress-fill');
-            const waitContainer = document.getElementById('wait-container');
-
             const countdown = setInterval(() => {
                 timeLeft--;
-                let mins = Math.floor(timeLeft / 60);
-                let secs = timeLeft % 60;
-                timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                let progress = ((120 - timeLeft) / 120) * 100;
-                progressEl.style.width = progress + '%';
-
+                timerEl.innerText = `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}`;
+                progressEl.style.width = (((120 - timeLeft) / 120) * 100) + '%';
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    waitContainer.innerHTML = `<div class="text-green-400 font-bold flex items-center justify-center gap-2 py-2"><span>✅</span> সার্টিফিকেট জেনারেট সম্পন্ন হয়েছে!</div>`;
+                    document.getElementById('wait-container').innerHTML = `<div class="text-green-400 font-bold flex items-center justify-center gap-2 py-2">✅ সার্টিফিকেট জেনারেট সম্পন্ন!</div>`;
                     renderResults(false);
                 }
             }, 1000);
@@ -189,12 +181,12 @@
 
         async function generate(idx, targetName, isInst) {
             const user = userResults[idx];
-            const segData = allParticipants.filter(p => p.segment === user.segment).sort((a,b) => b.mark - a.mark);
-            const pos = segData.findIndex(p => p.phone === user.phone && p.name === user.name) + 1;
             document.getElementById('out-name').innerText = targetName;
+            document.getElementById('phone-watermark').innerText = phone; // ওয়াটারমার্কে নম্বর সেট
+            
             const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`, gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
             const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
-            const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${pos} তম অবস্থান</span>`;
+            const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${user.position} অবস্থান</span>`;
 
             if(isInst) {
                 document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
@@ -205,9 +197,8 @@
 
             try {
                 const canvas = await html2canvas(document.getElementById('certificate-canvas'), { scale: 1, useCORS: true });
-                const imgData = canvas.toDataURL('image/jpeg', 0.9);
                 const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
-                pdf.addImage(imgData, 'JPEG', 0, 0, 29, 21);
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 29, 21);
                 pdf.save(`Certificate_${targetName}.pdf`);
             } catch (e) { alert("ডাউনলোডে সমস্যা হচ্ছে।"); }
         }
@@ -216,4 +207,5 @@
     </script>
 </body>
 </html>
+
 
