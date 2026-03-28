@@ -45,7 +45,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 1.2s cubic-bezier(0.87, 0, 0.13, 1);
+            transition: all 1s cubic-bezier(0.87, 0, 0.13, 1);
         }
 
         .gateway-stage.active-hide {
@@ -58,15 +58,15 @@
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 2.5rem;
-            padding: 3rem 2rem;
-            width: 90%;
-            max-width: 500px;
+            border-radius: 2rem;
+            padding: 2.5rem 1.5rem;
+            width: 95%;
+            max-width: 450px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            transform: translateY(40px);
+            transform: translateY(30px);
             opacity: 0;
             display: none;
-            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.8s ease-out;
         }
 
         .premium-card.active-show {
@@ -75,37 +75,43 @@
             opacity: 1;
         }
 
+        /* ১১টি বক্সের জন্য রেসপন্সিভ র‍্যাপার */
         .otp-wrapper {
             display: flex;
+            flex-wrap: nowrap; /* সব বক্স এক লাইনে রাখার চেষ্টা */
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             margin: 2rem 0;
+            width: 100%;
         }
 
         .digit-box {
-            width: 32px;
+            width: calc(100% / 11 - 4px); /* ১১টি বক্সের সমানুপাতিক প্রস্থ */
+            max-width: 35px;
             height: 45px;
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--primary);
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
         }
 
         .digit-box:focus {
             border-color: var(--primary);
             background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
             transform: scale(1.05);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+            20% { transform: translateX(-5px); }
+            60% { transform: translateX(5px); }
         }
         .error-shake { animation: shake 0.3s ease-in-out; }
 
@@ -117,6 +123,12 @@
             animation: scan 3s linear infinite;
         }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        /* ছোট মোবাইলের জন্য অতিরিক্ত স্পেসিং অ্যাডজাস্টমেন্ট */
+        @media (max-width: 375px) {
+            .digit-box { height: 40px; font-size: 1rem; }
+            .otp-wrapper { gap: 2px; }
+        }
     </style>
 </head>
 <body>
@@ -126,34 +138,34 @@
 
     <!-- ১. গেটওয়ে স্ক্রিন -->
     <div id="gateway" class="gateway-stage">
-        <div class="relative mb-12">
-            <div class="w-24 h-24 rounded-full border-2 border-amber-500/30 flex items-center justify-center p-2 mb-6">
+        <div class="relative mb-10">
+            <div class="w-20 h-20 rounded-full border-2 border-amber-500/30 flex items-center justify-center p-2 mb-6">
                 <div class="w-full h-full rounded-full border border-amber-500 flex items-center justify-center animate-pulse">
-                    <span class="text-amber-500 text-3xl font-black">IZ</span>
+                    <span class="text-amber-500 text-2xl font-black">IZ</span>
                 </div>
             </div>
             <div class="scan-line"></div>
         </div>
 
-        <div class="text-center space-y-4 px-6">
-            <h1 class="text-3xl md:text-4xl font-bold tracking-tighter text-white">ইনকিলাব জিন্দাবাদ <span class="text-amber-500">২০২৬</span></h1>
-            <p class="text-slate-400 font-medium text-xs tracking-[0.2em] uppercase">National Talent Recognition Portal</p>
+        <div class="text-center space-y-3 px-6">
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white">ইনকিলাব জিন্দাবাদ <span class="text-amber-500">২০২৬</span></h1>
+            <p class="text-slate-400 font-medium text-[10px] tracking-[0.2em] uppercase">National Talent Recognition Portal</p>
         </div>
 
-        <button onclick="startExperience()" class="mt-16 group relative">
-            <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 to-yellow-400 rounded-2xl blur opacity-25 group-hover:opacity-100 transition duration-1000"></div>
-            <div class="relative px-12 py-5 bg-amber-500 rounded-2xl flex items-center transition active:scale-95">
-                <span class="text-slate-900 font-black text-xl tracking-tight">পোর্টাল খুলুন 🔓</span>
+        <button onclick="startExperience()" class="mt-12 group relative">
+            <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 to-yellow-400 rounded-xl blur opacity-25 group-hover:opacity-100 transition duration-1000"></div>
+            <div class="relative px-10 py-4 bg-amber-500 rounded-xl flex items-center transition active:scale-95">
+                <span class="text-slate-900 font-black text-lg tracking-tight">পোর্টাল খুলুন 🔓</span>
             </div>
         </button>
-        <div class="absolute bottom-10 text-slate-600 text-[10px] uppercase tracking-[0.3em]">Secure Access Point v2.4</div>
+        <div class="absolute bottom-10 text-slate-600 text-[8px] uppercase tracking-[0.3em]">Secure Access Point v2.4</div>
     </div>
 
     <!-- ২. মেইন কন্টেন্ট এরিয়া -->
     <div id="mainContainer" class="premium-card">
-        <div class="text-center space-y-3 mb-10">
-            <h2 class="text-3xl font-bold text-white tracking-tight">পরিচয় যাচাই</h2>
-            <p class="text-slate-400 text-sm">রেজাল্ট দেখতে ১১ ডিজিটের নম্বরটি দিন</p>
+        <div class="text-center space-y-2 mb-8">
+            <h2 class="text-2xl font-bold text-white tracking-tight">পরিচয় যাচাই</h2>
+            <p class="text-slate-400 text-xs">আপনার রেজাল্ট দেখতে ১১ ডিজিটের নম্বরটি দিন</p>
         </div>
 
         <div id="inputGroup" class="otp-wrapper">
@@ -167,23 +179,26 @@
 
         <div id="loader" class="hidden py-4 text-center">
             <div class="flex items-center justify-center gap-2">
-                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
-                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                <div class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></div>
+                <div class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
             </div>
         </div>
 
         <div id="errorMsg" class="hidden mb-6">
-            <div class="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl text-center">
-                <p class="text-red-400 text-xs font-semibold">এই নম্বরটি আমাদের তালিকায় নেই।</p>
+            <div class="bg-red-500/10 border border-red-500/30 p-3 rounded-xl text-center">
+                <p class="text-red-400 text-[10px] font-semibold leading-relaxed">দুঃখিত! এই নম্বরটি আমাদের সংরক্ষিত তালিকায় নেই। সঠিক নম্বর দিয়ে পুনরায় চেষ্টা করুন।</p>
             </div>
         </div>
 
-        <div class="mt-12 pt-8 border-t border-slate-800 flex items-center justify-between">
-            <a href="index.html" class="text-slate-500 hover:text-white transition text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"></path></svg> হোম
+        <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between">
+            <a href="index.html" class="text-slate-500 hover:text-white transition text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> হোম পেজ
             </a>
-            <span class="text-[10px] text-slate-600 uppercase tracking-tighter">System Online</span>
+            <div class="flex items-center gap-1.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <span class="text-[9px] text-slate-600 uppercase tracking-tighter">System Online</span>
+            </div>
         </div>
     </div>
 
@@ -201,8 +216,9 @@
             setTimeout(() => {
                 gateway.style.display = 'none';
                 mainCard.classList.add('active-show');
-                document.querySelectorAll('.digit-box')[0].focus();
-            }, 800);
+                const inputs = document.querySelectorAll('.digit-box');
+                if(inputs.length > 0) inputs[0].focus();
+            }, 700);
         }
 
         function handleInput(el, index) {
@@ -237,12 +253,16 @@
                     if (found) {
                         localStorage.setItem('userPhone', combinedNumber);
                         mainCard.style.borderColor = "#10b981";
+                        mainCard.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.2)";
                         setTimeout(() => window.location.href = 'result.html', 500);
                     } else {
                         loader.classList.add('hidden');
                         errorMsg.classList.remove('hidden');
                         mainCard.classList.add('error-shake');
-                        setTimeout(() => mainCard.classList.remove('error-shake'), 500);
+                        setTimeout(() => mainCard.classList.remove('error-shake'), 400);
+                        
+                        // ভাইব্রেশন ও রিসেট
+                        if (navigator.vibrate) navigator.vibrate(150);
                         inputs.forEach(i => i.value = "");
                         inputs[0].focus();
                     }
