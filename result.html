@@ -2,208 +2,280 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ফলাফল ও সার্টিফিকেট</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --accent: #fbbf24; --bg-dark: #020617; }
-        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg-dark); color: #f1f5f9; overflow-x: hidden; }
+        :root { --gold: #fbbf24; --deep-bg: #020617; }
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--deep-bg);
+            color: #f1f5f9;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .entry-stage { position: fixed; inset: 0; z-index: 100; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
-        .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        .ui-card { background: #1e293b; border: 1px solid #334155; transform: translateY(20px); opacity: 0; transition: all 0.8s ease 0.5s; }
-        .ui-card.show { transform: translateY(0); opacity: 1; }
+        .gold-glow {
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+            background: linear-gradient(to bottom, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-        .stat-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.4); }
+        #introStage {
+            position: fixed; inset: 0; z-index: 1000;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            display: flex; align-items: center; justify-content: center;
+        }
 
-        #cert-hidden-container { position: absolute; left: -9999px; top: 0; }
-        #certificate-canvas { width: 2784px; height: 2016px; background: white; position: relative; overflow: hidden; }
-        #writing-zone { position: absolute; top: 490px; bottom: 595.2px; left: 172.8px; right: 700.8px; display: flex; flex-direction: column; align-items: center; }
-        .cert-name-final { font-size: 110px; font-weight: 800; color: #000; margin-bottom: 40px; text-align: center; line-height: 1.2; }
-        .cert-body-final { font-size: 52px; line-height: 1.5; color: #000; text-align: center; font-weight: 500; max-width: 2100px; }
+        /* Certificate Stage (29.7in x 21in @ 96DPI) */
+        #cert-stage {
+            position: fixed; left: -9999px; top: 0;
+            width: 2851.2px; height: 2016px; 
+            background: white;
+        }
+        .cert-container {
+            width: 2851.2px; height: 2016px;
+            position: relative;
+        }
         
-        #phone-watermark { position: absolute; bottom: 10px; right: 10px; font-size: 20px; color: #000; font-weight: 600; font-family: sans-serif; opacity: 0.7; }
+        /* আপনার দেয়া সুনির্দিষ্ট মাপ অনুযায়ী লেআউট */
+        .cert-content-area {
+            position: absolute;
+            top: 451.2px;    /* উপরে থেকে ৪.৭ ইঞ্চি */
+            bottom: 624px;   /* নিচে থেকে ৬.৫ ইঞ্চি */
+            left: 192px;     /* বাম সাইড থেকে ২ ইঞ্চি */
+            right: 720px;    /* ডান সাইড থেকে ৭.৫ ইঞ্চি */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #111;
+        }
+        
+        .cert-name { 
+            font-size: 145px; 
+            font-weight: 800; 
+            margin-bottom: 50px; 
+            color: #000;
+        }
+        
+        .cert-desc { 
+            font-size: 58px; 
+            line-height: 1.7; 
+            font-weight: 500; 
+            color: #222;
+        }
 
-        .b { font-weight: 800; }
-        .highlight { font-weight: 900; text-decoration: underline; text-underline-offset: 10px; }
-
-        @keyframes pulse-gold { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .generating-text { animation: pulse-gold 2s infinite; }
-        .progress-bar-fill { transition: width 1s linear; }
+        /* মোবাইল নম্বর: নিচ থেকে ০.৩", ডান থেকে ০.০৯", হাইট ০.৭", উইডথ ৫" */
+        .cert-phone {
+            position: absolute;
+            bottom: 28.8px;  /* ০.৩ ইঞ্চি */
+            right: 8.64px;   /* ০.০৯ ইঞ্চি */
+            width: 480px;    /* ৫ ইঞ্চি */
+            height: 67.2px;  /* ০.৭ ইঞ্চি */
+            font-size: 48px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: #333;
+        }
     </style>
 </head>
-<body class="flex flex-col items-center p-4 min-h-screen pb-20">
+<body class="p-4 md:p-10 pb-32">
 
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="bg.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="entryStage" class="entry-stage">
-        <div class="text-center">
-            <div class="mb-8 p-6">
-                <img src="iz-logo.jpg" class="w-24 h-24 rounded-2xl mx-auto shadow-2xl border border-amber-500/30 mb-4">
-                <h3 class="text-amber-500 font-bold tracking-widest text-xs uppercase">Security Verified</h3>
+    <div id="introStage">
+        <div class="text-center p-6 w-full max-w-sm">
+            <div class="mb-10 relative">
+                <div class="absolute inset-0 bg-amber-500 blur-[100px] opacity-20"></div>
+                <img src="iz-logo.jpg" class="relative w-32 h-32 rounded-[2.5rem] mx-auto border border-amber-500/30 shadow-2xl">
             </div>
-            <button onclick="accessPortal()" class="bg-amber-500 text-slate-900 px-12 py-4 rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(251,191,36,0.3)] hover:scale-105 transition active:scale-95">
+            <h1 class="text-white text-3xl font-black mb-2">ইনকিলাব ২০২৬</h1>
+            <p class="text-slate-500 text-xs uppercase tracking-[0.3em] mb-12">রেজাল্ট পোর্টাল</p>
+            <button onclick="initApp()" class="w-full bg-amber-500 text-slate-950 py-6 rounded-3xl font-black text-2xl shadow-[0_20px_50px_rgba(251,191,36,0.3)] active:scale-95 transition-all">
                 ফলাফল দেখুন 📄
             </button>
         </div>
     </div>
 
-    <div id="mainUI" class="ui-card p-6 md:p-10 rounded-[2.5rem] max-w-2xl w-full mt-6 shadow-2xl">
-        <div class="text-center border-b border-slate-700 pb-6 mb-6">
-            <h1 class="text-2xl font-bold text-amber-400 mb-1 leading-tight">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</h1>
-            <p class="text-slate-400 text-[12px] uppercase tracking-widest">ফলাফল ও সার্টিফিকেট পোর্টাল</p>
-        </div>
-
-        <div id="wait-container" class="mb-8 p-6 bg-slate-900/50 rounded-3xl border border-amber-500/20 text-center">
-            <div class="mb-4">
-                <span class="text-amber-400 text-4xl block mb-2 generating-text">⚙️</span>
-                <h2 class="text-lg font-bold text-white mb-1">আপনার সার্টিফিকেট তৈরি হচ্ছে...</h2>
-                <p class="text-slate-400 text-sm">অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন</p>
+    <main id="mainContent" class="hidden max-w-4xl mx-auto opacity-0 translate-y-10 transition-all duration-1000">
+        <header class="flex justify-between items-end mb-12 px-2">
+            <div>
+                <h2 class="text-4xl font-black text-white italic">RESULT <span class="text-amber-500 not-italic">PORTAL</span></h2>
             </div>
-            <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
-                <div id="progress-fill" class="progress-bar-fill bg-amber-500 h-full" style="width: 0%"></div>
-            </div>
-            <div class="text-2xl font-mono font-bold text-amber-500" id="timer">02:00</div>
-        </div>
+            <button onclick="logout()" class="text-red-400 text-xs font-bold uppercase tracking-widest border-b border-red-400/20 pb-1">Logout</button>
+        </header>
+        <div id="resultsGrid" class="space-y-8"></div>
+    </main>
 
-        <div id="status-box" class="space-y-10"></div>
-
-        <div class="mt-12 pt-6 border-t border-slate-800 text-center">
-             <p class="text-[10px] text-slate-500 italic mb-6">সতর্কবার্তা: এটি একটি অটো-জেনারেটেড কপি। দাপ্তরিক কাজে মূল সার্টিফিকেট প্রযোজ্য।</p>
-             <button onclick="logout()" class="text-amber-500 hover:text-white text-sm transition underline">অন্য নম্বর দিয়ে ফলাফল দেখুন</button>
+    <div id="loader" class="fixed inset-0 bg-slate-950/90 backdrop-blur-2xl z-[2000] hidden items-center justify-center">
+        <div class="text-center">
+            <div class="w-24 h-24 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-8"></div>
+            <h3 class="text-2xl font-bold text-white mb-2">সার্টিফিকেট তৈরি হচ্ছে...</h3>
         </div>
     </div>
 
-    <div id="cert-hidden-container">
-        <div id="certificate-canvas">
-            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-certicificate_20260319_010229_0000.png" 
-                 class="absolute inset-0 w-full h-full object-fill" crossOrigin="anonymous">
-            <div id="writing-zone">
-                <h1 id="out-name" class="cert-name-final">লোডিং...</h1>
-                <div id="out-body" class="cert-body-final"></div>
+    <div id="cert-stage">
+        <div id="masterCert" class="cert-container">
+            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-certicificate_20260319_010229_0000.png" class="absolute inset-0 w-full h-full" crossOrigin="anonymous">
+            <div class="cert-content-area">
+                <div id="certName" class="cert-name"></div>
+                <div id="certDesc" class="cert-desc"></div>
             </div>
-            <div id="phone-watermark"></div>
+            <div id="certPhone" class="cert-phone"></div>
         </div>
     </div>
 
     <script src="data.js"></script>
     <script>
-        const bgMusic = document.getElementById('bgMusic');
         const phone = localStorage.getItem('userPhone');
-        if (!phone) { window.location.href = 'signup.html'; }
+        if(!phone) window.location.href = 'signup.html';
 
-        window.addEventListener('load', () => {
-            const savedTime = localStorage.getItem('musicCurrentTime');
-            if (savedTime) { bgMusic.currentTime = parseFloat(savedTime); }
-        });
+        const myEntries = allParticipants.filter(p => String(p.phone).trim() === String(phone).trim());
 
-        bgMusic.ontimeupdate = () => { localStorage.setItem('musicCurrentTime', bgMusic.currentTime); };
-
-        function accessPortal() {
-            bgMusic.play().catch(() => {});
-            document.getElementById('entryStage').classList.add('hidden-stage');
-            document.getElementById('mainUI').classList.add('show');
-            startTimer();
+        function bnToEnNum(str) {
+            const bn = {'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9','।':'.'};
+            return String(str).split('').map(char => bn[char] || char).join('');
         }
 
-        // নম্বর ইংরেজিতে থাকলেও যেন ফিল্টার কাজ করে
-        const userResults = allParticipants.filter(p => String(p.phone) === String(phone));
-        const statusBox = document.getElementById('status-box');
+        function enToBnNum(str) {
+            const en = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯','.':'।'};
+            return String(str).split('').map(char => en[char] || char).join('');
+        }
 
-        function renderResults(isLocked) {
-            if (userResults.length > 0) {
-                statusBox.innerHTML = '';
-                userResults.forEach((user, index) => {
-                    const segData = allParticipants.filter(p => p.segment === user.segment);
-                    
-                    let jointText = "";
-                    const isPoetry = user.segment.includes("কবিতা");
+        function formatPosition(pos) {
+            if(!pos || pos === "" || pos === "প্রক্রিয়াধীন") return "অংশগ্রহণকারী";
+            const cleanPos = bnToEnNum(pos);
+            const num = parseInt(cleanPos);
+            if(isNaN(num)) return pos;
+            const suffixes = {1: '১ম', 2: '২য়', 3: '৩য়', 4: '৪র্থ', 5: '৫ম', 6: '৬ষ্ঠ', 7: '৭ম', 8: ' ৮ম', 9: '৯ম', 10: '১০ম'};
+            if(suffixes[num]) return suffixes[num];
+            return enToBnNum(num) + 'শ';
+        }
 
-                    if(isPoetry) {
-                        // মার্ক দশমিক হলেও যেন স্ট্রিং হিসেবে নির্ভুলভাবে কাজ করে
-                        const othersWithSameMark = segData.filter(p => String(p.mark) === String(user.mark) && p.name !== user.name);
-                        if(othersWithSameMark.length > 0) {
-                            const names = othersWithSameMark.map(p => p.name).join(', ');
-                            const suffix = othersWithSameMark.length === 1 ? "-এর" : "-দের";
-                            jointText = `<p class="text-amber-200/60 text-[10px] mt-2 leading-relaxed font-medium">${names}${suffix} সাথে যৌথভাবে অবস্থান ${user.position}</p>`;
-                        }
-                    }
+        function initApp() {
+            document.getElementById('bgMusic').play().catch(() => {});
+            document.getElementById('introStage').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('introStage').style.display = 'none';
+                const main = document.getElementById('mainContent');
+                main.classList.remove('hidden');
+                setTimeout(() => main.classList.remove('opacity-0', 'translate-y-10'), 50);
+            }, 800);
+            renderPortal();
+        }
 
-                    const isGraffiti = user.segment.includes("গ্রাফিতি");
-                    const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
+        function renderPortal() {
+            const grid = document.getElementById('resultsGrid');
+            if(myEntries.length === 0) {
+                grid.innerHTML = `<div class="glass-card p-20 text-center text-slate-500 font-bold uppercase tracking-widest">No Result Found</div>`;
+                return;
+            }
 
-                    let btnHTML = isLocked ? `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>` : 
-                        (isGraffiti ? `
-                        <div class="col-span-2 mb-2"><button onclick="generate(${index}, '${user.institute || 'Institution'}', true)" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl text-sm transition active:scale-95 shadow-lg">🏢 প্রতিষ্ঠানের সার্টিফিকেট</button></div>
-                        <div class="col-span-2 grid grid-cols-2 gap-2">${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600 active:scale-95">👤 ${m}</button>`).join('')}</div>` : 
-                        `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95 shadow-lg">📥 সার্টিফিকেট ডাউনলোড</button>`);
+            myEntries.forEach(entry => {
+                const rankText = formatPosition(entry.position);
+                const isPending = !entry.mark || entry.mark === "" || entry.mark === "প্রক্রিয়াধীন";
+                const names = entry.name.split(',').map(n => n.trim());
 
-                    statusBox.innerHTML += `
-                        <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700">
-                            <div class="text-center mb-6">
-                                <span class="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase border border-amber-500/20">${user.segment}</span>
-                                <h3 class="text-white text-xl font-bold mt-2">${user.name}</h3>
-                                <p class="text-slate-400 text-xs">${user.institute || 'N/A'}</p>
-                                ${jointText}
+                grid.innerHTML += `
+                    <div class="glass-card p-8 md:p-12 relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                                <div>
+                                    <span class="bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase px-4 py-1.5 rounded-full border border-amber-500/20 mb-4 inline-block tracking-widest">
+                                        ${entry.segment}
+                                    </span>
+                                    <h3 class="text-3xl md:text-4xl font-black text-white leading-tight">
+                                        ${names.length > 1 ? entry.institute : entry.name}
+                                    </h3>
+                                    <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2">${entry.institute}</p>
+                                </div>
+                                <div class="text-left md:text-right border-l md:border-l-0 md:border-r border-amber-500/20 pl-6 md:pr-6">
+                                    <div class="text-5xl md:text-6xl font-black gold-glow leading-none">${rankText}</div>
+                                    <p class="text-[10px] font-black text-slate-600 uppercase tracking-widest mt-3">Position</p>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">মার্ক</p><p class="text-xl font-black">${user.mark}</p></div>
-                                <div class="stat-box p-3 rounded-2xl text-center"><p class="text-slate-500 text-[10px] uppercase">পজিশন</p><p class="text-xl font-black text-amber-500">${user.position}</p></div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-10">
+                                <div class="bg-slate-950/40 p-6 rounded-[2rem] border border-white/5">
+                                    <p class="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Score</p>
+                                    <p class="text-3xl font-black text-white">${entry.mark || '--'}<span class="text-xs text-slate-600 font-normal">/১০০</span></p>
+                                </div>
+                                <div class="bg-slate-950/40 p-6 rounded-[2rem] border border-white/5">
+                                    <p class="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-1">Status</p>
+                                    <p class="text-xl font-black ${isPending ? 'text-amber-500' : 'text-green-400'}">${isPending ? 'প্রক্রিয়াধীন' : 'Awarded 🏆'}</p>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-2">${btnHTML}</div>
-                        </div>`;
-                });
-            } else {
-                statusBox.innerHTML = `<div class="text-center p-10 bg-slate-800/50 rounded-3xl border border-red-500/20 text-red-400 font-bold">এই নম্বরের বিপরীতে কোনো ফলাফল পাওয়া যায়নি।</div>`;
+
+                            ${!isPending ? (
+                                names.length > 1 ? `
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        ${names.map(name => `
+                                            <button onclick="downloadCert('${name}', '${entry.segment}', '${entry.mark}', '${rankText}')" 
+                                                    class="bg-slate-800/50 hover:bg-slate-800 p-5 rounded-2xl flex justify-between items-center border border-white/5 transition active:scale-95 group/btn">
+                                                <span class="font-bold text-slate-300">${name}</span>
+                                                <span class="text-amber-500 group-hover/btn:translate-x-1 transition-transform">📥</span>
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                ` : `
+                                    <button onclick="downloadCert('${entry.name}', '${entry.segment}', '${entry.mark}', '${rankText}')" 
+                                            class="w-full bg-amber-500 text-slate-950 py-6 rounded-3xl font-black text-xl shadow-2xl active:scale-95 transition flex items-center justify-center gap-3">
+                                        সার্টিফিকেট ডাউনলোড 📥
+                                    </button>
+                                `
+                            ) : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function downloadCert(name, segment, mark, rank) {
+            const loader = document.getElementById('loader');
+            loader.style.display = 'flex';
+
+            document.getElementById('certName').innerText = name;
+            document.getElementById('certDesc').innerHTML = `এই মর্মে প্রত্যয়ন করা যাইতেছে যে, মেহেরপুর ডিবেটিং ফোরাম ও জেন-জি ডিবেটিং সোসাইটির যৌথ উদ্যোগে আয়োজিত <span style="font-weight:800">'ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬'</span> এ <span style="font-weight:800">${segment}</span> বিভাগে অংশগ্রহণ করিয়া তিনি <span style="font-weight:800">${mark}</span> নম্বর অর্জনের সহিত <span style="font-weight:800">${rank}</span> স্থান অধিকার করিয়াছেন। তাহার এই অসামান্য কৃতিত্বের জন্য আমরা গর্বিত।`;
+            document.getElementById('certPhone').innerText = phone;
+
+            try {
+                await new Promise(r => setTimeout(r, 1200));
+                const certArea = document.getElementById('masterCert');
+                const canvas = await html2canvas(certArea, { scale: 1.5, useCORS: true });
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'px', format: [canvas.width, canvas.height] });
+                pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                pdf.save(`Certificate_${name.replace(/\s+/g, '_')}.pdf`);
+            } catch (err) {
+                alert("ডাউনলোড ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
+            } finally {
+                loader.style.display = 'none';
             }
         }
 
-        renderResults(true);
-
-        function startTimer() {
-            let timeLeft = 120;
-            const timerEl = document.getElementById('timer');
-            const progressEl = document.getElementById('progress-fill');
-            const countdown = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}`;
-                progressEl.style.width = (((120 - timeLeft) / 120) * 100) + '%';
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    document.getElementById('wait-container').innerHTML = `<div class="text-green-400 font-bold flex items-center justify-center gap-2 py-2">✅ সার্টিফিকেট জেনারেট সম্পন্ন!</div>`;
-                    renderResults(false);
-                }
-            }, 1000);
-        }
-
-        async function generate(idx, targetName, isInst) {
-            const user = userResults[idx];
-            document.getElementById('out-name').innerText = targetName;
-            document.getElementById('phone-watermark').innerText = phone;
-            
-            const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`, gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
-            const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
-            const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${user.position} অবস্থান</span>`;
-            
-            document.getElementById('out-body').innerHTML = isInst ? 
-                `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।` : 
-                `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ <span class="b">${user.segment} সেগমেন্টে</span> ${user.institute ? `<span class="b">${user.institute}</span> হইতে` : `উক্ত প্রতিষ্ঠান হইতে`} উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তিনি ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
-
-            try {
-                const canvas = await html2canvas(document.getElementById('certificate-canvas'), { scale: 1, useCORS: true });
-                const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
-                pdf.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 29, 21);
-                pdf.save(`Certificate_${targetName}.pdf`);
-            } catch (e) { console.error(e); }
-        }
-
-        function logout() { localStorage.removeItem('userPhone'); window.location.href = 'signup.html'; }
+        function logout() { localStorage.clear(); window.location.href = 'signup.html'; }
     </script>
 </body>
 </html>
+
