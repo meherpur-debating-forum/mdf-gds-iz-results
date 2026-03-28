@@ -2,152 +2,349 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ফলাফল যাচাই | ইনকিলাব ২০২৬</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>প্রবেশদ্বার | ইনকিলাব জিন্দাবাদ ২০২৬</title>
+    
+    <!-- Tailwind CSS & Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --accent: #ffd700; --bg-dark: #121212; }
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; overflow: hidden; }
-        
-        /* এন্ট্রি স্টেজ ডিজাইন */
-        .entry-stage { position: fixed; inset: 0; z-index: 100; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; transition: all 1s ease; }
-        .hidden-stage { opacity: 0; pointer-events: none; transform: scale(1.1); }
-
-        .login-card { background: #1e1e1e; transform: translateY(30px); opacity: 0; transition: all 0.8s ease 0.4s; border: 1px solid #334155; }
-        .login-card.show { transform: translateY(0); opacity: 1; }
-
-        .otp-input {
-            width: 8.5%; max-width: 40px; height: 50px; text-align: center; background: #252525;
-            border: 1px solid #444; border-radius: 6px; font-size: 1.2rem; font-weight: bold;
-            color: var(--accent); outline: none; -moz-appearance: textfield;
-            transition: all 0.3s;
+        /* কালার ভেরিয়েবল এবং বেস স্টাইল */
+        :root {
+            --primary: #fbbf24;
+            --primary-dark: #d97706;
+            --bg-deep: #020617;
+            --card-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(251, 191, 36, 0.2);
         }
-        .otp-input::-webkit-outer-spin-button, .otp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .otp-input:focus { border-color: var(--accent); box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); transform: scale(1.05); }
 
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f1f5f9;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ডাইনামিক ব্যাকগ্রাউন্ড গ্রাডিয়েন্ট */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        /* এন্ট্রি স্ক্রিন অ্যানিমেশন */
+        .gateway-stage {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 1.2s cubic-bezier(0.87, 0, 0.13, 1);
+        }
+
+        .gateway-stage.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.1);
+        }
+
+        /* প্রিমিয়াম কার্ড ডিজাইন */
+        .premium-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2.5rem;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .premium-card.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ইনপুট বক্স স্টাইল */
+        .otp-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 2rem 0;
+        }
+
+        .digit-box {
+            width: 100%;
+            aspect-ratio: 1/1.3;
+            max-width: 42px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .digit-box:focus {
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* সাবমিট বাটন এবং অন্যান্য */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.6s ease;
+        }
+
+        .btn-glow:hover::after {
+            transform: scale(1);
+        }
+
+        /* এরর এবং শেক অ্যানিমেশন */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
         }
-        .animate-shake { animation: shake 0.3s ease-in-out; }
+
+        .error-shake { animation: shake 0.4s ease-in-out; }
+
+        /* কাস্টম স্ক্যান লাইন ইফেক্ট */
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.3;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* মোবাইল স্ক্রিন অপ্টিমাইজেশন */
+        @media (max-width: 480px) {
+            .digit-box { font-size: 1.2rem; border-radius: 8px; }
+            .premium-card { padding: 2rem 1.5rem; border-radius: 1.5rem; }
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen items-center justify-center p-4">
+<body>
 
-    <!-- মিউজিক প্লেয়ার -->
-    <audio id="bgMusic" loop>
+    <div class="bg-mesh"></div>
+
+    <!-- অডিও এলিমেন্ট -->
+    <audio id="bgMusic" loop preload="auto">
         <source src="bg.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- এন্ট্রি গেটওয়ে -->
-    <div id="entryStage" class="entry-stage">
-        <div class="text-center">
-            <div class="mb-10">
-                <div class="w-16 h-1 border-t-2 border-amber-500 mx-auto mb-4 animate-pulse"></div>
-                <h3 class="text-amber-500 font-bold tracking-[0.4em] text-[10px] uppercase">Results Portal 2026</h3>
+    <!-- ১. এন্ট্রি গেটওয়ে স্ক্রিন -->
+    <div id="gateway" class="gateway-stage">
+        <div class="relative mb-12">
+            <!-- লোগো বা আইকন প্লেসহোল্ডার -->
+            <div class="w-24 h-24 rounded-full border-2 border-amber-500/30 flex items-center justify-center p-2 mb-6">
+                <div class="w-full h-full rounded-full border border-amber-500 flex items-center justify-center animate-pulse">
+                    <span class="text-amber-500 text-3xl font-black">IZ</span>
+                </div>
             </div>
-            <button onclick="unlockLogin()" class="bg-amber-500 text-slate-900 px-10 py-4 rounded-2xl font-black text-lg shadow-[0_15px_40px_rgba(251,191,36,0.2)] hover:scale-105 transition active:scale-95">
-                রেজাল্ট পোর্টাল খুলুন 🔓
-            </button>
+            <div class="scan-line"></div>
         </div>
+
+        <div class="text-center space-y-4 px-6">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tighter text-white">ইনকিলাব জিন্দাবাদ <span class="text-amber-500">২০২৬</span></h1>
+            <p class="text-slate-400 font-medium text-sm tracking-[0.2em] uppercase">National Talent Recognition Portal</p>
+        </div>
+
+        <button onclick="startExperience()" class="mt-16 group relative">
+            <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 to-yellow-400 rounded-2xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <div class="relative px-12 py-5 bg-amber-500 rounded-2xl leading-none flex items-center transition duration-200 group-active:scale-95">
+                <span class="text-slate-900 font-black text-xl tracking-tight">পোর্টাল খুলুন 🔓</span>
+            </div>
+        </button>
+
+        <div class="absolute bottom-10 text-slate-600 text-[10px] uppercase tracking-[0.3em]">Secure Access Point v2.4</div>
     </div>
 
-    <!-- মেইন লগইন কার্ড -->
-    <div id="loginCard" class="login-card p-6 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-lg">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl md:text-3xl font-bold text-[#ffd700]">ফলাফল যাচাই</h2>
-            <p class="text-gray-400 mt-2 text-sm md:text-base">আপনার ১১ ডিজিটের মোবাইল নম্বরটি লিখুন</p>
-        </div>
-        
-        <div id="otp-container" class="flex justify-center gap-1 md:gap-2 mb-8">
-            <input class="otp-input" type="number" oninput="moveNext(this, 0)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 1)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 2)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 3)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 4)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 5)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 6)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 7)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 8)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 9)">
-            <input class="otp-input" type="number" oninput="moveNext(this, 10)">
+    <!-- ২. মেইন কন্টেন্ট এরিয়া -->
+    <div id="mainContainer" class="premium-card">
+        <div class="text-center space-y-3 mb-10">
+            <h2 class="text-3xl font-bold text-white tracking-tight">পরিচয় যাচাই</h2>
+            <p class="text-slate-400 text-sm">আপনার রেজাল্ট দেখতে ১১ ডিজিটের নম্বরটি প্রবেশ করান</p>
         </div>
 
-        <div id="loader" class="hidden text-center mb-4">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-[#ffd700]"></div>
-            <p class="text-xs text-amber-500/60 mt-2 font-medium">সার্ভার যাচাই করা হচ্ছে...</p>
+        <!-- নম্বর ইনপুট গ্রিড -->
+        <div id="inputGroup" class="otp-wrapper">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 0)" onkeydown="handleKey(event, 0)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 1)" onkeydown="handleKey(event, 1)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 2)" onkeydown="handleKey(event, 2)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 3)" onkeydown="handleKey(event, 3)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 4)" onkeydown="handleKey(event, 4)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 5)" onkeydown="handleKey(event, 5)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 6)" onkeydown="handleKey(event, 6)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 7)" onkeydown="handleKey(event, 7)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 8)" onkeydown="handleKey(event, 8)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 9)" onkeydown="handleKey(event, 9)" autocomplete="off">
+            <input class="digit-box" type="tel" maxlength="1" oninput="handleInput(this, 10)" onkeydown="handleKey(event, 10)" autocomplete="off">
         </div>
-        
-        <p id="error" class="text-red-400 text-sm hidden text-center font-semibold bg-red-900/10 p-4 rounded-xl border border-red-900/40 animate-shake">নম্বরটি আমাদের তালিকায় পাওয়া যায়নি। আবার চেষ্টা করুন।</p>
-        
-        <div class="text-center mt-10">
-            <a href="index.html" class="text-gray-500 hover:text-white text-xs uppercase tracking-widest font-bold transition flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                হোম পেজে ফিরে যান
+
+        <!-- লোডার এবং স্ট্যাটাস মেসেজ -->
+        <div id="loader" class="hidden py-4 text-center">
+            <div class="flex items-center justify-center gap-3">
+                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div class="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
+            </div>
+            <p class="text-amber-500/60 text-[10px] mt-4 uppercase tracking-[0.2em] font-bold">Encrypted Link Establishing...</p>
+        </div>
+
+        <div id="errorMsg" class="hidden">
+            <div class="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl flex items-center gap-3 mb-6">
+                <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </div>
+                <p class="text-red-400 text-xs font-semibold">দুঃখিত! এই নম্বরটি আমাদের সংরক্ষিত তালিকায় নেই। সঠিক নম্বর দিয়ে পুনরায় চেষ্টা করুন।</p>
+            </div>
+        </div>
+
+        <!-- ফুটার লিংকস -->
+        <div class="mt-12 pt-8 border-t border-slate-800 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-slate-500 hover:text-white transition group">
+                <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <span class="text-xs font-bold uppercase tracking-widest">হোম পেজ</span>
             </a>
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                <span class="text-[10px] text-slate-600 uppercase tracking-tighter">System Online</span>
+            </div>
         </div>
     </div>
 
+    <!-- জাভাস্ক্রিপ্ট লজিক -->
     <script src="data.js"></script>
     <script>
+        const gateway = document.getElementById('gateway');
+        const mainCard = document.getElementById('mainContainer');
         const bgMusic = document.getElementById('bgMusic');
-        const inputs = document.querySelectorAll('.otp-input');
+        const inputs = document.querySelectorAll('.digit-box');
+        const loader = document.getElementById('loader');
+        const errorMsg = document.getElementById('errorMsg');
 
+        // এন্ট্রি লজিক
+        function startExperience() {
+            // মিউজিক হ্যান্ডলিং
+            bgMusic.play().catch(e => console.log("Auto-play blocked"));
+            
+            // ট্রানজিশন ইফেক্ট
+            gateway.classList.add('hidden');
+            setTimeout(() => {
+                mainCard.classList.add('active');
+                inputs[0].focus();
+            }, 600);
+        }
+
+        // ইনপুট হ্যান্ডলিং
+        function handleInput(el, index) {
+            // শুধুমাত্র সংখ্যা গ্রহণ করবে
+            el.value = el.value.replace(/[^0-9]/g, '');
+
+            if (el.value.length === 1 && index < 10) {
+                inputs[index + 1].focus();
+            }
+            
+            checkSequence();
+        }
+
+        // কীবোর্ড হ্যান্ডলিং (ব্যাকস্পেস)
+        function handleKey(e, index) {
+            if (e.key === "Backspace" && e.target.value === "" && index > 0) {
+                inputs[index - 1].focus();
+            }
+        }
+
+        // নম্বর ভ্যালিডেশন এবং রিডাইরেকশন
+        function checkSequence() {
+            let combinedNumber = "";
+            inputs.forEach(input => combinedNumber += input.value);
+
+            if (combinedNumber.length === 11) {
+                // UI স্টেট আপডেট
+                loader.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+                mainCard.classList.remove('error-shake');
+
+                // ডাটাবেজ সার্চ (data.js থেকে)
+                setTimeout(() => {
+                    const found = typeof allParticipants !== 'undefined' && 
+                                  allParticipants.some(p => String(p.phone) === combinedNumber);
+
+                    if (found) {
+                        // সেশন সেভ এবং সফল রিডাইরেক্ট
+                        localStorage.setItem('userPhone', combinedNumber);
+                        
+                        // সাকসেস ইফেক্ট
+                        mainCard.style.borderColor = "#10b981";
+                        mainCard.style.boxShadow = "0 0 30px rgba(16, 185, 129, 0.2)";
+                        
+                        setTimeout(() => {
+                            window.location.href = 'result.html';
+                        }, 500);
+                    } else {
+                        // ফেইলর স্টেট
+                        loader.classList.add('hidden');
+                        errorMsg.classList.remove('hidden');
+                        mainCard.classList.add('error-shake');
+                        
+                        // ইনপুট রিসেট এবং ফোকাস
+                        inputs.forEach(i => i.value = "");
+                        inputs[0].focus();
+
+                        // এরর ভাইব্রেশন (মোবাইলের জন্য)
+                        if (navigator.vibrate) navigator.vibrate(200);
+                    }
+                }, 800);
+            }
+        }
+
+        // অটো-মিউজিক রেজুম
         window.addEventListener('load', () => {
-            const savedTime = localStorage.getItem('musicCurrentTime');
-            if (savedTime) { bgMusic.currentTime = parseFloat(savedTime); }
+            const lastTimeconst allParticipants = [];localStorage.getItem('musicTime');
+            if (lastTime) bgMusic.currentTime = parseFloat(lastTime);
         });
 
         bgMusic.ontimeupdate = () => {
-            localStorage.setItem('musicCurrentTime', bgMusic.currentTime);
+            localStorage.setItem('musicTime', bgMusic.currentTime);
         };
-
-        function unlockLogin() {
-            bgMusic.play().catch(() => {});
-            document.getElementById('entryStage').classList.add('hidden-stage');
-            document.getElementById('loginCard').classList.add('show');
-            document.body.style.overflow = "auto";
-            inputs[0].focus();
-        }
-
-        function moveNext(current, index) {
-            if (current.value.length > 1) current.value = current.value.slice(0, 1);
-            if (current.value !== "" && index < 10) inputs[index + 1].focus();
-            checkFull();
-        }
-
-        inputs.forEach((input, index) => {
-            input.addEventListener('keydown', (e) => {
-                if (e.key === "Backspace" && input.value === "" && index > 0) {
-                    inputs[index - 1].focus();
-                }
-            });
-        });
-
-        function checkFull() {
-            let phone = "";
-            inputs.forEach(i => phone += i.value);
-            if (phone.length === 11) {
-                document.getElementById('loader').classList.remove('hidden');
-                document.getElementById('error').classList.add('hidden');
-                
-                setTimeout(() => {
-                    const exists = allParticipants.some(p => p.phone === phone);
-                    if (exists) { 
-                        localStorage.setItem('userPhone', phone); 
-                        window.location.href = 'result.html'; 
-                    }
-                    else { 
-                        document.getElementById('loader').classList.add('hidden');
-                        document.getElementById('error').classList.remove('hidden');
-                        inputs.forEach(i => i.value = "");
-                        inputs[0].focus();
-                    }
-                }, 1000);
-            }
-        }
     </script>
 </body>
 </html>
