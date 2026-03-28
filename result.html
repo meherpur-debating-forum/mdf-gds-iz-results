@@ -27,7 +27,6 @@
         .cert-name-final { font-size: 110px; font-weight: 800; color: #000; margin-bottom: 40px; text-align: center; line-height: 1.2; }
         .cert-body-final { font-size: 52px; line-height: 1.5; color: #000; text-align: center; font-weight: 500; max-width: 2100px; }
         
-        /* ফোন নম্বর ওয়াটারমার্ক স্টাইল */
         #phone-watermark { position: absolute; bottom: 10px; right: 10px; font-size: 20px; color: #000; font-weight: 600; font-family: sans-serif; opacity: 0.7; }
 
         .b { font-weight: 800; }
@@ -126,15 +125,18 @@
                     // যৌথ অবস্থান লজিক
                     let jointText = "";
                     const isPoetry = user.segment.includes("কবিতা");
+                    const isGraffiti = user.segment.includes("গ্রাফিতি");
+
                     if(isPoetry) {
                         const othersWithSameMark = segData.filter(p => p.mark === user.mark && p.name !== user.name);
                         if(othersWithSameMark.length > 0) {
                             const names = othersWithSameMark.map(p => p.name).join(', ');
-                            jointText = `<p class="text-amber-200/60 text-[10px] mt-2 leading-relaxed font-medium">${names}-দের সাথে যৌথভাবে অবস্থান ${user.position}</p>`;
+                            // ১ জন লোক থাকলে "এর সাথে" এবং একাধিক লোক থাকলে "দের সাথে" দেখাবে
+                            const suffix = othersWithSameMark.length === 1 ? "-এর" : "-দের";
+                            jointText = `<p class="text-amber-200/60 text-[10px] mt-2 leading-relaxed font-medium">${names}${suffix} সাথে যৌথভাবে অবস্থান ${user.position}</p>`;
                         }
                     }
 
-                    const isGraffiti = user.segment.includes("গ্রাফিতি");
                     const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
 
                     let btnHTML = isLocked ? `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>` : 
@@ -143,6 +145,7 @@
                         <div class="col-span-2 grid grid-cols-2 gap-2">${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600 active:scale-95">👤 ${m}</button>`).join('')}</div>` : 
                         `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95 shadow-lg">📥 সার্টিফিকেট ডাউনলোড</button>`);
 
+                    // কার্ড রেন্ডারিং - এখানে মার্ক এবং পজিশন সরাসরি বাংলা ডাটা দেখাবে
                     statusBox.innerHTML += `
                         <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700">
                             <div class="text-center mb-6">
@@ -182,25 +185,22 @@
         async function generate(idx, targetName, isInst) {
             const user = userResults[idx];
             document.getElementById('out-name').innerText = targetName;
-            document.getElementById('phone-watermark').innerText = phone; // ওয়াটারমার্কে নম্বর সেট
+            document.getElementById('phone-watermark').innerText = phone;
             
             const mdf = `<span class="b">মেহেরপুর ডিবেটিং ফোরাম</span>`, gds = `<span class="b">জেন-জি ডিবেটিং সোসাইটি</span>`;
             const event = `<span class="b">ইনকিলাব জিন্দাবাদ : জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</span>`;
             const marks = `<span class="highlight">${user.mark} মার্ক</span>`, position = `<span class="highlight">${user.position} অবস্থান</span>`;
-
-            if(isInst) {
-                document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
-            } else {
-                const instStr = user.institute ? `<span class="b">${user.institute}</span> হইতে` : `উক্ত প্রতিষ্ঠান হইতে`;
-                document.getElementById('out-body').innerHTML = `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ <span class="b">${user.segment} সেগমেন্টে</span> ${instStr} উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তিনি ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
-            }
+            
+            document.getElementById('out-body').innerHTML = isInst ? 
+                `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ গ্রাফিতি অঙ্কন সেগমেন্টে উক্ত প্রতিষ্ঠানের কৃতি শিক্ষার্থীগণ অংশগ্রহণ করিয়াছিলেন। তাহাদিগের এই অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তাহারা ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহারা এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।` : 
+                `এত দ্বারা প্রত্যয়ন করা হইতেছে যে, ${mdf} ও ${gds} এর যৌথ উদ্যোগে আয়োজিত ${event} এ <span class="b">${user.segment} সেগমেন্টে</span> ${user.institute ? `<span class="b">${user.institute}</span> হইতে` : `উক্ত প্রতিষ্ঠান হইতে`} উক্ত কৃতি শিক্ষার্থী অংশগ্রহণ করিয়াছিলো। তাহার অসামান্য অবদানের জন্য ধন্যবাদ জ্ঞাপনের সহিত জানানো যাইতেছে যে তিনি ${marks} অর্জনের সহিত ${position} অধিকার করিয়াছেন। তাহার এই কৃতিত্বের জন্য ${gds} ও ${mdf} গর্বিত।`;
 
             try {
                 const canvas = await html2canvas(document.getElementById('certificate-canvas'), { scale: 1, useCORS: true });
                 const pdf = new jspdf.jsPDF({ orientation: 'l', unit: 'in', format: [29, 21] });
                 pdf.addImage(canvas.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, 29, 21);
                 pdf.save(`Certificate_${targetName}.pdf`);
-            } catch (e) { alert("ডাউনলোডে সমস্যা হচ্ছে।"); }
+            } catch (e) { console.error(e); }
         }
 
         function logout() { localStorage.removeItem('userPhone'); window.location.href = 'signup.html'; }
