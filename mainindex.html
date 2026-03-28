@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মেমোরি ও লিডারবোর্ড</title>
+    <title>ইনকিলাব ২৬ | মেমোরি ও রেজাল্ট</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +22,36 @@
             overflow-x: hidden;
         }
 
+        /* প্রি-লোডার স্ক্রিন */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loader-bar {
+            width: 220px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-top: 25px;
+            overflow: hidden;
+        }
+
+        #progressLine {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.3s ease;
+        }
+
         .stage {
             position: fixed;
             inset: 0;
@@ -37,21 +67,13 @@
         .hidden-stage {
             opacity: 0;
             pointer-events: none;
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
 
         #logoStage img {
             width: 160px;
             border-radius: 2rem;
             box-shadow: 0 0 40px rgba(251, 191, 36, 0.2);
-        }
-
-        .showcase-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .hero-text {
@@ -62,17 +84,13 @@
             opacity: 0;
             transform: translateY(20px);
         }
-        .hero-text.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .hero-text.active { opacity: 1; transform: translateY(0); }
         .hero-text.shifted {
             font-size: 1.5rem;
             transform: translateY(-20px);
             color: var(--primary);
         }
 
-        /* সেগমেন্ট এনাউন্সমেন্ট স্টাইল */
         .segment-announcer {
             font-size: 3rem;
             font-weight: 900;
@@ -83,10 +101,7 @@
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: absolute;
         }
-        .segment-announcer.active {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .segment-announcer.active { opacity: 1; transform: scale(1); }
 
         .detail-box {
             opacity: 0;
@@ -94,9 +109,7 @@
             text-align: center;
             margin-top: 10px;
         }
-        .detail-box.active {
-            opacity: 1;
-        }
+        .detail-box.active { opacity: 1; }
 
         .media-container {
             width: 85vw;
@@ -113,6 +126,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
         .media-container.active { opacity: 1; transform: scale(1); }
         .media-content { width: 100%; height: 100%; object-fit: contain; }
@@ -138,7 +152,6 @@
             font-weight: 800;
             color: var(--primary);
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-size: 0.8rem;
             border-bottom: 1px solid rgba(251, 191, 36, 0.2);
         }
@@ -153,41 +166,61 @@
             justify-content: center;
             padding: 20px;
         }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(251, 191, 36, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" loop><source src="bg.mp3" type="audio/mpeg"></audio>
+    <!-- ১. গ্লোবাল প্রি-লোডার -->
+    <div id="preloader">
+        <img src="iz-logo.jpg" class="w-24 rounded-2xl mb-6 animate-pulse" alt="Logo">
+        <div id="loaderStatus" class="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold">সার্টিফিকেট ও মেমোরি লোড হচ্ছে...</div>
+        <div class="loader-bar">
+            <div id="progressLine"></div>
+        </div>
+    </div>
 
-    <div id="startStage" class="stage">
+    <audio id="bgMusic" loop preload="auto"><source src="bg.mp3" type="audio/mpeg"></audio>
+
+    <!-- ২. শুরু করার স্টেজ -->
+    <div id="startStage" class="stage hidden-stage">
         <div class="text-center">
             <h3 class="text-amber-500 font-bold tracking-widest text-xs mb-6 opacity-50 uppercase">National Inquilab 2026</h3>
-            <button onclick="handleStart()" class="bg-amber-500 text-slate-900 font-black px-14 py-5 rounded-full text-xl shadow-[0_20px_50px_rgba(251,191,36,0.3)] hover:scale-105 active:scale-95 transition">
+            <button id="mainStartBtn" onclick="handleStart()" class="bg-amber-500 text-slate-900 font-black px-14 py-5 rounded-full text-xl shadow-[0_20px_50px_rgba(251,191,36,0.3)] hover:scale-105 active:scale-95 transition">
                 স্মৃতি ও ফলাফল 📸
             </button>
         </div>
     </div>
 
+    <!-- ৩. লোগো স্টেজ -->
     <div id="logoStage" class="stage hidden-stage">
         <img src="iz-logo.jpg" alt="IZ Logo">
     </div>
 
-    <!-- মেমোরি শোকেস -->
+    <!-- ৪. মেমোরি শোকেস -->
     <div id="memoryStage" class="stage hidden-stage">
-        <!-- সেগমেন্ট এনাউন্সার -->
-        <div id="segAnnounce" class="segment-announcer">সেগমেন্টের নাম</div>
+        <div id="segAnnounce" class="segment-announcer"></div>
 
         <div id="winnerWrapper" class="showcase-wrapper hidden">
             <h1 id="mainTitle" class="hero-text text-white px-6"></h1>
-            
             <div id="detailBox" class="detail-box">
                 <p id="detInst" class="text-slate-400 font-medium text-sm"></p>
                 <div id="detRank" class="bg-amber-500/20 text-amber-500 px-4 py-1 rounded-full text-[10px] font-bold inline-block border border-amber-500/30 mt-2 uppercase tracking-tighter"></div>
             </div>
 
             <div id="mediaBox" class="media-container">
+                <div id="mediaSpinner" class="spinner absolute z-10 hidden"></div>
                 <img id="displayImg" class="media-content hidden" src="">
-                <video id="displayVid" class="media-content hidden" playsinline></video>
+                <video id="displayVid" class="media-content hidden" playsinline muted></video>
             </div>
 
             <button id="nextBtn" onclick="nextSlide()" class="next-btn bg-white text-slate-900 px-10 py-3 rounded-full font-black text-sm uppercase tracking-widest">
@@ -196,6 +229,7 @@
         </div>
     </div>
 
+    <!-- ৫. মেইন পোর্টাল -->
     <div id="mainPortal" class="stage hidden-stage !block overflow-y-auto px-5 py-12">
         <div class="max-w-md mx-auto">
             <div class="text-center mb-10">
@@ -222,6 +256,7 @@
         </div>
     </div>
 
+    <!-- পপআপ -->
     <div id="mediaPopup" onclick="this.style.display='none'">
         <div class="max-w-sm w-full" onclick="event.stopPropagation()">
             <div id="popupContent" class="bg-black rounded-3xl overflow-hidden border border-white/10 shadow-2xl"></div>
@@ -233,52 +268,84 @@
     <script>
         const bgMusic = document.getElementById('bgMusic');
         const stages = {
+            preloader: document.getElementById('preloader'),
             start: document.getElementById('startStage'),
             logo: document.getElementById('logoStage'),
             memory: document.getElementById('memoryStage'),
             portal: document.getElementById('mainPortal')
         };
         
-        let showcaseTimeline = []; // { type: 'segment'|'winner', data: object }
+        let timeline = [];
         let currentIndex = 0;
 
-        function prepareData() {
+        // --- প্রি-লোডিং লজিক ---
+        const assetsToPreload = [
+            'iz-logo.jpg',
+            'bg.mp3',
+            'certificate-bg.jpg', // সার্টিফিকেট লোড নিশ্চিত করবে
+            'p1.jpg', 'p2.jpg', 'p3.jpg',
+            'g1.jpg', 'g2.jpg', 'g3.jpg',
+            'a1.jpg', 'a2.png', 'a3.jpg'
+        ];
+
+        function initPreloader() {
+            let loaded = 0;
+            const progressLine = document.getElementById('progressLine');
+            const statusText = document.getElementById('loaderStatus');
+
+            assetsToPreload.forEach(url => {
+                const img = new Image();
+                img.src = url;
+                img.onload = img.onerror = () => {
+                    loaded++;
+                    const progress = (loaded / assetsToPreload.length) * 100;
+                    progressLine.style.width = progress + '%';
+                    
+                    if (loaded === assetsToPreload.length) {
+                        setTimeout(() => {
+                            stages.preloader.style.opacity = '0';
+                            setTimeout(() => {
+                                stages.preloader.style.display = 'none';
+                                stages.start.classList.remove('hidden-stage');
+                            }, 800);
+                        }, 500);
+                    }
+                };
+            });
+        }
+
+        // --- ডাটা সিকুয়েন্সিং ---
+        function prepareTimeline() {
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
             const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
-            showcaseTimeline = [];
+            timeline = [];
             
             segments.forEach(seg => {
-                // ১. আগে সেগমেন্টের নাম এড করা
-                showcaseTimeline.push({ type: 'segment', name: seg });
-                
-                // ২. তারপর ওই সেগমেন্টের টপ ৩ বিজয়ীদের এড করা
+                timeline.push({ type: 'segment', name: seg });
                 const winners = allParticipants
                     .filter(p => p.segment === seg)
                     .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99))
                     .slice(0, 3);
                 
                 winners.forEach((w, i) => {
-                    showcaseTimeline.push({ 
-                        type: 'winner', 
-                        data: { ...w, rank: i+1, code: codes[seg] } 
-                    });
+                    timeline.push({ type: 'winner', data: { ...w, rank: i+1, code: codes[seg] } });
                 });
             });
         }
 
         function handleStart() {
             bgMusic.play().catch(() => {});
-            prepareData();
+            prepareTimeline();
             if (localStorage.getItem('inquilab_visited')) {
                 stages.start.classList.add('hidden-stage');
-                renderSegmentedTables();
+                renderTables();
                 setTimeout(() => stages.portal.classList.remove('hidden-stage'), 400);
             } else {
-                startSequence();
+                startExperience();
             }
         }
 
-        function startSequence() {
+        function startExperience() {
             stages.start.classList.add('hidden-stage');
             setTimeout(() => {
                 stages.logo.classList.remove('hidden-stage');
@@ -293,94 +360,83 @@
         }
 
         async function renderStep() {
-            if (currentIndex >= showcaseTimeline.length) {
+            if (currentIndex >= timeline.length) {
                 localStorage.setItem('inquilab_visited', 'true');
                 endMemory();
                 return;
             }
 
-            const step = showcaseTimeline[currentIndex];
-            const segAnnounce = document.getElementById('segAnnounce');
-            const winnerWrapper = document.getElementById('winnerWrapper');
+            const step = timeline[currentIndex];
+            const segAnn = document.getElementById('segAnnounce');
+            const winWrap = document.getElementById('winnerWrapper');
 
             if (step.type === 'segment') {
-                // সেগমেন্ট এনাউন্সমেন্ট
-                winnerWrapper.classList.add('hidden');
-                segAnnounce.innerText = step.name;
-                segAnnounce.classList.add('active');
-                
-                // ৩ সেকেন্ড পর অটো পরবর্তী (বিজয়ীর জন্য)
+                winWrap.classList.add('hidden');
+                segAnn.innerText = step.name;
+                segAnn.classList.add('active');
                 setTimeout(() => {
-                    segAnnounce.classList.remove('active');
-                    setTimeout(() => {
-                        currentIndex++;
-                        renderStep();
-                    }, 600);
+                    segAnn.classList.remove('active');
+                    setTimeout(() => { currentIndex++; renderStep(); }, 600);
                 }, 2500);
             } else {
-                // বিজয়ী শোকেস
-                segAnnounce.classList.remove('active');
-                winnerWrapper.classList.remove('hidden');
-                renderWinnerSlide(step.data);
+                segAnn.classList.remove('active');
+                winWrap.classList.remove('hidden');
+                renderWinner(step.data);
             }
         }
 
-        async function renderWinnerSlide(item) {
-            const titleEl = document.getElementById('mainTitle');
-            const detBox = document.getElementById('detailBox');
-            const mediaBox = document.getElementById('mediaBox');
-            const nextBtn = document.getElementById('nextBtn');
-            const imgEl = document.getElementById('displayImg');
-            const vidEl = document.getElementById('displayVid');
+        async function renderWinner(item) {
+            const title = document.getElementById('mainTitle');
+            const det = document.getElementById('detailBox');
+            const media = document.getElementById('mediaBox');
+            const btn = document.getElementById('nextBtn');
+            const spinner = document.getElementById('mediaSpinner');
+            const img = document.getElementById('displayImg');
+            const vid = document.getElementById('displayVid');
 
-            // UI Reset
-            titleEl.innerText = (item.segment === "গ্রাফিতি") ? item.institute : item.name;
+            // Reset UI
+            title.innerText = (item.segment === "গ্রাফিতি") ? item.institute : item.name;
             document.getElementById('detInst').innerText = (item.segment === "গ্রাফিতি") ? `দল: ${item.name}` : item.institute;
             document.getElementById('detRank').innerText = `${item.position} তম স্থান | ${item.segment}`;
             
-            titleEl.className = "hero-text text-white px-6 active";
-            detBox.classList.remove('active');
-            mediaBox.classList.remove('active');
-            nextBtn.classList.remove('show');
-            imgEl.classList.add('hidden');
-            vidEl.classList.add('hidden');
-            vidEl.pause();
+            title.className = "hero-text text-white px-6 active";
+            det.classList.remove('active');
+            media.classList.remove('active');
+            btn.classList.remove('show');
+            img.classList.add('hidden');
+            vid.classList.add('hidden');
+            spinner.classList.remove('hidden');
             bgMusic.volume = 1.0;
 
-            // ১. নাম হোল্ডিং (২ সেকেন্ড)
+            // ২ সেকেন্ড পর নাম মুভ হবে
             setTimeout(() => {
-                // ২. নাম ছোট হওয়া ও ডিটেইলস আসা
-                titleEl.classList.add('shifted');
-                detBox.classList.add('active');
+                title.classList.add('shifted');
+                det.classList.add('active');
 
-                // ৩. মিডিয়া লোড ও শো
+                // মিডিয়া লোড
                 setTimeout(async () => {
-                    mediaBox.classList.add('active');
-                    nextBtn.classList.add('show');
-                    
+                    media.classList.add('active');
                     const fileName = `${item.code}${item.rank}`;
+                    
                     if (item.code === 'b') {
                         bgMusic.volume = 0.1;
-                        vidEl.classList.remove('hidden');
-                        const exts = ['mp4', 'mov', 'webm'];
-                        for(let ex of exts) {
+                        vid.classList.remove('hidden');
+                        for(let ex of ['mp4', 'mov', 'webm']) {
                             if (await checkFile(`${fileName}.${ex}`, 'video')) { 
-                                vidEl.src = `${fileName}.${ex}`; 
-                                vidEl.play(); 
-                                break; 
+                                vid.src = `${fileName}.${ex}`; vid.play(); break; 
                             }
                         }
                     } else {
-                        imgEl.classList.remove('hidden');
-                        let exts = ['jpg', 'png', 'jpeg'];
-                        if (item.code === 'a' && item.rank === 2) exts = ['png', 'jpg'];
+                        img.classList.remove('hidden');
+                        let exts = (item.code === 'a' && item.rank === 2) ? ['png', 'jpg'] : ['jpg', 'png'];
                         for(let ex of exts) {
                             if (await checkFile(`${fileName}.${ex}`, 'image')) { 
-                                imgEl.src = `${fileName}.${ex}`; 
-                                break; 
+                                img.src = `${fileName}.${ex}`; break; 
                             }
                         }
                     }
+                    spinner.classList.add('hidden');
+                    btn.classList.add('show');
                 }, 800);
             }, 2000); 
         }
@@ -401,21 +457,19 @@
 
         function endMemory() {
             stages.memory.classList.add('hidden-stage');
-            renderSegmentedTables();
-            setTimeout(() => { stages.portal.classList.remove('hidden-stage'); }, 600);
+            renderTables();
+            setTimeout(() => stages.portal.classList.remove('hidden-stage'), 600);
         }
 
-        function renderSegmentedTables() {
+        function renderTables() {
             const container = document.getElementById('tableContainer');
             container.innerHTML = '';
             const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
             const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
 
             segments.forEach(seg => {
-                const winners = allParticipants
-                    .filter(p => p.segment === seg)
-                    .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99))
-                    .slice(0, 3);
+                const winners = allParticipants.filter(p => p.segment === seg)
+                    .sort((a, b) => (parseInt(a.position) || 99) - (parseInt(b.position) || 99)).slice(0, 3);
 
                 if(winners.length > 0) {
                     let html = `
@@ -424,7 +478,7 @@
                             <table class="w-full text-left">
                                 <tbody class="divide-y divide-white/5">
                     `;
-                    winners.forEach(w => {
+                    winners.forEach((w, i) => {
                         html += `
                             <tr class="hover:bg-white/5 transition">
                                 <td class="p-4">
@@ -435,7 +489,7 @@
                                     <span class="text-xs font-black text-amber-500">${w.position}তম</span>
                                 </td>
                                 <td class="p-4 text-right">
-                                    <button onclick="viewWork('${codes[seg]}', ${w.position})" class="bg-white/5 text-[10px] font-bold py-2 px-3 rounded-lg border border-white/5 uppercase">কাজ</button>
+                                    <button onclick="viewWork('${codes[seg]}', ${i+1})" class="bg-amber-500 text-slate-900 text-[10px] font-bold py-2 px-3 rounded-lg uppercase">কাজ</button>
                                 </td>
                             </tr>
                         `;
@@ -446,27 +500,20 @@
             });
         }
 
-        async function viewWork(code, pos) {
+        async function viewWork(code, rank) {
             const popup = document.getElementById('mediaPopup');
             const container = document.getElementById('popupContent');
             container.innerHTML = '<div class="p-10 text-center text-[10px] uppercase text-slate-500 animate-pulse">লোড হচ্ছে...</div>';
             popup.style.display = 'flex';
-            const fileName = `${code}${pos}`;
-            if (code === 'b') {
-                const exts = ['mp4', 'mov', 'webm'];
-                for(let ex of exts) {
-                    if (await checkFile(`${fileName}.${ex}`, 'video')) {
-                        container.innerHTML = `<video src="${fileName}.${ex}" controls autoplay class="w-full"></video>`;
-                        return;
-                    }
-                }
-            } else {
-                const exts = ['jpg', 'png', 'jpeg'];
-                for(let ex of exts) {
-                    if (await checkFile(`${fileName}.${ex}`, 'image')) {
-                        container.innerHTML = `<img src="${fileName}.${ex}" class="w-full">`;
-                        return;
-                    }
+            const fileName = `${code}${rank}`;
+            const isVideo = (code === 'b');
+            const exts = isVideo ? ['mp4', 'mov'] : (code==='a'&&rank===2?['png','jpg']:['jpg','png']);
+            
+            for(let ex of exts) {
+                const url = `${fileName}.${ex}`;
+                if (await checkFile(url, isVideo ? 'video' : 'image')) {
+                    container.innerHTML = isVideo ? `<video src="${url}" controls autoplay class="w-full"></video>` : `<img src="${url}" class="w-full">`;
+                    return;
                 }
             }
             container.innerHTML = '<div class="p-10 text-center text-red-500 text-xs">ফাইল পাওয়া যায়নি</div>';
@@ -476,6 +523,8 @@
             localStorage.removeItem('inquilab_visited');
             location.reload();
         }
+
+        window.addEventListener('load', initPreloader);
     </script>
 </body>
 </html>
