@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>প্রবেশদ্বার | ইনকিলাব জিন্দাবাদ ২০২৬</title>
+    <title>লগইন</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -75,10 +75,9 @@
             opacity: 1;
         }
 
-        /* ১১টি বক্সের জন্য রেসপন্সিভ র‍্যাপার */
         .otp-wrapper {
             display: flex;
-            flex-wrap: nowrap; /* সব বক্স এক লাইনে রাখার চেষ্টা */
+            flex-wrap: nowrap;
             justify-content: center;
             gap: 4px;
             margin: 2rem 0;
@@ -86,7 +85,7 @@
         }
 
         .digit-box {
-            width: calc(100% / 11 - 4px); /* ১১টি বক্সের সমানুপাতিক প্রস্থ */
+            width: calc(100% / 11 - 4px);
             max-width: 35px;
             height: 45px;
             background: rgba(30, 41, 59, 0.5);
@@ -124,7 +123,6 @@
         }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        /* ছোট মোবাইলের জন্য অতিরিক্ত স্পেসিং অ্যাডজাস্টমেন্ট */
         @media (max-width: 375px) {
             .digit-box { height: 40px; font-size: 1rem; }
             .otp-wrapper { gap: 2px; }
@@ -240,28 +238,34 @@
         function checkSequence() {
             const inputs = document.querySelectorAll('.digit-box');
             let combinedNumber = "";
-            inputs.forEach(input => combinedNumber += input.value);
+            inputs.forEach(input => combinedNumber += input.value.trim());
 
+            // যখন ১১ ডিজিট পূর্ণ হবে
             if (combinedNumber.length === 11) {
                 loader.classList.remove('hidden');
                 errorMsg.classList.add('hidden');
                 
                 setTimeout(() => {
+                    // ডাটাবেজে সার্চ করার জন্য লজিক (স্ট্রিং ক্লিনিং সহ)
                     const found = typeof allParticipants !== 'undefined' && 
-                                  allParticipants.some(p => String(p.phone).trim() === combinedNumber);
+                                  allParticipants.some(p => {
+                                      // ডাটাবেজের ফোন নম্বর এবং ইনপুট দেওয়া নম্বর দুইটাই ক্লিন করে চেক করা
+                                      const dbPhone = String(p.phone).replace(/\s/g, '').trim();
+                                      const inputPhone = combinedNumber.replace(/\s/g, '').trim();
+                                      return dbPhone === inputPhone;
+                                  });
 
                     if (found) {
                         localStorage.setItem('userPhone', combinedNumber);
                         mainCard.style.borderColor = "#10b981";
                         mainCard.style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.2)";
-                        setTimeout(() => window.location.href = 'result.html', 500);
+                        setTimeout(() => window.location.href = 'results.html', 500);
                     } else {
                         loader.classList.add('hidden');
                         errorMsg.classList.remove('hidden');
                         mainCard.classList.add('error-shake');
                         setTimeout(() => mainCard.classList.remove('error-shake'), 400);
                         
-                        // ভাইব্রেশন ও রিসেট
                         if (navigator.vibrate) navigator.vibrate(150);
                         inputs.forEach(i => i.value = "");
                         inputs[0].focus();
