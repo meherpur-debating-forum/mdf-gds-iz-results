@@ -20,7 +20,6 @@
 
         .stat-box { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(71, 85, 105, 0.4); }
 
-        /* অফলাইন সার্টিফিকেট ক্যানভাস */
         #cert-hidden-container { position: absolute; left: -9999px; top: 0; }
         #certificate-canvas { width: 2784px; height: 2016px; background: white; position: relative; overflow: hidden; }
         #writing-zone { position: absolute; top: 490px; bottom: 595.2px; left: 172.8px; right: 700.8px; display: flex; flex-direction: column; align-items: center; }
@@ -113,7 +112,8 @@
             startTimer();
         }
 
-        const userResults = allParticipants.filter(p => p.phone === phone);
+        // নম্বর ইংরেজিতে থাকলেও যেন ফিল্টার কাজ করে
+        const userResults = allParticipants.filter(p => String(p.phone) === String(phone));
         const statusBox = document.getElementById('status-box');
 
         function renderResults(isLocked) {
@@ -122,21 +122,20 @@
                 userResults.forEach((user, index) => {
                     const segData = allParticipants.filter(p => p.segment === user.segment);
                     
-                    // যৌথ অবস্থান লজিক
                     let jointText = "";
                     const isPoetry = user.segment.includes("কবিতা");
-                    const isGraffiti = user.segment.includes("গ্রাফিতি");
 
                     if(isPoetry) {
-                        const othersWithSameMark = segData.filter(p => p.mark === user.mark && p.name !== user.name);
+                        // মার্ক দশমিক হলেও যেন স্ট্রিং হিসেবে নির্ভুলভাবে কাজ করে
+                        const othersWithSameMark = segData.filter(p => String(p.mark) === String(user.mark) && p.name !== user.name);
                         if(othersWithSameMark.length > 0) {
                             const names = othersWithSameMark.map(p => p.name).join(', ');
-                            // ১ জন লোক থাকলে "এর সাথে" এবং একাধিক লোক থাকলে "দের সাথে" দেখাবে
                             const suffix = othersWithSameMark.length === 1 ? "-এর" : "-দের";
                             jointText = `<p class="text-amber-200/60 text-[10px] mt-2 leading-relaxed font-medium">${names}${suffix} সাথে যৌথভাবে অবস্থান ${user.position}</p>`;
                         }
                     }
 
+                    const isGraffiti = user.segment.includes("গ্রাফিতি");
                     const members = isGraffiti ? user.name.split(',').map(m => m.trim()) : [user.name];
 
                     let btnHTML = isLocked ? `<div class="col-span-2 py-4 text-center bg-slate-800/50 rounded-xl text-slate-500 text-xs italic">সার্টিফিকেট জেনারেট হলে বাটন দৃশ্যমান হবে</div>` : 
@@ -145,7 +144,6 @@
                         <div class="col-span-2 grid grid-cols-2 gap-2">${members.map(m => `<button onclick="generate(${index}, '${m}', false)" class="bg-slate-700 text-white py-2 rounded-lg text-[11px] border border-slate-600 active:scale-95">👤 ${m}</button>`).join('')}</div>` : 
                         `<button onclick="generate(${index}, '${user.name}', false)" class="col-span-2 bg-indigo-600 text-white font-bold py-4 rounded-xl text-sm transition active:scale-95 shadow-lg">📥 সার্টিফিকেট ডাউনলোড</button>`);
 
-                    // কার্ড রেন্ডারিং - এখানে মার্ক এবং পজিশন সরাসরি বাংলা ডাটা দেখাবে
                     statusBox.innerHTML += `
                         <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700">
                             <div class="text-center mb-6">
@@ -161,6 +159,8 @@
                             <div class="grid grid-cols-2 gap-2">${btnHTML}</div>
                         </div>`;
                 });
+            } else {
+                statusBox.innerHTML = `<div class="text-center p-10 bg-slate-800/50 rounded-3xl border border-red-500/20 text-red-400 font-bold">এই নম্বরের বিপরীতে কোনো ফলাফল পাওয়া যায়নি।</div>`;
             }
         }
 
@@ -207,5 +207,4 @@
     </script>
 </body>
 </html>
-
 
