@@ -3,473 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মেমোরি ও লিডারবোর্ড</title>
+    <title>ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;600;700&family=Montserrat:wght@900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #fbbf24;
-            --bg-deep: #020617;
-            --gold: #d4af37;
-        }
-        body {
-            font-family: 'Hind Siliguri', sans-serif;
-            background-color: var(--bg-deep);
-            color: #f1f5f9;
-            margin: 0;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            --gold: #FFD700;
+            --accent: #FF3B3B;
+            --bg-dark: #050505;
         }
 
-        /* প্রি-লোডার স্টাইল */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: var(--bg-deep);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        * { font-family: 'Hind Siliguri', sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-dark); color: #fff; margin: 0; overflow-x: hidden; min-height: 100vh; }
+
+        .bg-mesh {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
         }
 
-        .loader-bar {
-            width: 220px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin-top: 25px;
-            overflow: hidden;
-        }
-
-        #progressLine {
-            width: 0%;
-            height: 100%;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            transition: width 0.3s ease;
-        }
-
-        /* স্টেজ কন্ট্রোল */
-        .stage {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            background: var(--bg-deep);
-            transition: all 0.6s ease;
-        }
-
-        .hidden-stage {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(1.05);
-            display: none !important;
-        }
-
-        /* এনিমেশন ও টেক্সট ইফেক্ট */
-        .hero-text {
-            font-size: 2.5rem;
-            font-weight: 900;
-            transition: all 0.6s ease;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            word-wrap: break-word;
-            max-width: 90%;
-        }
-        .hero-text.active { opacity: 1; transform: translateY(0); }
-        .hero-text.shifted {
-            font-size: 1.5rem;
-            transform: translateY(-20px);
-            color: var(--primary);
-        }
-
-        .segment-announcer {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--primary);
-            text-align: center;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: absolute;
-        }
-        .segment-announcer.active { opacity: 1; transform: scale(1); }
-
-        .media-container {
-            width: 85vw;
-            max-width: 380px;
-            aspect-ratio: 1/1;
-            border: 3px solid var(--gold);
-            border-radius: 1.2rem;
-            background: #000;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.6s ease;
-            margin-top: 20px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .logo-container {
             position: relative;
-        }
-        .media-container.active { opacity: 1; transform: scale(1); }
-        .media-content { width: 100%; height: 100%; object-fit: contain; }
-
-        /* মেইন পোর্টাল ও কার্ড */
-        #mainPortal {
-            display: none;
-            position: relative;
-            z-index: 60;
-            background: var(--bg-deep);
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-        #mainPortal.active-portal { display: block; }
-
-        .segment-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 1.5rem;
             margin-bottom: 2rem;
-            overflow: hidden;
+            animation: pulseGlow 3s infinite ease-in-out;
         }
-        .segment-header {
-            background: rgba(251, 191, 36, 0.1);
-            padding: 1rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(255,215,0,0.2)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(255,215,0,0.4)); }
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(251, 191, 36, 0.1);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        #revealOverlay {
+            position: fixed; inset: 0; z-index: 5000; background: #000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .reveal-pos { font-size: 1.2rem; font-weight: 700; color: var(--gold); letter-spacing: 6px; text-transform: uppercase; opacity: 0; transform: translateY(20px); }
+        .reveal-seg { font-size: 2.5rem; font-weight: 900; color: #fff; opacity: 0; transform: scale(0.8); margin: 15px 0; text-align: center; padding: 0 20px; line-height: 1.2; }
+        
+        .active .reveal-pos { animation: slideUp 0.6s forwards 0.2s; }
+        .active .reveal-seg { animation: popIn 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards 0.5s; }
+
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+
+        #dashboard { display: none; padding: 40px 16px; animation: fadeIn 0.8s ease; }
+        .nav-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px; padding: 20px; transition: 0.3s; cursor: pointer;
+        }
+        .nav-card:hover { border-color: var(--gold); background: rgba(255,215,0,0.05); }
+
+        .btn-gold { background: var(--gold); color: #000; font-weight: 800; border-radius: 20px; transition: 0.3s; cursor: pointer; }
+        .btn-outline { border: 1.5px solid rgba(255,215,0,0.4); color: var(--gold); font-weight: 600; border-radius: 12px; transition: 0.3s; padding: 8px 18px; font-size: 13px; }
+        .btn-outline:hover { background: var(--gold); color: #000; }
+
+        .square-frame {
+            width: 100%; aspect-ratio: 1/1; background: #111; border-radius: 24px;
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
+        }
+        .square-frame img, .square-frame video { width: 100%; height: 100%; object-fit: contain; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- ১. প্রি-লোডার -->
-    <div id="preloader">
-        <img src="iz-logo.jpg" class="w-24 rounded-2xl mb-6 animate-pulse" alt="Logo">
-        <div id="loaderStatus" class="text-[10px] uppercase tracking-[0.4em] text-amber-500 font-bold">সার্টিফিকেট ও ডেটা লোড হচ্ছে...</div>
-        <div class="loader-bar">
-            <div id="progressLine"></div>
+    <div class="bg-mesh"></div>
+    <audio id="rsAudio" src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/rs.mp3" preload="auto"></audio>
+
+    <div id="revealOverlay">
+        <div id="revPos" class="reveal-pos">৩য় স্থান</div>
+        <h1 id="revSeg" class="reveal-seg">সেগমেন্টের নাম</h1>
+    </div>
+
+    <div id="specialSlide" class="fixed inset-0 z-[6000] bg-black hidden flex-col items-center justify-center p-8 text-center">
+        <div class="border border-gold/30 p-12 rounded-[60px] bg-gold/5 backdrop-blur-xl">
+            <div class="text-gold text-[10px] font-bold tracking-[10px] uppercase mb-6 opacity-60">Honorable Judge</div>
+            <h3 id="judgeNameDisplay" class="text-4xl md:text-6xl font-black mb-4">বিচারকের নাম</h3>
+            <div class="text-white/20 text-xs uppercase tracking-[5px] mt-4">Inquilab Zindabad 2026</div>
         </div>
     </div>
 
-    <audio id="bgMusic" loop preload="auto"><source src="bg.mp3" type="audio/mpeg"></audio>
+    <div id="winnerView" class="fixed inset-0 z-[4000] hidden flex-col items-center justify-center p-6 bg-black/95 backdrop-blur-lg">
+        <div class="text-center mb-6 w-full max-w-md">
+            <span id="viewPos" class="bg-gold/20 text-gold px-6 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-gold/30">স্থান</span>
+            <h2 id="viewName" class="text-3xl font-black mt-4 mb-1">বিজয়ীর নাম</h2>
+            <p id="viewInst" class="text-white/50 text-sm italic">প্রতিষ্ঠান</p>
+        </div>
+        <div id="viewMediaContainer" class="square-frame max-w-[400px] mb-8 shadow-2xl shadow-gold/10"></div>
+        
+        <div class="flex gap-4 w-full max-w-[400px]">
+             <button id="viewActionBtn" class="btn-gold flex-1 py-5 uppercase tracking-widest text-xs" onclick="nextStep()">পরবর্তী স্লাইড</button>
+             <button id="closeBtn" class="hidden border border-white/20 text-white px-8 py-5 rounded-2xl text-xs uppercase" onclick="closeWinnerView()">বন্ধ করুন</button>
+        </div>
+    </div>
 
-    <!-- ২. শুরু করার স্টেজ -->
-    <div id="startStage" class="stage hidden-stage">
-        <div class="text-center">
-            <h3 class="text-amber-500 font-bold tracking-widest text-xs mb-6 opacity-50 uppercase">National Inquilab 2026</h3>
-            <button id="mainStartBtn" onclick="handleStart()" class="bg-amber-500 text-slate-900 font-black px-14 py-5 rounded-full text-xl shadow-[0_20px_50px_rgba(251,191,36,0.3)] hover:scale-105 active:scale-95 transition">
-                স্মৃতি ও ফলাফল 📸
+    <div id="dashboard" class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-black mb-4 tracking-tighter">লিডারবোর্ড</h1>
+            <p class="text-gold font-bold text-[10px] uppercase tracking-[5px]">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <a href="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/signup.html" class="nav-card flex items-center gap-4 border-gold/40 bg-gold/5">
+                <span class="text-2xl">📝</span>
+                <div>
+                    <div class="font-bold text-base text-gold">রেজিস্ট্রেশন</div>
+                    <div class="text-white/30 text-[10px] uppercase">Join the Squad</div>
+                </div>
+            </a>
+            <a href="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-result.pdf" target="_blank" class="nav-card flex items-center gap-4">
+                <span class="text-2xl">📄</span>
+                <div>
+                    <div class="font-bold text-base">ফলাফল PDF</div>
+                    <div class="text-white/30 text-[10px] uppercase">Official Report</div>
+                </div>
+            </a>
+            <button onclick="resetMemory()" class="nav-card flex items-center gap-4 text-left">
+                <span class="text-2xl">🔄</span>
+                <div>
+                    <div class="font-bold text-base">রিলোড শো</div>
+                    <div class="text-white/30 text-[10px] uppercase">Watch Again</div>
+                </div>
             </button>
         </div>
+
+        <div id="segmentContainer" class="space-y-10 pb-20"></div>
     </div>
 
-    <!-- ৩. লোগো স্টেজ -->
-    <div id="logoStage" class="stage hidden-stage">
-        <img src="iz-logo.jpg" class="w-40 rounded-[2rem] shadow-2xl" alt="IZ Logo">
-    </div>
-
-    <!-- ৪. মেমোরি শোকেস -->
-    <div id="memoryStage" class="stage hidden-stage">
-        <div id="segAnnounce" class="segment-announcer"></div>
-
-        <div id="winnerWrapper" class="flex flex-col items-center justify-center w-full hidden">
-            <h1 id="mainTitle" class="hero-text text-white px-6"></h1>
-            <div id="detailBox" class="detail-box opacity-0 transition-all duration-500 text-center mt-2">
-                <p id="detInst" class="text-slate-400 font-medium text-sm"></p>
-                <div id="detRank" class="bg-amber-500/20 text-amber-500 px-4 py-1 rounded-full text-[10px] font-bold inline-block border border-amber-500/30 mt-2 uppercase"></div>
-            </div>
-
-            <div id="mediaBox" class="media-container">
-                <div id="mediaSpinner" class="spinner absolute z-10 hidden"></div>
-                <img id="displayImg" class="media-content hidden" src="">
-                <video id="displayVid" class="media-content hidden" playsinline muted></video>
-            </div>
-
-            <button id="nextBtn" onclick="nextSlide()" class="mt-8 opacity-0 pointer-events-none transition-all duration-500 bg-white text-slate-900 px-10 py-3 rounded-full font-black text-sm uppercase tracking-widest">
-                পরবর্তী ➔
-            </button>
+    <div id="initScreen" class="fixed inset-0 z-[9000] bg-black flex flex-col items-center justify-center p-8 text-center">
+        <div class="logo-container">
+            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-logo.jpg" alt="Logo" class="w-56 h-56 md:w-64 md:h-64 rounded-[60px] object-cover border-2 border-gold/20">
+        </div>
+        
+        <h1 class="text-2xl md:text-4xl font-black mb-3 leading-tight">ইনকিলাব জিন্দাবাদ</h1>
+        <p class="text-gold/80 font-bold text-sm md:text-base uppercase tracking-[4px] mb-12">জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</p>
+        
+        <div class="flex flex-col gap-4 w-full max-w-xs">
+            <button onclick="startShow()" class="btn-gold py-5 text-lg shadow-xl shadow-gold/10">ফলাফল দেখা শুরু করুন</button>
+            <button onclick="skipToShowDashboard()" class="text-white/40 text-sm underline tracking-widest mt-2 uppercase font-bold">সরাসরি ড্যাশবোর্ডে যান</button>
         </div>
     </div>
-
-    <!-- ৫. মেইন পোর্টাল (ফলাফল তালিকা) -->
-    <div id="mainPortal" class="px-5 py-12">
-        <div class="max-w-md mx-auto">
-            <div class="text-center mb-10">
-                <h1 class="text-3xl font-black text-white leading-tight">বিজয়ী <span class="text-amber-500">তালিকা</span></h1>
-                <p class="text-slate-500 text-xs mt-2 uppercase tracking-widest">Inquilab 26 Recognition</p>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3 mb-10">
-                <a href="full-result.pdf" target="_blank" class="bg-slate-800/50 p-4 rounded-2xl text-center border border-white/5 hover:border-amber-500/30 transition">
-                    <span class="block text-xl mb-1">📄</span>
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">PDF Result</span>
-                </a>
-                <a href="signup.html" class="bg-amber-500 p-4 rounded-2xl text-center shadow-lg shadow-amber-500/10 transition">
-                    <span class="block text-xl mb-1">🎓</span>
-                    <span class="text-[10px] font-bold text-slate-900 uppercase">Certificate</span>
-                </a>
-            </div>
-
-            <div id="tableContainer"></div>
-            
-            <button onclick="restartExperience()" class="w-full mt-10 py-6 border-t border-white/5 text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] hover:text-amber-500 transition">
-                🎞️ রি-মেমোরাইজ
-            </button>
-        </div>
-    </div>
-
-    <!-- কাজ দেখার পপআপ -->
-    <div id="mediaPopup" class="fixed inset-0 bg-black/95 z-[500] hidden items-center justify-center p-5" onclick="this.style.display='none'">
-        <div class="max-w-sm w-full" onclick="event.stopPropagation()">
-            <div id="popupContent" class="bg-black rounded-3xl overflow-hidden border border-white/10 shadow-2xl"></div>
-            <p class="text-center text-slate-500 text-[10px] mt-4 uppercase tracking-widest">ট্যাপ করে বন্ধ করুন</p>
-        </div>
-    </div>
-
-    <!-- ডেটা ইম্পোর্ট -->
-    <script src="data.js"></script>
 
     <script>
-        const bgMusic = document.getElementById('bgMusic');
-        let timeline = [];
-        let currentIndex = 0;
+        const winners = [
+            { id: 1, name: "হামিদ বিন শাকুর", inst: "গলবুনিয়া হাই স্কুল", seg: "কবিতা লিখন", pos: "৩য়", file: "p3.jpg", type: "img" },
+            { id: 2, name: "আফিয়া মুবাশশিরা মৃদু", inst: "চিলাহাটি গার্লস স্কুল এন্ড কলেজ", seg: "কবিতা লিখন", pos: "২য়", file: "p2.jpg", type: "img" },
+            { id: 3, name: "সামিয়া জাওহারা", inst: "জাপান ইন্টারন্যাশনাল ড্রিম স্কুল এন্ড কলেজ", seg: "কবিতা লিখন", pos: "১ম", file: "p1.jpg", type: "img", isEnd: true, judge: "মোঃ আইনউদ্দিন খান ও সাদবিন আল জুবায়ের" },
+            
+            { id: 4, name: "দিগন্ত, সাজিদ, নিসর্গ, আবিদ, সালেহিন", inst: "মেহেরপুর সরকারি উচ্চ বিদ্যালয়", seg: "গ্রাফিতি", pos: "৩য়", file: "g3.jpg", type: "img" },
+            { id: 5, name: "জান্নাতুল ফেরদৌস, জিহাদ হাসান, তানহা", inst: "জনশক্তি যুব উন্নয়ন সংস্থা", seg: "গ্রাফিতি", pos: "২য়", file: "g2.jpg", type: "img" },
+            { id: 6, name: "নুর আলম, সাদবিন জামান, রাফি, মারুফ", inst: "শহীদ বীর বিক্রম রমিজ উদ্দিন ক্যান্টনমেন্ট স্কুল", seg: "গ্রাফিতি", pos: "১ম", file: "g1.jpg", type: "img", isEnd: true, judge: "মোর্শেদ মিশু" },
+            
+            { id: 7, name: "রাইসুল ইসলাম", inst: "মেহেরপুর জেলা স্কুল", seg: "বারোয়ারী বিতর্ক", pos: "৩য়", file: "b3.mp4", type: "vid", isBaroari: true },
+            { id: 8, name: "ফাহিম আহমেদ", inst: "বিএম স্কুল", seg: "বারোয়ারী বিতর্ক", pos: "২য়", file: "b2.mp4", type: "vid", isBaroari: true },
+            { id: 9, name: "নুসরাত ফারিয়া", inst: "মডেল কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "১ম", file: "b1.mp4", type: "vid", isBaroari: true, isEnd: true, judge: "আজওয়াদ চৌধুরী ও সাওদা জামান রিশা" },
 
-        // ডেটা চেক করার লজিক (data.js বড় হলে এটা জরুরি)
-        function isDataReady() {
-            return (typeof allParticipants !== 'undefined' && Array.isArray(allParticipants) && allParticipants.length > 0);
+            { id: 10, name: "ইকরা ইসলাম", inst: "লাইটহাউস ইন্টারন্যাশনাল স্কুল", seg: "চিত্রাঙ্কন", pos: "৩য়", file: "a3.jpg", type: "img" },
+            { id: 11, name: "মোঃ নুরনবী ইসলাম সুমন", inst: "সরকারি বাঙলা কলেজ ক্যাম্পাস", seg: "চিত্রাঙ্কন", pos: "২য়", file: "a2.png", type: "img" },
+            { id: 12, name: "তাসনিয়া খাঁন মজলিস", inst: "আদমজি ক্যান্টনমেন্ট কলেজ", seg: "চিত্রাঙ্কন", pos: "১ম", file: "a1.jpg", type: "img", isEnd: true, judge: "আল-ফুরকান নয়ন" }
+        ];
+
+        let currentIdx = 0;
+        let isAutoShow = false;
+        const BASE_URL = "https://meherpur-debating-forum.github.io/mdf-gds-iz-results/";
+
+        function startShow() {
+            isAutoShow = true;
+            document.getElementById('initScreen').style.display = 'none';
+            document.getElementById('viewActionBtn').innerText = "পরবর্তী স্লাইড";
+            document.getElementById('closeBtn').classList.add('hidden');
+            runStep();
         }
 
-        // ১. প্রি-লোডার হ্যান্ডলার
-        function initLoader() {
-            const progressLine = document.getElementById('progressLine');
-            let progress = 0;
-            
-            const loadInterval = setInterval(() => {
-                if (isDataReady()) {
-                    progress = 100;
-                    progressLine.style.width = '100%';
-                    clearInterval(loadInterval);
-                    
-                    setTimeout(() => {
-                        document.getElementById('preloader').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('preloader').style.display = 'none';
-                            document.getElementById('startStage').classList.remove('hidden-stage');
-                        }, 800);
-                    }, 600);
-                } else {
-                    progress += 2;
-                    if (progress > 95) progress = 95; // ডেটা না পাওয়া পর্যন্ত ৯৫% এ আটকে থাকবে
-                    progressLine.style.width = progress + '%';
-                }
-            }, 50);
+        function skipToShowDashboard() {
+            document.getElementById('initScreen').style.display = 'none';
+            showDashboard();
         }
 
-        // ২. টাইমলাইন প্রিপারেশন (৩ -> ২ -> ১ রিভার্স পজিশন)
-        function prepareTimeline() {
-            const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
-            const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
-            timeline = [];
+        async function runStep() {
+            const data = winners[currentIdx];
+            const overlay = document.getElementById('revealOverlay');
             
-            segments.forEach(seg => {
-                const winners = allParticipants
-                    .filter(p => p.segment === seg && (p.position == "1" || p.position == "2" || p.position == "3"))
-                    .sort((a, b) => parseInt(b.position) - parseInt(a.position)); // ৩, ২, ১ সর্টিং
-                
-                if (winners.length > 0) {
-                    timeline.push({ type: 'segment', name: seg });
-                    winners.forEach(w => {
-                        timeline.push({ type: 'winner', data: { ...w, code: codes[seg] } });
-                    });
-                }
-            });
+            document.getElementById('revPos').innerText = data.pos + " স্থান";
+            document.getElementById('revSeg').innerText = data.seg;
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('active'), 50);
+
+            const rs = document.getElementById('rsAudio');
+            rs.currentTime = 0;
+            rs.play().catch(()=>{});
+
+            await sleep(4000);
+            overlay.classList.remove('active');
+            overlay.style.display = 'none';
+            showWinner(data);
         }
 
-        // ৩. এক্সপেরিয়েন্স শুরু
-        function handleStart() {
-            bgMusic.play().catch(e => console.log("Audio play failed"));
-            prepareTimeline();
+        function showWinner(data) {
+            const view = document.getElementById('winnerView');
+            const media = document.getElementById('viewMediaContainer');
             
-            if (localStorage.getItem('inquilab_visited')) {
-                showPortal();
+            let n = data.name, i = data.inst;
+            if(data.seg === "গ্রাফিতি") { n = data.inst; i = data.name; }
+
+            document.getElementById('viewPos').innerText = data.pos;
+            document.getElementById('viewName').innerText = n;
+            document.getElementById('viewInst').innerText = i;
+
+            media.innerHTML = '';
+            if(data.isBaroari) {
+                media.innerHTML = `<video src="${BASE_URL}${data.file}" controls autoplay class="w-full h-full"></video>`;
             } else {
-                startSequence();
+                media.innerHTML = (data.type === 'vid') ? 
+                    `<video src="${BASE_URL}${data.file}" autoplay loop muted playsinline></video>` : 
+                    `<img src="${BASE_URL}${data.file}" onerror="this.src='https://via.placeholder.com/400?text=Image+Not+Found'">`;
             }
+            view.style.display = 'flex';
         }
 
-        function startSequence() {
-            document.getElementById('startStage').classList.add('hidden-stage');
-            setTimeout(() => {
-                document.getElementById('logoStage').classList.remove('hidden-stage');
-                setTimeout(() => {
-                    document.getElementById('logoStage').classList.add('hidden-stage');
-                    setTimeout(() => {
-                        document.getElementById('memoryStage').classList.remove('hidden-stage');
-                        renderStep();
-                    }, 600);
-                }, 1800);
-            }, 400);
+        function viewSpecificWinner(winnerId) {
+            isAutoShow = false;
+            const data = winners.find(w => w.id === winnerId);
+            if (!data) return;
+            
+            document.getElementById('viewActionBtn').innerText = "ড্যাশবোর্ড";
+            document.getElementById('closeBtn').classList.remove('hidden');
+            showWinner(data);
         }
 
-        // ৪. মেমোরি রেন্ডারিং
-        function renderStep() {
-            if (currentIndex >= timeline.length) {
-                localStorage.setItem('inquilab_visited', 'true');
-                showPortal();
+        function closeWinnerView() {
+            document.getElementById('winnerView').style.display = 'none';
+            const media = document.getElementById('viewMediaContainer');
+            media.innerHTML = ''; 
+        }
+
+        async function nextStep() {
+            if (!isAutoShow) {
+                closeWinnerView();
                 return;
             }
 
-            const step = timeline[currentIndex];
-            const segAnn = document.getElementById('segAnnounce');
-            const winWrap = document.getElementById('winnerWrapper');
+            const data = winners[currentIdx];
+            document.getElementById('winnerView').style.display = 'none';
 
-            if (step.type === 'segment') {
-                winWrap.classList.add('hidden');
-                segAnn.innerText = step.name;
-                segAnn.classList.add('active');
-                setTimeout(() => {
-                    segAnn.classList.remove('active');
-                    setTimeout(() => { currentIndex++; renderStep(); }, 600);
-                }, 2000);
+            if(data.isEnd) {
+                const slide = document.getElementById('specialSlide');
+                document.getElementById('judgeNameDisplay').innerText = data.judge;
+                slide.style.display = 'flex';
+                await sleep(3500);
+                slide.style.display = 'none';
+            }
+
+            currentIdx++;
+            if(currentIdx < winners.length) {
+                runStep();
             } else {
-                segAnn.classList.remove('active');
-                winWrap.classList.remove('hidden');
-                displayWinner(step.data);
+                showDashboard();
             }
         }
 
-        async function displayWinner(item) {
-            const title = document.getElementById('mainTitle');
-            const detBox = document.getElementById('detailBox');
-            const mediaBox = document.getElementById('mediaBox');
-            const nextBtn = document.getElementById('nextBtn');
-            const img = document.getElementById('displayImg');
-            const vid = document.getElementById('displayVid');
-            const spinner = document.getElementById('mediaSpinner');
-
-            // রিসেট UI
-            title.innerText = (item.segment === "গ্রাফিতি") ? item.institute : item.name;
-            document.getElementById('detInst').innerText = (item.segment === "গ্রাফিতি") ? `দল: ${item.name}` : item.institute;
-            document.getElementById('detRank').innerText = `${item.position} তম স্থান | ${item.segment}`;
-            
-            title.className = "hero-text text-white px-6 active";
-            detBox.style.opacity = '0';
-            mediaBox.classList.remove('active');
-            nextBtn.style.opacity = '0';
-            nextBtn.style.pointerEvents = 'none';
-            img.classList.add('hidden');
-            vid.classList.add('hidden');
-            spinner.classList.remove('hidden');
-            bgMusic.volume = 1.0;
-
-            setTimeout(() => {
-                title.classList.add('shifted');
-                detBox.style.opacity = '1';
-                setTimeout(async () => {
-                    mediaBox.classList.add('active');
-                    const fileName = `${item.code}${item.position}`;
-                    
-                    if (item.code === 'b') {
-                        bgMusic.volume = 0.1;
-                        vid.classList.remove('hidden');
-                        vid.src = `${fileName}.mp4`;
-                        vid.play().catch(e => console.log("Video play error"));
-                    } else {
-                        img.classList.remove('hidden');
-                        img.src = `${fileName}.jpg`;
-                    }
-                    
-                    spinner.classList.add('hidden');
-                    nextBtn.style.opacity = '1';
-                    nextBtn.style.pointerEvents = 'auto';
-                }, 800);
-            }, 2000);
-        }
-
-        function nextSlide() { currentIndex++; renderStep(); }
-
-        // ৫. পোর্টাল ভিউ
-        function showPortal() {
-            document.querySelectorAll('.stage').forEach(s => s.classList.add('hidden-stage'));
-            const portal = document.getElementById('mainPortal');
-            portal.classList.add('active-portal');
-            renderTable();
-        }
-
-        function renderTable() {
-            const container = document.getElementById('tableContainer');
+        function showDashboard() {
+            document.getElementById('dashboard').style.display = 'block';
+            const container = document.getElementById('segmentContainer');
             container.innerHTML = '';
-            const segments = ["কবিতা লিখন", "গ্রাফিতি", "চিত্রাঙ্কন", "বারোয়ারী বিতর্ক"];
-            const codes = { "কবিতা লিখন":"p", "গ্রাফিতি":"g", "চিত্রাঙ্কন":"a", "বারোয়ারী বিতর্ক":"b" };
 
-            segments.forEach(seg => {
-                const winners = allParticipants
-                    .filter(p => p.segment === seg && (p.position == "1" || p.position == "2" || p.position == "3"))
-                    .sort((a, b) => parseInt(a.position) - parseInt(b.position));
+            const grouped = winners.reduce((acc, obj) => {
+                const key = obj.seg;
+                if (!acc[key]) acc[key] = [];
+                acc[key].push(obj);
+                return acc;
+            }, {});
 
-                if(winners.length > 0) {
-                    let html = `<div class="segment-card"><div class="segment-header">${seg}</div><table class="w-full text-left">`;
-                    winners.forEach(w => {
-                        html += `
-                        <tr class="border-t border-white/5">
-                            <td class="p-4">
-                                <div class="text-sm font-bold text-slate-200">${w.name}</div>
-                                <div class="text-[10px] text-slate-500 uppercase">${w.institute}</div>
-                            </td>
-                            <td class="p-4 text-center">
-                                <span class="text-xs font-black text-amber-500">${w.position}তম</span>
-                            </td>
-                            <td class="p-4 text-right">
-                                <button onclick="viewWork('${codes[seg]}', '${w.position}')" class="bg-amber-500 text-slate-900 text-[10px] font-bold py-2 px-3 rounded-lg uppercase">কাজ</button>
-                            </td>
-                        </tr>`;
-                    });
-                    html += `</table></div>`;
-                    container.innerHTML += html;
-                }
+            Object.keys(grouped).forEach(segName => {
+                let html = `<div class="mb-8"><h3 class="text-gold font-bold text-xl border-l-4 border-gold pl-4 mb-6">${segName}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                grouped[segName].forEach(w => {
+                    let n = w.name, i = w.inst;
+                    if(w.seg === "গ্রাফিতি") { n = w.inst; i = w.name; }
+                    html += `
+                        <div class="bg-white/5 p-5 rounded-3xl flex justify-between items-center border border-white/5">
+                            <div class="flex-1 pr-4">
+                                <div class="text-[9px] uppercase font-black text-gold/60 tracking-widest">${w.pos} স্থান</div>
+                                <div class="text-lg font-bold leading-tight">${n}</div>
+                                <div class="text-white/30 text-[11px] mt-1">${i}</div>
+                            </div>
+                            <button onclick="viewSpecificWinner(${w.id})" class="btn-outline whitespace-nowrap">কাজ দেখুন</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML += html + `</div></div>`;
             });
         }
 
-        function viewWork(code, pos) {
-            const popup = document.getElementById('mediaPopup');
-            const container = document.getElementById('popupContent');
-            popup.style.display = 'flex';
-            const file = `${code}${pos}`;
-            if(code === 'b') {
-                container.innerHTML = `<video src="${file}.mp4" controls autoplay class="w-full"></video>`;
-            } else {
-                container.innerHTML = `<img src="${file}.jpg" class="w-full">`;
-            }
-        }
-
-        function restartExperience() {
-            localStorage.removeItem('inquilab_visited');
-            location.reload();
-        }
-
-        window.onload = initLoader;
+        function resetMemory() { location.reload(); }
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
     </script>
 </body>
 </html>
