@@ -1,5 +1,85 @@
 const allParticipants = [
     {
+        "name": "ফাতেমা আক্তার",
+        "phone": "'01613822407",
+        "institute": "কুমিল্লা সরকারি মহিলা কলেজ",
+        "segment": "কবিতা লিখন",
+        "mark": "৯০.৩",
+        "position": "৩৭"
+    },
+    {
+        "name": "আফিফ আবরার",
+        "phone": "01776749214",
+        "institute": "আল জামিয়াতুল ফালাহিয়া কামিল মাদ্রাসা",
+        "segment": "কবিতা লিখন",
+        "mark": "৮৮.৬",
+        "position": "৪১"
+    },
+    {
+        "name": "মাশকাওয়াত হোসেন",
+        "phone": "'01585896021",
+        "institute": "মিরপুর ক্যান্টনমেন্ট পাবলিক স্কুল এন্ড কলেজ",
+        "segment": "কবিতা লিখন",
+        "mark": "৭৯.২",
+        "position": "৫৮"
+    },
+    {
+        "name": "মুনিবা তাসনিম",
+        "phone": "'01927804857",
+        "institute": "বীরশ্রেষ্ঠ নূর মোহাম্মদ পাবলিক কলেজ ।",
+        "segment": "কবিতা লিখন",
+        "mark": "৮৬.৪",
+        "position": "৪৬"
+    },
+    {
+        "name": "মোঃ সানি",
+        "phone": "'01518991253",
+        "institute": "ন্যাশনাল আইডিয়াল স্কুল",
+        "segment": "কবিতা লিখন",
+        "mark": "৮৩.৭",
+        "position": "৫৫"
+    },
+    {
+        "name": "তামান্না আক্তার সূচনা",
+        "phone": "'01804795056",
+        "institute": "নৌবাহিনী কলেজ ঢাকা",
+        "segment": "কবিতা লিখন",
+        "mark": "৭৩.৬",
+        "position": "৬৩"
+    },
+    {
+        "name": "এস.মুনতাহা",
+        "phone": "'01854150708",
+        "institute": "দিনাজপুর সরকারি বালিকা উচ্চ বিদ্যালয়, দিনাজপুর",
+        "segment": "কবিতা লিখন",
+        "mark": "৮৬.৪",
+        "position": "৪৬"
+    },
+    {
+        "name": "মো জিহাদুল ইসলাম জিহাদ",
+        "phone": "'01835957663",
+        "institute": "নর্থ সাউথ ইউনিভার্সিটি",
+        "segment": "কবিতা লিখন",
+        "mark": "৯০.৫",
+        "position": "৩৫"
+    },
+    {
+        "name": "লামিহা আলহ",
+        "phone": "01608427052",
+        "institute": "রাজউক উত্তরা মডেল কলেজ",
+        "segment": "কবিতা লিখন",
+        "mark": "৮৩.৭",
+        "position": "৫৫"
+    },
+    {
+        "name": "সাদাদ মুহতাসিম",
+        "phone": "'01767015075",
+        "institute": "দিনাজপুর মেডিকেল কলেজ",
+        "segment": "কবিতা লিখন",
+        "mark": "৭৩.৬",
+        "position": "৬৩"
+    },
+    {
         "name": "Mahmud Hasan Digonto, Shazid Ahmed, Ishraque Hasin Nishargo, Ashfaq Haque Abid, Mushfiqur Salehin, Swarthik Chakroborty Neel",
         "phone": "01576577409",
         "institute": "মেহেরপুর সরকারি উচ্চ বিদ্যালয়",
