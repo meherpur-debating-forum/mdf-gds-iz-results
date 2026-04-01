@@ -198,8 +198,7 @@ const allParticipants = [
     "segment": "বারোয়ারী বিতর্ক",
     "mark": "৪৬",
     "position": "১৫"
-  }
-];
+  },
   {
     "name": "মোঃ সানাউল্লাহ",
     "phone": "01608515783",
