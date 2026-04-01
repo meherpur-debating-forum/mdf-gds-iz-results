@@ -2,22 +2,23 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>Inquilab 2026 | Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
     <!-- Social Preview / Thumbnail Support -->
     <link rel="icon" type="image/jpeg" href="20260326_124926.jpg">
     <script>
-        // চূড়ান্ত পাবলিশ সময়: ৩রা এপ্রিল, ২০২৬ রাত ০০:০০:০১
-        const publishTime = new Date("2026-04-03T00:00:01").getTime();
+        // চূড়ান্ত পাবলিশ সময়: ১লা এপ্রিল, ২০২৬ রাত ০৮:০০:০০ (২০:০০)
+        const publishTime = new Date("2026-04-01T20:00:00").getTime();
 
         function checkRedirect() {
             const now = new Date().getTime();
 
             if (now < publishTime) {
-                // ৩রা এপ্রিলের আগে পর্যন্ত সবাই waitindex.html (কাউন্টডাউন + এপ্রিল ফুল) দেখবে
-                window.location.href = "waitindex.html";
+                // রাত ৮টার আগে পর্যন্ত কাউন্টডাউন পেজে থাকবে
+                window.location.replace("waitindex.html");
             } else {
-                // ৩রা এপ্রিল রাত ১২টা ০১ মিনিটে সরাসরি রেজাল্ট পেজে চলে যাবে
-                window.location.href = "mainindex.html";
+                // রাত ৮টা বাজার সাথে সাথে সরাসরি রেজাল্ট পেজে চলে যাবে
+                window.location.replace("mainindex.html");
             }
         }
 
@@ -28,43 +29,44 @@
         body {
             background-color: #050505;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             color: #00ff41;
-            font-family: monospace;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
         }
         .site-thumbnail {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+            margin-bottom: 30px;
         }
         .site-thumbnail img {
-            width: 100px;
+            width: 120px;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2);
-            border: 2px solid #00ff41;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.5);
         }
         .loading-text {
-            letter-spacing: 2px;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
             animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.98); }
         }
     </style>
 </head>
 <body>
 
-    <div class="loading-text">INITIALIZING SECURE CONNECTION...</div>
-
     <div class="site-thumbnail">
         <img src="20260326_124926.jpg" alt="Inquilab 2026">
     </div>
+
+    <div class="loading-text">Establishing Secure Connection...</div>
 
 </body>
 </html>
