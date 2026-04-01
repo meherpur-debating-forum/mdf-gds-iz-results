@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ডাটা এডিটর</title>
-    
+    <title>ডাটা এডিটর | Inquilab '26</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -45,31 +45,31 @@
 
     <!-- মেইন ড্যাশবোর্ড -->
     <div id="main-content" class="hidden opacity-0 transition-opacity duration-500 max-w-6xl mx-auto p-4">
-        
+
         <header class="flex items-center justify-between mb-8 px-2 pt-4">
             <div>
                 <h2 class="text-2xl font-black text-white">ইনকিলাব <span class="text-amber-500">২৬</span></h2>
                 <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Real-time Data Editor</p>
             </div>
             <div class="flex gap-2">
-                <button onclick="copyCode()" class="bg-amber-500/10 text-amber-500 p-3 rounded-xl border border-amber-500/20">
-                    <i data-lucide="copy" class="w-5 h-5"></i>
+                <button onclick="copyCode()" class="bg-amber-500/10 text-amber-500 px-4 py-2 rounded-xl border border-amber-500/20 font-bold text-xs flex items-center gap-2">
+                    <i data-lucide="copy" class="w-4 h-4"></i> ডাটা কপি করুন
                 </button>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
+
             <!-- বাম পাশ: ইনপুট ফর্ম -->
             <div class="lg:col-span-4 space-y-4">
-                <div class="glass-card p-6 rounded-[2rem] shadow-xl">
-                    <h3 class="font-bold text-amber-500 flex items-center gap-2 mb-6">
+                <div class="glass-card p-6 rounded-[2rem] shadow-xl border-amber-500/20">
+                    <h3 id="form-title" class="font-bold text-amber-500 flex items-center gap-2 mb-6 text-lg">
                         <i data-lucide="user-plus" class="w-5 h-5"></i> নতুন প্রতিযোগী
                     </h3>
                     <div class="space-y-4">
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">বিভাগ</label>
-                            <select id="segment" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                            <select id="segment" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                                 <option>কবিতা লিখন</option>
                                 <option>চিত্রাঙ্কন</option>
                                 <option>বারোয়ারী বিতর্ক</option>
@@ -78,29 +78,35 @@
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">নাম / নামসমূহ</label>
-                            <input type="text" id="name" placeholder="নাম লিখুন" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                            <input type="text" id="name" placeholder="নাম লিখুন" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">ফোন নম্বর</label>
-                            <input type="tel" id="phone" placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                            <input type="tel" id="phone" placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">প্রতিষ্ঠান</label>
-                            <input type="text" id="institute" placeholder="স্কুল/কলেজের নাম" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                            <input type="text" id="institute" placeholder="স্কুল/কলেজের নাম" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">মার্কস</label>
-                                <input type="text" id="mark" placeholder="৯৫" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">প্রাপ্ত নম্বর (Marks)</label>
+                                <input type="number" id="mark" placeholder="৯৫" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">পজিশন</label>
-                                <input type="text" id="position" placeholder="১" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">পজিশন (Rank)</label>
+                                <input type="number" id="position" placeholder="১" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:border-amber-500 outline-none text-sm">
                             </div>
                         </div>
-                        <button onclick="addItem()" class="w-full bg-white text-slate-950 font-bold py-4 rounded-2xl hover:bg-amber-500 transition active:scale-95 mt-2 shadow-lg shadow-white/5">
-                            লিস্টে যুক্ত করুন
-                        </button>
+                        
+                        <div class="flex gap-2 mt-4">
+                            <button id="cancel-btn" onclick="cancelEdit()" class="hidden w-1/3 bg-slate-800 text-slate-300 font-bold py-3 rounded-xl hover:bg-slate-700 transition active:scale-95 text-sm">
+                                বাতিল
+                            </button>
+                            <button id="save-btn" onclick="saveItem()" class="w-full bg-amber-500 text-slate-950 font-bold py-3 rounded-xl hover:bg-amber-400 transition active:scale-95 shadow-lg shadow-amber-500/20 text-sm">
+                                লিস্টে যুক্ত করুন
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,17 +116,17 @@
                 <div class="glass-card p-6 rounded-[2rem] shadow-xl">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-slate-300 flex items-center gap-2">
-                            <i data-lucide="list" class="w-5 h-5 text-amber-500"></i> ডাটা লিস্ট
+                            <i data-lucide="list-ordered" class="w-5 h-5 text-amber-500"></i> র‍্যাংক লিস্ট
                         </h3>
-                        <select id="filterSeg" onchange="renderList()" class="bg-slate-800 text-[10px] font-bold rounded-lg px-2 py-1 outline-none">
-                            <option value="All">সব বিভাগ</option>
-                            <option>কবিতা লিখন</option>
-                            <option>চিত্রাঙ্কন</option>
-                            <option>বারোয়ারী বিতর্ক</option>
-                            <option>গ্রাফিতি</option>
+                        <select id="filterSeg" onchange="renderList()" class="bg-slate-800 text-[11px] font-bold rounded-lg px-2 py-1.5 outline-none border border-slate-700 text-amber-400">
+                            <!-- Removed 'All', default to first segment -->
+                            <option value="কবিতা লিখন">কবিতা লিখন</option>
+                            <option value="চিত্রাঙ্কন">চিত্রাঙ্কন</option>
+                            <option value="বারোয়ারী বিতর্ক">বারোয়ারী বিতর্ক</option>
+                            <option value="গ্রাফিতি">গ্রাফিতি</option>
                         </select>
                     </div>
-                    <div id="list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div id="list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar pb-10">
                         <!-- Items rendered here -->
                     </div>
                 </div>
@@ -130,30 +136,48 @@
             <div class="lg:col-span-4 space-y-4">
                 <div class="glass-card rounded-[2rem] overflow-hidden shadow-xl flex flex-col h-full min-h-[400px]">
                     <div class="bg-slate-800/50 p-4 border-b border-slate-700 flex justify-between items-center">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">data.js কোড</span>
-                        <button onclick="copyCode()" class="text-[10px] bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-md">কপি</button>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">data.js সোর্স কোড</span>
                     </div>
                     <div class="p-4 bg-black/40 flex-grow relative">
-                        <pre id="code-output" class="text-[10px] text-emerald-400 font-mono whitespace-pre-wrap break-all custom-scrollbar overflow-y-auto absolute inset-4"></pre>
+                        <pre id="code-output" class="text-[11px] text-emerald-400 font-mono whitespace-pre-wrap break-all custom-scrollbar overflow-y-auto absolute inset-4 select-all"></pre>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ডাটা লোড করার স্ক্রিপ্ট -->
-    <script src="data.js"></script>
     <script>
         const ADMIN_PASS = ".";
+        let localData = [];
+        let editIndex = -1; // -1 means adding new item, otherwise it's the index of the item being edited
 
-        // স্ক্রিপ্ট চেক: data.js লোড হয়েছে কিনা
-        window.onload = () => {
-            if (typeof allParticipants === 'undefined') {
-                console.error("data.js লোড হয়নি বা allParticipants পাওয়া যায়নি!");
-                // ফলব্যাক হিসেবে খালি অ্যারে
-                window.allParticipants = [];
-            }
+        // Dynamic Loading of data.js from GitHub Pages with Cache-busting
+        function loadExternalData() {
+            const script = document.createElement('script');
+            // Adding timestamp prevents browser from loading cached old data
+            script.src = `https://meherpur-debating-forum.github.io/mdf-gds-iz-results/data.js?v=${new Date().getTime()}`;
+            
+            script.onload = () => {
+                if (typeof allParticipants !== 'undefined') {
+                    localData = [...allParticipants]; // copy to our local variable
+                    console.log("Data loaded successfully from GitHub!");
+                }
+                updateDisplay();
+            };
+            
+            script.onerror = () => {
+                console.warn("Could not load external data.js. Starting with empty list.");
+                localData = [];
+                updateDisplay();
+            };
+            
+            document.head.appendChild(script);
         }
+
+        window.onload = () => {
+            loadExternalData();
+            lucide.createIcons();
+        };
 
         function checkAuth() {
             const p = document.getElementById('password').value;
@@ -162,15 +186,13 @@
                 const main = document.getElementById('main-content');
                 main.classList.remove('hidden');
                 setTimeout(() => main.classList.add('opacity-100'), 50);
-                lucide.createIcons();
-                updateDisplay();
             } else {
                 alert("ভুল পাসওয়ার্ড!");
                 document.getElementById('password').value = "";
             }
         }
 
-        function addItem() {
+        function saveItem() {
             const name = document.getElementById('name').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const institute = document.getElementById('institute').value.trim();
@@ -178,31 +200,92 @@
             const mark = document.getElementById('mark').value.trim();
             const position = document.getElementById('position').value.trim();
 
-            if(!name || !phone) return alert("নাম ও ফোন আবশ্যক!");
+            if(!name) return alert("নাম আবশ্যক!");
 
-            const newItem = { name, phone, institute, segment, mark, position };
-            allParticipants.unshift(newItem); // নতুনটা উপরে থাকবে
-            
+            const itemData = { name, phone, institute, segment, mark, position };
+
+            if (editIndex > -1) {
+                // Update existing
+                localData[editIndex] = itemData;
+                alert("ডাটা আপডেট করা হয়েছে!");
+                cancelEdit(); // reset form
+            } else {
+                // Add new
+                localData.push(itemData); // Push to array
+            }
+
             updateDisplay();
+
+            if (editIndex === -1) {
+                // Clear form only if we were adding a new one
+                document.getElementById('name').value = "";
+                document.getElementById('phone').value = "";
+                document.getElementById('mark').value = "";
+                document.getElementById('position').value = "";
+            }
+        }
+
+        function editItem(originalIndex) {
+            const item = localData[originalIndex];
             
-            // ফিল্ড রিসেট
+            // Populate form
+            document.getElementById('segment').value = item.segment;
+            document.getElementById('name').value = item.name;
+            document.getElementById('phone').value = item.phone || '';
+            document.getElementById('institute').value = item.institute || '';
+            document.getElementById('mark').value = item.mark || '';
+            document.getElementById('position').value = item.position || '';
+
+            // Update UI State
+            editIndex = originalIndex;
+            document.getElementById('form-title').innerHTML = `<i data-lucide="edit-3" class="w-5 h-5"></i> ডাটা এডিট করুন`;
+            document.getElementById('save-btn').innerText = "আপডেট করুন";
+            document.getElementById('save-btn').classList.replace("bg-amber-500", "bg-blue-500");
+            document.getElementById('save-btn').classList.replace("hover:bg-amber-400", "hover:bg-blue-400");
+            document.getElementById('save-btn').classList.replace("shadow-amber-500/20", "shadow-blue-500/20");
+            document.getElementById('cancel-btn').classList.remove("hidden");
+            
+            lucide.createIcons();
+            
+            // Ensure the segment filter matches what we are editing so user can see the change
+            document.getElementById('filterSeg').value = item.segment;
+            renderList();
+        }
+
+        function cancelEdit() {
+            editIndex = -1;
+            
+            // Clear form
             document.getElementById('name').value = "";
             document.getElementById('phone').value = "";
+            document.getElementById('institute').value = "";
             document.getElementById('mark').value = "";
             document.getElementById('position').value = "";
+
+            // Reset UI
+            document.getElementById('form-title').innerHTML = `<i data-lucide="user-plus" class="w-5 h-5"></i> নতুন প্রতিযোগী`;
+            document.getElementById('save-btn').innerText = "লিস্টে যুক্ত করুন";
+            document.getElementById('save-btn').classList.replace("bg-blue-500", "bg-amber-500");
+            document.getElementById('save-btn').classList.replace("hover:bg-blue-400", "hover:bg-amber-400");
+            document.getElementById('save-btn').classList.replace("shadow-blue-500/20", "shadow-amber-500/20");
+            document.getElementById('cancel-btn').classList.add("hidden");
+            
+            lucide.createIcons();
         }
 
         function deleteItem(index) {
-            if(confirm("মুছে ফেলতে চান?")) {
-                allParticipants.splice(index, 1);
+            if(confirm("এই প্রতিযোগীর ডাটা মুছে ফেলতে চান?")) {
+                localData.splice(index, 1);
+                if (editIndex === index) cancelEdit(); // If currently editing this item, cancel it
                 updateDisplay();
             }
         }
 
         function updateDisplay() {
             renderList();
-            // রিয়েল-টাইম কোড জেনারেশন
-            const codeOutput = `const allParticipants = ${JSON.stringify(allParticipants, null, 4)};`;
+            
+            // Generate Code for data.js
+            const codeOutput = `const allParticipants = ${JSON.stringify(localData, null, 4)};`;
             document.getElementById('code-output').innerText = codeOutput;
         }
 
@@ -211,34 +294,83 @@
             const filter = document.getElementById('filterSeg').value;
             container.innerHTML = "";
 
-            allParticipants.forEach((item, index) => {
-                if(filter !== "All" && item.segment !== filter) return;
+            // 1. Map data to keep original index (needed for edit/delete)
+            let mappedData = localData.map((item, originalIndex) => ({ item, originalIndex }));
+            
+            // 2. Filter by selected segment only
+            let filteredData = mappedData.filter(d => d.item.segment === filter);
 
+            // 3. Sort by position (Rank 1 on top, Rank 2 next...)
+            filteredData.sort((a, b) => {
+                let posA = parseInt(a.item.position);
+                let posB = parseInt(b.item.position);
+                
+                // If position is empty/invalid, push to bottom (assigning 999)
+                if (isNaN(posA)) posA = 999;
+                if (isNaN(posB)) posB = 999;
+
+                return posA - posB;
+            });
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="text-center text-slate-500 text-xs py-4">এই বিভাগে কোনো ডাটা নেই।</div>`;
+                return;
+            }
+
+            // 4. Render HTML
+            filteredData.forEach(({ item, originalIndex }) => {
                 const div = document.createElement('div');
-                div.className = "flex items-center justify-between p-4 bg-slate-900/40 rounded-2xl border border-slate-800/50 hover:border-amber-500/30 transition";
+                div.className = `flex items-center justify-between p-3 bg-slate-900/40 rounded-xl border ${editIndex === originalIndex ? 'border-blue-500/50' : 'border-slate-800/50'} hover:border-amber-500/30 transition`;
+                
+                // Position badge styling based on rank
+                let posBadge = '';
+                if (item.position === '1') posBadge = '<span class="px-2 py-0.5 bg-yellow-500 text-black text-[10px] font-black rounded ml-2">1st</span>';
+                else if (item.position === '2') posBadge = '<span class="px-2 py-0.5 bg-slate-300 text-black text-[10px] font-black rounded ml-2">2nd</span>';
+                else if (item.position === '3') posBadge = '<span class="px-2 py-0.5 bg-amber-700 text-white text-[10px] font-black rounded ml-2">3rd</span>';
+                else if (item.position) posBadge = `<span class="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] font-bold rounded ml-2 border border-slate-700">Rank: ${item.position}</span>`;
+                else posBadge = `<span class="px-2 py-0.5 bg-slate-800/50 text-slate-500 text-[10px] rounded ml-2 border border-slate-800">No Rank</span>`;
+
                 div.innerHTML = `
                     <div class="flex-1 overflow-hidden pr-2">
-                        <div class="text-sm font-bold text-white truncate">${item.name}</div>
-                        <div class="text-[10px] text-slate-500">${item.segment} • ${item.position || '-'} পজিশন</div>
+                        <div class="text-sm font-bold text-white truncate flex items-center">
+                            ${item.name}
+                            ${posBadge}
+                        </div>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-[11px] text-amber-400 font-medium">Marks: ${item.mark || 'N/A'}</span>
+                            <span class="text-[10px] text-slate-500 truncate">${item.institute || 'Institution missing'}</span>
+                        </div>
                     </div>
-                    <button onclick="deleteItem(${index})" class="p-2.5 text-rose-500 bg-rose-500/10 rounded-xl active:scale-75 transition">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
+                    <div class="flex gap-1">
+                        <button onclick="editItem(${originalIndex})" class="p-2 text-blue-400 bg-blue-500/10 rounded-lg hover:bg-blue-500/20 active:scale-90 transition" title="এডিট করুন">
+                            <i data-lucide="edit" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteItem(${originalIndex})" class="p-2 text-rose-500 bg-rose-500/10 rounded-lg hover:bg-rose-500/20 active:scale-90 transition" title="মুছে ফেলুন">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
+
             lucide.createIcons();
         }
 
         function copyCode() {
             const code = document.getElementById('code-output').innerText;
-            const tempTextArea = document.createElement("textarea");
-            tempTextArea.value = code;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempTextArea);
-            alert("সব ডাটা কপি হয়েছে! এবার data.js ফাইলে পেস্ট করে দিন।");
+            if(!code) return;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("সম্পূর্ণ ডাটা কপি হয়েছে! এবার গিটহাবে আপনার data.js ফাইলে এটি পেস্ট করে দিন।");
+            }).catch(err => {
+                // Fallback for older browsers / webview
+                const tempTextArea = document.createElement("textarea");
+                tempTextArea.value = code;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(tempTextArea);
+                alert("সম্পূর্ণ ডাটা কপি হয়েছে! এবার গিটহাবে আপনার data.js ফাইলে এটি পেস্ট করে দিন।");
+            });
         }
 
         document.getElementById('password').addEventListener('keypress', (e) => {
@@ -247,4 +379,5 @@
     </script>
 </body>
 </html>
+
 
