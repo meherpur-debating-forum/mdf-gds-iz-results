@@ -66,7 +66,7 @@ const allParticipants = [
   {
     "name": "তাসনিয়া খান মজলিশ",
     "phone": "01775657032",
-    "institute": "আদমজী ক্যান্ট. কলেজ",
+    "institute": "আদমজী ক্যান্টনমেন্ট কলেজ",
     "segment": "বারোয়ারী বিতর্ক",
     "mark": "৫০.৩",
     "position": "১০"
@@ -266,7 +266,7 @@ const allParticipants = [
   {
     "name": "তাসনিয়া খান মজলিশ",
     "phone": "01775657032",
-    "institute": "আদমজি ক্যান্টনমেন্ট কলেজ",
+    "institute": "আদমজী ক্যান্টনমেন্ট কলেজ",
     "segment": "চিত্রাঙ্কন",
     "mark": "৯০",
     "position": "১"
