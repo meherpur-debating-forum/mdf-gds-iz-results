@@ -64,7 +64,7 @@ const allParticipants = [
     "position": "৭"
   },
   {
-    "name": "তাহসিনা খান মজলিশ",
+    "name": "তাসনিয়া খান মজলিশ",
     "phone": "01775657032",
     "institute": "আদমজী ক্যান্ট. কলেজ",
     "segment": "বারোয়ারী বিতর্ক",
