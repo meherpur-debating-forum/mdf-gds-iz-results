@@ -22,6 +22,7 @@
             background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
         }
 
+        /* Reveal Overlay (Segment Name) */
         #revealOverlay {
             position: fixed; inset: 0; z-index: 5000; background: #000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -35,6 +36,7 @@
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
 
+        /* Dashboard Setup */
         #dashboard { display: none; padding: 40px 16px; animation: fadeIn 0.8s ease; }
         .nav-card {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
@@ -42,63 +44,48 @@
         }
         .nav-card:hover { border-color: var(--gold); background: rgba(255,215,0,0.05); }
 
-        .btn-gold { background: var(--gold); color: #000; font-weight: 800; border-radius: 20px; transition: 0.3s; cursor: pointer; }
+        .btn-gold { background: var(--gold); color: #000; font-weight: 800; border-radius: 20px; transition: 0.3s; cursor: pointer; display: inline-block; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,215,0,0.3); }
         .btn-outline { border: 1.5px solid rgba(255,215,0,0.4); color: var(--gold); font-weight: 600; border-radius: 12px; transition: 0.3s; padding: 8px 18px; font-size: 13px; }
         .btn-outline:hover { background: var(--gold); color: #000; }
 
-        .square-frame {
-            width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 24px;
-            overflow: hidden; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center;
-        }
-        .square-frame img { width: 100%; height: 100%; object-fit: contain; }
-
+        /* Cinematic Ending Screen */
         #creditsScreen {
             position: fixed; inset: 0; z-index: 8000; background: #000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden;
         }
-        .fade-text {
-            opacity: 0; position: absolute; text-align: center; width: 100%; padding: 0 40px;
-            font-size: 2rem; font-weight: 700; color: #fff;
-        }
-        @keyframes fadeOutIn {
-            0% { opacity: 0; transform: scale(0.95); }
-            15%, 85% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.05); }
+        
+        .sync-text {
+            position: absolute; text-align: center; width: 100%; padding: 0 20px;
+            font-size: 2.5rem; font-weight: 900; color: #fff;
+            opacity: 0; transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            text-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
-        #finalMessage {
-            position: absolute; inset: 0; z-index: 9000;
-            display: none; align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 80%);
-            opacity: 0;
-        }
-        #finalMessage h2 {
-            font-size: 3.5rem; font-weight: 900; color: var(--gold);
-            text-align: center; text-shadow: 0 0 30px rgba(255,215,0,0.5);
-            transform: scale(0.8);
-        }
-        @keyframes finalPop {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        #syncText4 { color: var(--gold); font-size: 3.5rem; text-shadow: 0 0 40px rgba(255,215,0,0.4); }
 
         .credits-wrapper {
-            position: absolute; width: 100%; top: 100%;
+            position: absolute; width: 100%; top: 100vh;
             display: flex; flex-direction: column; align-items: center;
-            will-change: transform;
+            will-change: transform; opacity: 0; transition: opacity 2s ease;
         }
 
-        .credit-block { margin-bottom: 120px; text-align: center; width: 100%; }
-        .credit-role { color: var(--gold); font-size: 11px; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 15px; opacity: 0.8; font-weight: 700; }
-        .credit-name { font-size: 1.7rem; font-weight: 700; line-height: 1.6; }
+        .credit-block { margin-bottom: 80px; text-align: center; width: 100%; }
+        .credit-role { color: var(--gold); font-size: 13px; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 12px; opacity: 0.9; font-weight: 700; }
+        .credit-name { font-size: 2rem; font-weight: 700; line-height: 1.5; color: #eee; }
+        .credit-name.small { font-size: 1.5rem; margin-bottom: 8px;}
 
         @keyframes creditsRoll {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-4200px); }
+            100% { transform: translateY(-350vh); } /* Adjust based on content height */
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Modal Customization */
+        #workModal { backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     </style>
 </head>
 <body>
@@ -107,109 +94,130 @@
     <audio id="rsAudio" src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/rs.mp3" preload="auto"></audio>
     <audio id="endAudio" src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/end.mp3" preload="auto"></audio>
 
+    <!-- Initial Welcome Screen -->
+    <div id="initScreen" class="fixed inset-0 z-[9000] bg-black flex flex-col items-center justify-center p-8 text-center">
+        <div class="logo-container mb-8">
+            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-logo.jpg" class="w-56 h-56 rounded-[60px] object-cover border-2 border-gold/20 shadow-[0_0_40px_rgba(255,215,0,0.1)]">
+        </div>
+        <h1 class="text-3xl font-black mb-2 text-gold">ইনকিলাব জিন্দাবাদ</h1>
+        <p class="text-white/50 text-sm mb-10 tracking-widest uppercase">জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</p>
+        <div class="flex flex-col gap-4 w-full max-w-xs">
+            <button id="startBtn" onclick="startShow()" class="btn-gold py-5 text-lg">ফলাফল দেখা শুরু করুন</button>
+            <button onclick="skipToShowDashboard()" class="text-white/40 text-sm uppercase font-bold mt-2">সরাসরি ড্যাশবোর্ডে যান</button>
+        </div>
+    </div>
+
+    <!-- Segment Reveal Overlay -->
     <div id="revealOverlay">
         <div id="revPos" class="reveal-pos">৩য় স্থান</div>
         <h1 id="revSeg" class="reveal-seg">সেগমেন্টের নাম</h1>
     </div>
 
-    <!-- Credits Screen -->
-    <div id="creditsScreen">
-        <div id="fadeText1" class="fade-text">তাহলে কি আমাদের যাত্রা এতোদূরই?</div>
-        <div id="fadeText2" class="fade-text">আজাদীর কাফেলা থামেনা</div>
+    <!-- Interactive Winner Slideshow (No Images) -->
+    <div id="winnerView" class="fixed inset-0 z-[4000] hidden flex-col items-center justify-center p-6 bg-black">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,215,0,0.05)_0%,transparent_60%)]"></div>
+        
+        <div class="text-center z-10 w-full max-w-2xl px-4 flex flex-col items-center justify-center min-h-[60vh]">
+            <span id="viewPos" class="bg-gold/10 text-gold px-8 py-2 rounded-full text-sm font-black uppercase tracking-[8px] border border-gold/20 mb-10 inline-block">স্থান</span>
+            
+            <h2 id="viewName" class="text-5xl md:text-7xl font-black mb-6 text-white drop-shadow-2xl leading-tight">বিজয়ীর নাম</h2>
+            
+            <div class="w-24 h-1 bg-gold/30 mx-auto mb-6 rounded-full"></div>
+            
+            <p id="viewInst" class="text-gold/80 text-xl md:text-2xl font-semibold tracking-wide">প্রতিষ্ঠান</p>
+        </div>
 
+        <div class="absolute bottom-12 w-full px-6 flex justify-center z-10">
+             <button class="btn-gold w-full max-w-xs py-5 uppercase tracking-widest text-sm" onclick="nextStep()">পরবর্তী স্লাইড</button>
+        </div>
+    </div>
+
+    <!-- Judge Announcement Slide -->
+    <div id="specialSlide" class="fixed inset-0 z-[6000] bg-black hidden flex-col items-center justify-center p-8 text-center">
+        <div class="border border-gold/30 p-12 md:p-20 rounded-[40px] bg-gold/5 backdrop-blur-xl relative overflow-hidden">
+            <div class="absolute -inset-10 bg-gold/10 blur-[60px] z-0 rounded-full"></div>
+            <div class="relative z-10">
+                <div class="text-gold text-xs font-bold tracking-[12px] uppercase mb-8 opacity-80">Honorable Judge</div>
+                <h3 id="judgeNameDisplay" class="text-4xl md:text-6xl font-black mb-6 leading-tight">বিচারকের নাম</h3>
+                <div class="text-white/30 text-xs uppercase tracking-[5px] mt-6">Inquilab Zindabad 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cinematic Ending Sequence Screen -->
+    <div id="creditsScreen">
+        <!-- Timed Texts -->
+        <div id="syncText1" class="sync-text">তাহলে কি আমাদের যাত্রা এতোদূরই?</div>
+        <div id="syncText2" class="sync-text">বিপ্লবীদের বিপ্লব কখনো থামেনা</div>
+        <div id="syncText3" class="sync-text">মনে রাখিয়েন এ আমাদের</div>
+        
+        <!-- Credits Roll -->
         <div id="creditsContainer" class="credits-wrapper">
-            <div class="credit-block"><div class="credit-role">প্রেসিডেন্ট GDS</div><div class="credit-name">মোঃ জাহিন মুসাদ্দিক</div></div>
-            <div class="credit-block"><div class="credit-role">প্রেসিডেন্ট MDF</div><div class="credit-name">রিদুয়ানুল হক মুজাহিদ</div></div>
-            <div class="credit-block"><div class="credit-role">জিএস GDS</div><div class="credit-name">মেহেদি হাসান</div></div>
-            <div class="credit-block"><div class="credit-role">জিএস MDF</div><div class="credit-name">আব্দুল্লাহ হিল কাফি</div></div>
+            <div class="credit-block"><div class="credit-role">ফাউন্ডার এন্ড সিওও, জিডিএস</div><div class="credit-name">জাহিন মুসাদ্দিক</div></div>
+            <div class="credit-block"><div class="credit-role">ফাউন্ডার এন্ড সিইও</div><div class="credit-name">রিদওয়ানুল হক মুজাহিদ</div></div>
             <div class="credit-block"><div class="credit-role">ইভেন্ট লিড</div><div class="credit-name">ইসতিয়াক আহমেদ খাঁন</div></div>
             <div class="credit-block">
                 <div class="credit-role">সেগমেন্ট লিডস</div>
-                <div class="credit-name">সাদিদা খান শ্রেয়া</div>
-                <div class="credit-name">মাহমুদুল হাসান মাহিম</div>
-                <div class="credit-name">ফাহিম মুন্তাসির নাবিল</div>
-                <div class="credit-name">আরাফ খন্দকার</div>
+                <div class="credit-name small">শাদিদা খাঁন শ্রেয়া</div>
+                <div class="credit-name small">ফাহিম মুন্তাসির নাবিল</div>
+                <div class="credit-name small">মাহমুদুল হাসান মাহিম</div>
+                <div class="credit-name small">আরাফ খন্দকার</div>
             </div>
-            <div class="credit-block"><div class="credit-role">রেজাল্ট কম্পাইলর</div><div class="credit-name">আনাস তাহসিন</div></div>
+            <div class="credit-block"><div class="credit-role">রেজাক্ট কম্পাইলর</div><div class="credit-name">আনাস</div></div>
             <div class="credit-block"><div class="credit-role">উপদেষ্টা</div><div class="credit-name">মোস্তফা আব্দুল্লাহ কামাল</div></div>
-            <div class="credit-block"><div class="credit-role">পার্টিসিপিয়ান্টস পার্টনার</div><div class="credit-name">কুষ্টিয়া ডিবেটিং সোসাইটি</div></div>
             <div class="credit-block"><div class="credit-role">প্রিন্টিং পার্টনার</div><div class="credit-name">কাগজ মিস্ত্রি</div></div>
-            <div class="mt-40 mb-20 text-center">
-                <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-logo.jpg" class="w-48 h-48 rounded-full mx-auto opacity-40 grayscale">
-                <p class="text-gold/20 text-[10px] mt-10 uppercase tracking-[12px]">Inquilab Zindabad 2026</p>
+            <div class="credit-block"><div class="credit-role">পার্টিসিপিয়ান্টস পার্টনার</div><div class="credit-name">কুষ্টিয়া ডিবেটিং সোসাইটি</div></div>
+            <div class="credit-block"><div class="credit-role">আয়োজক</div><div class="credit-name small">মেহেরপুর ডিবেটিং ফোরাম</div><div class="text-white/50 my-2">ও</div><div class="credit-name small">কুষ্টিয়া ডিবেটিং সোসাইটি</div></div>
+            
+            <div class="mt-32 mb-32 text-center opacity-30">
+                <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-logo.jpg" class="w-32 h-32 rounded-full mx-auto grayscale">
             </div>
         </div>
 
-        <div id="finalMessage">
-            <h2>আমাদের স্মরণে রাখিয়েন</h2>
+        <div id="syncText4" class="sync-text">ইনকিলাব জিন্দাবাদ</div>
+    </div>
+
+    <!-- Modal for viewing work in Dashboard -->
+    <div id="workModal" class="fixed inset-0 z-[9500] bg-black/80 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#111] border border-gold/20 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl relative transform scale-95 transition-transform duration-300" id="workModalBox">
+            <div class="p-6" id="workModalContent">
+                <!-- Content injected via JS -->
+            </div>
         </div>
     </div>
 
-    <!-- Judge Slide -->
-    <div id="specialSlide" class="fixed inset-0 z-[6000] bg-black hidden flex-col items-center justify-center p-8 text-center">
-        <div class="border border-gold/30 p-12 rounded-[60px] bg-gold/5 backdrop-blur-xl">
-            <div class="text-gold text-[10px] font-bold tracking-[10px] uppercase mb-6 opacity-60">Honorable Judge</div>
-            <h3 id="judgeNameDisplay" class="text-4xl md:text-6xl font-black mb-4">বিচারকের নাম</h3>
-            <div class="text-white/20 text-xs uppercase tracking-[5px] mt-4">Inquilab Zindabad 2026</div>
-        </div>
-    </div>
-
-    <!-- Winner Detail View (Slide Show Only) -->
-    <div id="winnerView" class="fixed inset-0 z-[4000] hidden flex-col items-center justify-center p-6 bg-black/95 backdrop-blur-lg">
-        <div class="text-center mb-6 w-full max-w-md">
-            <span id="viewPos" class="bg-gold/20 text-gold px-6 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-gold/30">স্থান</span>
-            <h2 id="viewName" class="text-3xl font-black mt-4 mb-1">বিজয়ীর নাম</h2>
-            <p id="viewInst" class="text-white/50 text-sm italic">প্রতিষ্ঠান</p>
-        </div>
-        <div id="viewMediaContainer" class="square-frame max-w-[400px] mb-8 shadow-2xl shadow-gold/10"></div>
-        <div class="flex gap-4 w-full max-w-[400px]">
-             <button class="btn-gold flex-1 py-5 uppercase tracking-widest text-xs" onclick="nextStep()">পরবর্তী স্লাইড</button>
-        </div>
-    </div>
-
-    <!-- Dashboard -->
+    <!-- Main Dashboard -->
     <div id="dashboard" class="max-w-4xl mx-auto">
-        <header class="text-center mb-12">
-            <h1 class="text-4xl font-black mb-4 tracking-tighter">লিডারবোর্ড</h1>
-            <p class="text-gold font-bold text-[10px] uppercase tracking-[5px]">ইনকিলাব জিন্দাবাদ: জাতীয় জাগরণ প্রতিযোগিতা ২০২৬</p>
+        <header class="text-center mb-14 mt-6">
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">লিডারবোর্ড</h1>
+            <p class="text-gold font-bold text-xs md:text-sm uppercase tracking-[5px]">ইনকিলাব জিন্দাবাদ ২০২৬</p>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
             <a href="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/signup.html" class="nav-card flex items-center gap-4 border-gold/40 bg-gold/5">
-                <span class="text-2xl">📝</span>
+                <span class="text-3xl">📝</span>
                 <div>
                     <div class="font-bold text-base text-gold">ব্যক্তিগত রেজাল্ট</div>
-                    <div class="text-white/30 text-[10px] uppercase">Result & Certificate</div>
+                    <div class="text-white/40 text-[10px] uppercase font-bold tracking-wider">Result & Certificate</div>
                 </div>
             </a>
             <a href="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-result.pdf" target="_blank" class="nav-card flex items-center gap-4">
-                <span class="text-2xl">📄</span>
+                <span class="text-3xl">📄</span>
                 <div>
                     <div class="font-bold text-base">ফলাফল PDF</div>
-                    <div class="text-white/30 text-[10px] uppercase">Official Report</div>
+                    <div class="text-white/40 text-[10px] uppercase font-bold tracking-wider">Official Report</div>
                 </div>
             </a>
             <button onclick="resetMemory()" class="nav-card flex items-center gap-4 text-left">
-                <span class="text-2xl">🔄</span>
+                <span class="text-3xl">🔄</span>
                 <div>
                     <div class="font-bold text-base">রিলোড শো</div>
-                    <div class="text-white/30 text-[10px] uppercase">Watch Again</div>
+                    <div class="text-white/40 text-[10px] uppercase font-bold tracking-wider">Watch Again</div>
                 </div>
             </button>
         </div>
-        <div id="segmentContainer" class="space-y-10 pb-20"></div>
-    </div>
-
-    <!-- Init Screen -->
-    <div id="initScreen" class="fixed inset-0 z-[9000] bg-black flex flex-col items-center justify-center p-8 text-center">
-        <div class="logo-container mb-8">
-            <img src="https://meherpur-debating-forum.github.io/mdf-gds-iz-results/iz-logo.jpg" class="w-56 h-56 rounded-[60px] object-cover border-2 border-gold/20">
-        </div>
-        <h1 class="text-2xl font-black mb-3">ইনকিলাব জিন্দাবাদ</h1>
-        <div class="flex flex-col gap-4 w-full max-w-xs">
-            <button id="startBtn" onclick="startShow()" class="btn-gold py-5">ফলাফল দেখা শুরু করুন</button>
-            <button onclick="skipToShowDashboard()" class="text-white/40 text-sm uppercase font-bold">সরাসরি ড্যাশবোর্ডে যান</button>
-        </div>
+        
+        <div id="segmentContainer" class="space-y-12 pb-20"></div>
     </div>
 
     <script>
@@ -217,16 +225,15 @@
             { id: 1, name: "মোঃ জাওয়াদ হোসেন সদ্য", inst: "দৌলতখান সরকারি উচ্চ বিদ্যালয়", seg: "কবিতা লিখন", pos: "৩য়", file: "p3.jpg", type: "img" },
             { id: 2, name: "ইকরা ইসলাম", inst: "চিটাগং ইন্ডিপেন্ডেন্ট ইউনিভার্সিটি", seg: "কবিতা লিখন", pos: "২য়", file: "p2.jpg", type: "img" },
             { id: 3, name: "সায়েদা মাইমুনা রাবেয়া", inst: "চট্টগ্রাম বিশ্ববিদ্যালয়", seg: "কবিতা লিখন", pos: "১ম", file: "p1.jpg", type: "img", isEnd: true, judge: "মোঃ আইনউদ্দিন খান ও সাদবিন আল জুবায়ের" },
-            
+
             { id: 4, name: "মাহমুদুল হাসান দিগন্ত, সাজিদ আহমেদ, ইশরাক হাসিন নিসর্গ, মোঃ আশফাক হাবিব আবিদ, মুশফিকুস সালেহিন", inst: "মেহেরপুর সরকারি উচ্চ বিদ্যালয়", seg: "গ্রাফিতি", pos: "৩য়", file: "g3.jpg", type: "img" },
             { id: 5, name: "জান্নাতুল ফেরদৌস, মোঃ জিহাদ হাসান, উম্মে হাবিবা তানহা", inst: "জনশক্তি যুব উন্নয়ন সংস্থা", seg: "গ্রাফিতি", pos: "২য়", file: "g2.jpg", type: "img" },
             { id: 6, name: "মোঃ নুর আলম, সাদবিন জামান, সাদমান আল রাফি, মারুফ হাসান", inst: "শহীদ বীর বিক্রম রমিজ উদ্দিন ক্যান্টনমেন্ট স্কুল", seg: "গ্রাফিতি", pos: "১ম", file: "g1.jpg", type: "img", isEnd: true, judge: "মোর্শেদ মিশু" },
-            
-            // বারোয়ারী বিতর্ক: স্লাইড শো তে ছবি দেখাবে, ড্যাশবোর্ডে ক্লিক করলে ফেসবুকে যাবে
-            { id: 7, name: "আহবাব হাছনাত লাবিব", inst: "কুলাউড়া সরকারি কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "৩য়", file: "b3.jpg", link: "https://www.facebook.com/share/v/1R7s7cZ21R/", type: "external" },
-            { id: 8, name: "সুমাইয়া মাহাবুব মাহিয়া", inst: "বীরশ্রেষ্ঠ নূর মোহাম্মদ পাবলিক কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "২য়", file: "b2.jpg", link: "https://www.facebook.com/share/v/1HweQHoCJk/", type: "external" },
-            { id: 9, name: "মাহরুপা আক্তার", inst: "সরকারি তিতুমীর কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "১ম", file: "b1.jpg", link: "https://www.facebook.com/share/v/1BgCH5G1Te/", type: "external", isEnd: true, judge: "আজওয়াদ চৌধুরী ও সাওদা জামান রিশা" },
-            
+
+            { id: 7, name: "আহবাব হাছনাত লাবিব", inst: "কুলাউড়া সরকারি কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "৩য়", file: "b3.jpg", link: "https://www.facebook.com/share/v/1CxU2AeXzv/", type: "external" },
+            { id: 8, name: "সুমাইয়া মাহাবুব মাহিয়া", inst: "বীরশ্রেষ্ঠ নূর মোহাম্মদ পাবলিক কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "২য়", file: "b2.jpg", link: "https://www.facebook.com/share/v/1KH4qhSTGk/", type: "external" },
+            { id: 9, name: "মাহরুপা আক্তার", inst: "সরকারি তিতুমীর কলেজ", seg: "বারোয়ারী বিতর্ক", pos: "১ম", file: "b1.jpg", link: "https://www.facebook.com/share/v/17aFRErvDe/", type: "external", isEnd: true, judge: "আজওয়াদ চৌধুরী ও সাওদা জামান রিশা" },
+
             { id: 10, name: "তুরিজিতা হাসান কান্তা", inst: "চাটখিল পাঁচগাঁও সরকারি উচ্চ বিদ্যালয়", seg: "চিত্রাঙ্কন", pos: "৩য়", file: "a3.jpg", type: "img" },
             { id: 11, name: "ইকরা ইসলাম", inst: "লাইটহাউস ইন্টারন্যাশনাল স্কুল", seg: "চিত্রাঙ্কন", pos: "২য়", file: "a2.png", type: "img" },
             { id: 12, name: "তাসনিয়া খাঁন মজলিশ", inst: "আদমজি ক্যান্টনমেন্ট কলেজ", seg: "চিত্রাঙ্কন", pos: "১ম", file: "a1.jpg", type: "img", isEnd: true, judge: "আল-ফুরকান নয়ন" }
@@ -234,10 +241,13 @@
 
         let currentIdx = 0;
         const BASE_URL = "https://meherpur-debating-forum.github.io/mdf-gds-iz-results/";
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
 
         function startShow() {
             document.getElementById('initScreen').style.display = 'none';
-            document.getElementById('endAudio').load(); 
+            // Pre-load audio
+            const endAud = document.getElementById('endAudio');
+            endAud.load(); 
             runStep();
         }
 
@@ -253,12 +263,12 @@
             document.getElementById('revSeg').innerText = data.seg;
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('active'), 50);
-            
+
             const rs = document.getElementById('rsAudio');
             rs.currentTime = 0;
             rs.play().catch(()=>{});
 
-            await sleep(4000);
+            await sleep(3500); // Overlay duration
             overlay.classList.remove('active');
             overlay.style.display = 'none';
             showWinnerSlide(data);
@@ -266,16 +276,18 @@
 
         function showWinnerSlide(data) {
             const view = document.getElementById('winnerView');
-            const media = document.getElementById('viewMediaContainer');
-            
+
             let n = data.name, i = data.inst;
-            if(data.seg === "গ্রাফিতি") { n = data.inst; i = data.name; }
-            
+            // Swap for Graffiti
+            if(data.seg === "গ্রাফিতি") { 
+                n = data.inst; 
+                i = data.name; 
+            }
+
             document.getElementById('viewPos').innerText = data.pos;
             document.getElementById('viewName').innerText = n;
             document.getElementById('viewInst').innerText = i;
-            
-            media.innerHTML = `<img src="${BASE_URL}${data.file}" onerror="this.src='https://via.placeholder.com/400?text=Image+Not+Found'">`;
+
             view.style.display = 'flex';
         }
 
@@ -283,6 +295,7 @@
             const data = winners[currentIdx];
             document.getElementById('winnerView').style.display = 'none';
 
+            // Show Judge if segment ends
             if(data.isEnd) {
                 const slide = document.getElementById('specialSlide');
                 document.getElementById('judgeNameDisplay').innerText = data.judge;
@@ -295,48 +308,82 @@
             if(currentIdx < winners.length) {
                 runStep();
             } else {
-                startCreditsRoll();
+                startCinematicEnding();
             }
         }
 
-        async function startCreditsRoll() {
+        // --- The Complex Cinematic Ending Sequence ---
+        function startCinematicEnding() {
             const screen = document.getElementById('creditsScreen');
             const audio = document.getElementById('endAudio');
-            const rollContainer = document.getElementById('creditsContainer');
-            const finalBox = document.getElementById('finalMessage');
             screen.style.display = 'flex';
 
             audio.currentTime = 0;
-            audio.play().catch(e => console.log(e));
+            audio.play().catch(e => console.log("Audio Play Error:", e));
 
-            const t1 = document.getElementById('fadeText1');
-            t1.style.animation = "fadeOutIn 5s forwards";
-            await sleep(5000);
+            // Helper to handle text fading
+            const syncText = (id, startTimeMs, durationMs) => {
+                const el = document.getElementById(id);
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'scale(1)';
+                }, startTimeMs);
+                
+                if (durationMs) {
+                    setTimeout(() => {
+                        el.style.opacity = '0';
+                        el.style.transform = 'scale(1.05)';
+                    }, startTimeMs + durationMs);
+                }
+            };
 
-            const t2 = document.getElementById('fadeText2');
-            t2.style.animation = "fadeOutIn 5s forwards";
-            await sleep(5000);
+            // Timeline Execution
+            
+            // 0s to 3.865s: "তাহলে কি আমাদের যাত্রা এতোদূরই?"
+            syncText('syncText1', 0, 3865); 
+            // 1s blank (3.865 to 4.865)
+            
+            // 4.865s to 8.000s: "বিপ্লবীদের বিপ্লব কখনো থামেনা" (Duration 3135ms)
+            syncText('syncText2', 4865, 3135);
+            // 1s blank (8.000 to 10.000, extended slightly based on prompt instruction)
+            
+            // 10.000s to 11.000s: "মনে রাখিয়েন এ আমাদের" (Duration 1000ms)
+            syncText('syncText3', 10000, 1000);
 
-            await sleep(2000);
-            rollContainer.style.animation = "creditsRoll 31.53s linear forwards";
-            await sleep(26530);
+            // 12.000s to 38.000s: Credits Roll Fade Up (Duration 26s)
+            setTimeout(() => {
+                const roll = document.getElementById('creditsContainer');
+                roll.style.opacity = '1';
+                // 26s animation duration to finish exactly at 38s
+                roll.style.animation = "creditsRoll 26s linear forwards";
+                
+                // Start fading out the roll just before 38s
+                setTimeout(() => {
+                    roll.style.opacity = '0';
+                }, 25000); // starts fading at 37s, completes at 39s
+            }, 12000);
 
-            finalBox.style.display = 'flex';
-            finalBox.style.animation = "finalPop 1s forwards";
-
-            await sleep(5000);
-            screen.style.transition = "opacity 2s ease-out";
-            screen.style.opacity = "0";
-            await sleep(2000);
-            screen.style.display = 'none';
-            showDashboard();
+            // 39.000s to 43.000s: "ইনকিলাব জিন্দাবাদ" (Duration 4000ms)
+            syncText('syncText4', 39000, 4000);
+            
+            // 44s blank, 45s fade out to dashboard
+            setTimeout(() => {
+                screen.style.transition = "opacity 2s ease-in-out";
+                screen.style.opacity = "0";
+                
+                setTimeout(() => {
+                    screen.style.display = 'none';
+                    showDashboard();
+                }, 2000); // 45s + 2s fade out = 47s total finish
+            }, 45000);
         }
 
+        // --- Dashboard & Modal Logic ---
         function showDashboard() {
             document.getElementById('dashboard').style.display = 'block';
             const container = document.getElementById('segmentContainer');
             container.innerHTML = '';
-            
+
             const grouped = winners.reduce((acc, obj) => {
                 const key = obj.seg;
                 if (!acc[key]) acc[key] = [];
@@ -345,24 +392,20 @@
             }, {});
 
             Object.keys(grouped).forEach(segName => {
-                let html = `<div class="mb-8"><h3 class="text-gold font-bold text-xl border-l-4 border-gold pl-4 mb-6">${segName}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                let html = `<div class="mb-10"><h3 class="text-gold font-bold text-2xl border-l-4 border-gold pl-4 mb-6">${segName}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                
                 grouped[segName].forEach(w => {
                     let n = w.name, i = w.inst;
                     if(w.seg === "গ্রাফিতি") { n = w.inst; i = w.name; }
-                    
-                    let action = `window.open('${BASE_URL}${w.file}', '_blank')`;
-                    if(w.type === 'external') {
-                        action = `window.open('${w.link}', '_blank')`;
-                    }
 
                     html += `
-                        <div class="bg-white/5 p-5 rounded-3xl flex justify-between items-center border border-white/5">
-                            <div class="flex-1 pr-4">
-                                <div class="text-[9px] uppercase font-black text-gold/60 tracking-widest">${w.pos} স্থান</div>
-                                <div class="text-lg font-bold leading-tight">${n}</div>
-                                <div class="text-white/30 text-[11px] mt-1">${i}</div>
+                        <div class="bg-[#111] p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center border border-white/5 hover:border-gold/30 transition-colors gap-4">
+                            <div class="flex-1 pr-2">
+                                <div class="text-[10px] uppercase font-black text-gold tracking-[4px] mb-2 px-2 py-1 bg-gold/10 inline-block rounded">${w.pos} স্থান</div>
+                                <div class="text-xl font-bold leading-tight mb-1 text-white">${n}</div>
+                                <div class="text-white/40 text-xs">${i}</div>
                             </div>
-                            <button onclick="${action}" class="btn-outline whitespace-nowrap">কাজ দেখুন</button>
+                            <button onclick="openWorkModal(${w.id})" class="btn-outline whitespace-nowrap w-full sm:w-auto text-center">কাজ দেখুন</button>
                         </div>
                     `;
                 });
@@ -370,8 +413,60 @@
             });
         }
 
+        function openWorkModal(id) {
+            const w = winners.find(x => x.id === id);
+            const modal = document.getElementById('workModal');
+            const box = document.getElementById('workModalBox');
+            const content = document.getElementById('workModalContent');
+
+            if (w.seg === "বারোয়ারী বিতর্ক") {
+                content.innerHTML = `
+                    <div class="text-center py-6">
+                        <div class="text-5xl mb-4">🎥</div>
+                        <h3 class="text-2xl font-black mb-3 text-gold">বারোয়ারী বিতর্ক</h3>
+                        <p class="mb-8 text-white/70 text-sm px-4">অসাধারণ এই পরিবেশনাটি সরাসরি ফেসবুকে দেখতে নিচের বাটনে ক্লিক করুন।</p>
+                        <div class="flex flex-col gap-3">
+                            <a href="${w.link}" target="_blank" class="btn-gold py-3 px-6 text-center text-sm font-bold block">ফেইসবুকে ভিডিওটি দেখুন</a>
+                            <button onclick="closeWorkModal()" class="text-white/50 hover:text-white text-sm mt-4 font-semibold uppercase tracking-wider transition-colors">বন্ধ করুন</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-lg text-gold">${w.seg} - ${w.pos} স্থান</h3>
+                            <button onclick="closeWorkModal()" class="text-white/50 hover:text-white text-2xl leading-none">&times;</button>
+                        </div>
+                        <div class="w-full h-[60vh] flex items-center justify-center mb-6 bg-black/60 rounded-2xl overflow-hidden">
+                            <img src="${BASE_URL}${w.file}" class="w-full h-full object-contain" alt="Work by ${w.name}" onerror="this.src='https://via.placeholder.com/400?text=Image+Not+Found'">
+                        </div>
+                        <button onclick="closeWorkModal()" class="btn-outline w-full py-3 text-center block">ব্যাক</button>
+                    </div>
+                `;
+            }
+
+            modal.style.display = 'flex';
+            // Simple animation
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeWorkModal() {
+            const modal = document.getElementById('workModal');
+            const box = document.getElementById('workModalBox');
+            
+            modal.classList.add('opacity-0');
+            box.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
         function resetMemory() { location.reload(); }
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
     </script>
 </body>
 </html>
