@@ -5,7 +5,7 @@ const allParticipants = [
     "institute": "বনশ্রী ন্যাশনাল আইডিয়াল হাই স্কুল",
     "segment": "বারোয়ারী বিতর্ক",
     "mark": "৪২.৫৫",
-    "position": "২৫"
+    "position": "১৯"
   },
   {
     "name": "আফিয়া তাসনিম সানজিদা",
