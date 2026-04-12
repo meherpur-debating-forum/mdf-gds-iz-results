@@ -176,7 +176,7 @@ const allParticipants = [
     "position": "১৪"
   },
   {
-    "name": "রিজওয়ানুল করিম",
+    "name": "রিজওয়ানুল কারীম",
     "phone": "01571733321",
     "institute": "চট্টগ্রাম বিশ্ববিদ্যালয়",
     "segment": "বারোয়ারী বিতর্ক",
@@ -544,7 +544,7 @@ const allParticipants = [
     "position": "২১"
   },
   {
-    "name": "রিজওয়ানুল করিম",
+    "name": "রিজওয়ানুল কারীম",
     "phone": "01571733321",
     "institute": "চট্টগ্রাম বিশ্ববিদ্যালয়",
     "segment": "কবিতা লিখন",
